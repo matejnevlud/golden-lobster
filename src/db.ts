@@ -1,4 +1,4 @@
-import { DBT_Layouts, DBT_MealGroups, DBT_Meals, DBT_Variants, PrismaClient } from "@prisma/client";
+import { DBT_Layouts, DBT_MealGroups, DBT_Meals, DBT_Variants, PrismaClient } from '../generated/prisma-client'
 import { cookies } from "next/headers";
 
 const globalForPrisma = globalThis as unknown as {

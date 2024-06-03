@@ -1,7 +1,5 @@
 'use client'
-
-
-import { DBT_Languages, DBT_Layouts, DBT_MealGroups, DBT_Meals, DBT_MealsInGroups, DBT_MenuSetUp, DBT_Variants } from "@prisma/client";
+import { DBT_Languages, DBT_Layouts, DBT_MealGroups, DBT_Meals, DBT_MealsInGroups, DBT_MenuSetUp, DBT_Variants } from "../../../generated/prisma-client";
 import { XMLParser } from "fast-xml-parser";
 import { parseBasic } from "@/utils/xmlParser";
 import Image from "next/image";

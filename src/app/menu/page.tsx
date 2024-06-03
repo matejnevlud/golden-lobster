@@ -1,7 +1,7 @@
 import Image from "next/image";
 import { XMLParser } from "fast-xml-parser";
 import { parseBasic } from "@/utils/xmlParser";
-import { DBT_Languages } from "@prisma/client";
+import { DBT_Languages } from "../../../generated/prisma-client";
 import { getLanguages, getLayouts, getMealGroups, getMeals, getMealsInGroups, getMenuSetUp, getVariants, prisma } from "@/db";
 import InteractiveMenu from "@/app/menu/InteractiveMenu";
 
