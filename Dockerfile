@@ -17,4 +17,4 @@ EXPOSE 3000
 
 #ENV NODE_ENV=production
 # # Run the app
-CMD [ "npm", "start" ]
+CMD [ "npm", "run dev" ]

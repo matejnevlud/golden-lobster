@@ -6,7 +6,8 @@ generator client {
 
 datasource db {
   provider = "sqlserver"
-  url      = "sqlserver://bicodigital.a.pinggy.link:18627;database=GoldenLobster_1;user=prisma;password=prisma;trustServerCertificate=true"
+//url      = "sqlserver://bicodigital.a.pinggy.link:18627;database=GoldenLobster_1;user=prisma;password=prisma;trustServerCertificate=true"
+  url      = "sqlserver://localhost:1433;database=GoldenLobster_1;user=prisma;password=prisma;trustServerCertificate=true"
 }
 
 model DBT_Customer {
