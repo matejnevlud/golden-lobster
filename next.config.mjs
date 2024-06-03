@@ -1,6 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-    output: "standalone",
+    //output: "standalone",
     // !! WARN !!
     // Dangerously allow production builds to successfully complete even if
     // your project has type errors.
