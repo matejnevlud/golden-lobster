@@ -16,5 +16,5 @@ COPY . .
 EXPOSE 3000
 
 #ENV NODE_ENV=production
-# # Run the app as dev
-CMD ["npm", "run", "dev"]
+# # build the app and then run it
+CMD ["npm", "run", "buildAndStart"]
