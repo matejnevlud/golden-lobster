@@ -24,7 +24,7 @@ export default function InteractiveMenu(props: InteractiveMenuProps) {
     const { languages, layouts, meals, mealGroups, mealsInGroups, variants, menuSetUp } = props;
 
 
-    const headLayout = layouts.find((layout) => layout.Type === "Head");
+    const headLayout = layouts.find((layout) => layout.Type === "Head" && layout.Active);
 
 
     const [currentMealGroupID, setCurrentMealGroupID] = useState<bigint>(BigInt(localStorage.getItem('mealGroup') ?? '1'));
@@ -34,7 +34,7 @@ export default function InteractiveMenu(props: InteractiveMenuProps) {
 
     const parser = new XMLParser({ ignoreAttributes : false });
     let jsonObj = parser.parse(headLayout?.Xml ?? "");
-    console.log(jsonObj)
+    console.log('headLayout', jsonObj)
 
     const setLanguageFunc = (id: number) => {
         Cookies.set('language', id);
@@ -75,7 +75,7 @@ export default function InteractiveMenu(props: InteractiveMenuProps) {
     }
 
     const renderMealGroups = (o: any) => {
-        const container = parseBasic(o);
+        const container = parseBasic(o, null);
 
         return (
             <div style={{ position: 'absolute', display: 'flex', flexDirection: 'row', top: container.top, left: container.left, width: container.width, height: container.height, backgroundColor: container.background.color }} key='mg'>
@@ -102,7 +102,6 @@ export default function InteractiveMenu(props: InteractiveMenuProps) {
     const renderWorkspace = (o: any) => {
         const container = parseBasic(o);
 
-        console.log(currentMealGroupID, meals, mealGroups, variants)
 
         const mealGroup = mealGroups.find((mg) => (mg.ID == currentMealGroupID));
         const mealsFilter = meals.filter((meal) => (meal.ID_MealGroup == currentMealGroupID));

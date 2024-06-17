@@ -23,11 +23,10 @@ export default function Workspace(props: WorkspaceProps) {
     const headLayout = layouts.find((layout) => layout.Type == "Head");
     const mealGroupLayout = layouts.find((layout) => layout.ID == mealGroup?.ID_Layout);
 
-    console.log(meals, mealGroup, variants)
-
 
     const parser = new XMLParser({ ignoreAttributes : false });
     let jsonObj = parser.parse(mealGroupLayout?.Xml ?? "");
+    console.log('mealGroupLayout', jsonObj)
 
 
     const renderLogo = (o: any) => {
@@ -75,7 +74,21 @@ export default function Workspace(props: WorkspaceProps) {
 
 
         return (
-            <div style={{ textAlign: container.textAlign, font: container.font.font, color: container.font.color, ...positionStyle, ...(strike ? { textDecoration: 'line-through' } : {}) }}>
+            <div key={text} style={{ textAlign: container.textAlign, font: container.font.font, color: container.font.color, ...positionStyle, ...(strike ? { textDecoration: 'line-through' } : {}) }}>
+                <p>{text}</p>
+            </div>
+        );
+    }
+
+
+    const renderPrice = (o: any, text: any) => {
+        const isPriceTitleLine = !!o?.TitleLine && o?.TitleLine == 'True';
+
+        if (!isPriceTitleLine) return renderHText(o, text);
+
+        const container = parseBasic(o, null);
+        return (
+            <div style={{ position: 'absolute', top: 0, left: container.left, width: container.width, height: container.height, textAlign: container.textAlign, font: container.font.font, color: container.font.color }} key={text}>
                 <p>{text}</p>
             </div>
         );
@@ -84,12 +97,18 @@ export default function Workspace(props: WorkspaceProps) {
 
     const renderSingleMeal = (o: any, idx: number, meal: DBT_Meals, variants: DBT_Variants[]) => {
 
+
+
         return (
-            <div style={{ marginTop: idx == 0 ? vh(o?.FoodComponent?.FirstTopSpace, null) : 0}}>
+            <div key={idx} style={{
+                marginTop: idx == 0 ? vh(o?.FoodComponent?.FirstTopSpace, null) : 0,
+                marginBottom: vh(o?.FoodComponent?.BlockBottomSpace ?? 0, null),
+                position: 'relative'
+            }}>
                 {renderHText(o.FoodComponent?.Title, meal.Meal)}
                 {renderHText(o.FoodComponent?.Description, meal.MealDescription)}
                 {variants.map((variant) => renderHText(o.FoodComponent?.Versions, variant.MealVariant, !variant.Available))}
-                {renderHText(o.FoodComponent?.Price, meal.Price)}
+                {renderPrice(o.FoodComponent?.Price, meal.Price)}
             </div>
         )
     }
@@ -111,7 +130,6 @@ export default function Workspace(props: WorkspaceProps) {
     return (
         <div>
             {renderMeals()}
-
         </div>
     );
 

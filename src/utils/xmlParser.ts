@@ -18,7 +18,7 @@ type Basic = {
     font: Font;
 };
 
-export const parseBasic = (xml: any, unit: string): Basic => {
+export const parseBasic = (xml: any, unit?: string): Basic => {
     return {
         left: vw(xml?.Left, unit),
         top: vh(xml?.Top, unit),
