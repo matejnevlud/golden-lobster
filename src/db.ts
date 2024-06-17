@@ -30,10 +30,15 @@ export async function getLanguages() {
 
 export async function translate(text: string | null, id_language: number) {
     // call function dbo.Translate
-    var result = await prisma.$queryRaw`SELECT dbo.Translate(${text}, ${id_language})`;
-    console.log('Translating', text, 'to', id_language, 'result:', result[0][''] as string ?? text)
-    //@ts-ignore
-    return result[0][''] as string ?? text;
+    try {
+        var result = await prisma.$queryRaw`SELECT dbo.Translate(${text}, ${id_language})`;
+        console.log('Translating', text, 'to', id_language, 'result:', result[0][''] as string ?? text)
+        //@ts-ignore
+        return result[0][''] as string ?? text;
+    } catch (e) {
+        console.error('Error translating', text, 'to', id_language, 'error:', e);
+        return text;
+    }
 }
 
 export async function getLayouts() {

@@ -1,7 +1,8 @@
 
 
 // based on first characters determine filetype of base64 image and return data uri, eg /9j/ for data:image/jpeg;base64, ....
-export function base64DataUri(base64: string): string {
+export function base64DataUri(base64?: string): string {
+    if (!base64) return "";
     if (base64.startsWith("/9j/")) return "data:image/jpeg;base64," + base64;
     if (base64.startsWith("iVBORw0KGgo=")) return "data:image/png;base64," + base64;
     if (base64.startsWith("R0lGODlhAQAB")) return "data:image/gif;base64," + base64;

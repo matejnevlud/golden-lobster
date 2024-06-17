@@ -5,14 +5,19 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="42a16207-629e-4e0c-9512-37544dcc1cdf" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/bun.lockb" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Dockerfile" beforeDir="false" afterPath="$PROJECT_DIR$/Dockerfile" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/generated/prisma-client/edge.js" beforeDir="false" afterPath="$PROJECT_DIR$/generated/prisma-client/edge.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/generated/prisma-client/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/generated/prisma-client/index.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/generated/prisma-client/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/generated/prisma-client/package.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/generated/prisma-client/schema.prisma" beforeDir="false" afterPath="$PROJECT_DIR$/generated/prisma-client/schema.prisma" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/prisma/schema.prisma" beforeDir="false" afterPath="$PROJECT_DIR$/prisma/schema.prisma" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/menu/InteractiveMenu.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/menu/InteractiveMenu.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/menu/Workspace.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/menu/Workspace.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/db.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/db.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/utils/utils.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/utils/utils.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/utils/xmlParser.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/utils/xmlParser.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -82,7 +87,7 @@
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-js-predefined-1d06a55b98c1-0b3e54e931b4-JavaScript-WS-241.17011.90" />
+        <option value="bundled-js-predefined-1d06a55b98c1-0b3e54e931b4-JavaScript-WS-241.17890.13" />
       </set>
     </attachedChunks>
   </component>
@@ -103,7 +108,11 @@
       <workItem from="1717250956891" duration="823000" />
       <workItem from="1717345503727" duration="1993000" />
       <workItem from="1717348015729" duration="3095000" />
-      <workItem from="1717357551704" duration="17462000" />
+      <workItem from="1717357551704" duration="20345000" />
+      <workItem from="1717481552561" duration="7000" />
+      <workItem from="1718260446334" duration="2327000" />
+      <workItem from="1718543234833" duration="73000" />
+      <workItem from="1718543318763" duration="10175000" />
     </task>
     <servers />
   </component>

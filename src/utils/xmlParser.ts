@@ -20,7 +20,7 @@ type Basic = {
 
 export const parseBasic = (xml: any, unit: string): Basic => {
     return {
-        left: vh(xml?.Left, unit),
+        left: vw(xml?.Left, unit),
         top: vh(xml?.Top, unit),
         width: vw(xml?.Width, unit),
         height: vh(xml?.Height, unit),
@@ -66,6 +66,7 @@ type Font = {
     strikeOut: boolean;
     textDecoration: string;
     color: string;
+    highlightColor: string;
 };
 
 export const parseFont = (xml: any): Font => {
@@ -78,6 +79,7 @@ export const parseFont = (xml: any): Font => {
     const underline = xml?.Underline === "True" ?? false;
     const strikeOut = xml?.StrikeOut === "True" ?? false;
     const color = xml?.Color ?? "ARGB(100,100,100,100)";
+    const highlightColor = xml?.HighLightColor ?? "ARGB(0,0,0,0)";
 
     return {
         fontFamily: name,
@@ -91,6 +93,7 @@ export const parseFont = (xml: any): Font => {
         textDecoration: `${underline ? "underline" : ""} ${strikeOut ? "line-through" : ""}`,
 
         color: parseColor(color),
+        highlightColor: parseColor(highlightColor)
     };
 }
 

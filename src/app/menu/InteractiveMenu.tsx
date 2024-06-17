@@ -5,7 +5,7 @@ import { parseBasic } from "@/utils/xmlParser";
 import Image from "next/image";
 import { base64DataUri, numberToRGBAString } from "@/utils/utils";
 import { useState } from "react";
-
+import { useLocalStorage } from 'usehooks-ts'
 import Cookies from 'js-cookie'
 import Workspace from "@/app/menu/Workspace";
 
@@ -27,18 +27,32 @@ export default function InteractiveMenu(props: InteractiveMenuProps) {
     const headLayout = layouts.find((layout) => layout.Type === "Head");
 
 
-    const [currentMealGroupID, setCurrentMealGroupID] = useState<bigint>(mealGroups[1].ID ?? 1);
+    const [currentMealGroupID, setCurrentMealGroupID] = useState<bigint>(BigInt(localStorage.getItem('mealGroup') ?? '1'));
+    const [currentLanguageID, setCurrentLanguageID] = useState<bigint>(BigInt(localStorage.getItem('language') ?? '1'));
 
 
 
     const parser = new XMLParser({ ignoreAttributes : false });
     let jsonObj = parser.parse(headLayout?.Xml ?? "");
+    console.log(jsonObj)
+
+    const setLanguageFunc = (id: number) => {
+        Cookies.set('language', id);
+        localStorage.setItem('language', id);
+        setCurrentLanguageID(id);
+        location.reload();
+    }
+
+    const setMealGroupFunc = (id: number) => {
+        localStorage.setItem('mealGroup', id);
+        setCurrentMealGroupID(id);
+    }
 
 
     const renderLogo = (o: any) => {
         const rect = parseBasic(o);
         return (
-            <div style={{ position: 'absolute', top: rect.top, left: rect.left, width: rect.width, height: rect.height }}>
+            <div style={{ position: 'absolute', top: rect.top, left: rect.left, width: rect.width, height: rect.height }} key='l'>
                 <img src={base64DataUri(menuSetUp.LogoImage)} alt="logo" style={{ maxWidth: '100%', maxHeight: '100%' }} />
             </div>
         );
@@ -48,11 +62,11 @@ export default function InteractiveMenu(props: InteractiveMenuProps) {
         const container = parseBasic(o);
 
         return (
-            <div style={{ position: 'absolute', display: 'flex', flexDirection: 'row', top: container.top, left: container.left, width: container.width, height: container.height, backgroundColor: container.background.color }}>
+            <div style={{ position: 'absolute', display: 'flex', flexDirection: 'row', top: container.top, left: container.left, width: container.width, height: container.height, backgroundColor: container.background.color }} key='lb'>
                 {languages.map((lang) => {
                     return (
-                        <div key={lang.ID} style={{ flex: 1, textAlign: container.textAlign, font: container.font.font, color: container.font.color }}>
-                            <button onClick={() => { Cookies.set('language', lang.ID) && location.reload()}}>{lang.DisplayText}</button>
+                        <div key={lang.ID} style={{ flex: 1, textAlign: container.textAlign, font: container.font.font, color: currentLanguageID == lang.ID ? container.font?.highlightColor : container.font.color }}>
+                            <button onClick={() => setLanguageFunc(lang.ID)}>{lang.DisplayText}</button>
                         </div>
                     );
                 })}
@@ -64,11 +78,11 @@ export default function InteractiveMenu(props: InteractiveMenuProps) {
         const container = parseBasic(o);
 
         return (
-            <div style={{ position: 'absolute', display: 'flex', flexDirection: 'row', top: container.top, left: container.left, width: container.width, height: container.height, backgroundColor: container.background.color }}>
-                {mealGroups.map((lang) => {
+            <div style={{ position: 'absolute', display: 'flex', flexDirection: 'row', top: container.top, left: container.left, width: container.width, height: container.height, backgroundColor: container.background.color }} key='mg'>
+                {mealGroups.map((mg) => {
                     return (
-                        <div key={lang.ID} style={{ flex: 1, textAlign: container.textAlign, font: container.font.font, color: container.font.color }}>
-                            <a>{lang.MealGroup}</a>
+                        <div key={mg.ID} style={{ flex: 1, textAlign: container.textAlign, font: container.font.font, color: currentMealGroupID == mg.ID ? container.font?.highlightColor : container.font.color }}>
+                            <button onClick={() => setMealGroupFunc(mg.ID) && location.reload()}>{mg.MealGroup}</button>
                         </div>
                     );
                 })}
@@ -79,7 +93,7 @@ export default function InteractiveMenu(props: InteractiveMenuProps) {
     const renderText = (o: any, text: any) => {
         const container = parseBasic(o);
         return (
-            <div style={{ position: 'absolute', top: container.top, left: container.left, width: container.width, height: container.height, textAlign: container.textAlign, font: container.font.font, color: container.font.color }}>
+            <div style={{ position: 'absolute', top: container.top, left: container.left, width: container.width, height: container.height, textAlign: container.textAlign, font: container.font.font, color: container.font.color }} key={text}>
                 <p>{text}</p>
             </div>
         );
@@ -90,11 +104,11 @@ export default function InteractiveMenu(props: InteractiveMenuProps) {
 
         console.log(currentMealGroupID, meals, mealGroups, variants)
 
-        const mealGroup = mealGroups.find((mg) => (mg.ID === currentMealGroupID));
-        const mealsFilter = meals.filter((meal) => (meal.ID_MealGroup === currentMealGroupID));
+        const mealGroup = mealGroups.find((mg) => (mg.ID == currentMealGroupID));
+        const mealsFilter = meals.filter((meal) => (meal.ID_MealGroup == currentMealGroupID));
 
         return (
-            <div style={{ position: 'absolute', top: container.top, left: container.left, width: container.width, height: container.height, overflow: 'hidden' }}>
+            <div style={{ position: 'absolute', top: container.top, left: container.left, width: container.width, height: container.height, overflow: 'hidden' }} key='w'>
                 <Workspace languages={languages} layouts={layouts} meals={mealsFilter} mealGroup={mealGroup} variants={variants} />
             </div>
         );

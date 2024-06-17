@@ -20,8 +20,8 @@ export default function Workspace(props: WorkspaceProps) {
 
     const { languages, layouts, meals, mealGroup, variants } = props;
 
-    const headLayout = layouts.find((layout) => layout.Type === "Head");
-    const mealGroupLayout = layouts.find((layout) => layout.ID === mealGroup.ID_Layout);
+    const headLayout = layouts.find((layout) => layout.Type == "Head");
+    const mealGroupLayout = layouts.find((layout) => layout.ID == mealGroup?.ID_Layout);
 
     console.log(meals, mealGroup, variants)
 
@@ -65,15 +65,17 @@ export default function Workspace(props: WorkspaceProps) {
         );
     }
 
-    const renderHText = (o: any, text: any) => {
-        const container = parseBasic(o, '%');
+    const renderHText = (o: any, text: any, strike: boolean = false) => {
+        const container = parseBasic(o, null);
         const positionStyle = {
             marginLeft: container.left,
             width: container.width,
-            marginBottom: vh(o.BottomSpace ?? 0, '%' )
+            marginBottom: vh(o?.BottomSpace ?? 0, null )
         }
+
+
         return (
-            <div style={{ textAlign: container.textAlign, font: container.font.font, color: container.font.color, ...positionStyle }}>
+            <div style={{ textAlign: container.textAlign, font: container.font.font, color: container.font.color, ...positionStyle, ...(strike ? { textDecoration: 'line-through' } : {}) }}>
                 <p>{text}</p>
             </div>
         );
@@ -83,11 +85,11 @@ export default function Workspace(props: WorkspaceProps) {
     const renderSingleMeal = (o: any, idx: number, meal: DBT_Meals, variants: DBT_Variants[]) => {
 
         return (
-            <div style={{ marginTop: idx == 0 ? vh(o.FoodComponent.FirstTopSpace, '%') : 0}}>
-                {renderHText(o.FoodComponent.Title, meal.Meal)}
-                {renderHText(o.FoodComponent.Description, meal.MealDescription)}
-                {renderHText(o.FoodComponent.Price, meal.Price)}
-                {variants.map((variant) => renderHText(o.FoodComponent.Versions, variant.MealVariant))}
+            <div style={{ marginTop: idx == 0 ? vh(o?.FoodComponent?.FirstTopSpace, null) : 0}}>
+                {renderHText(o.FoodComponent?.Title, meal.Meal)}
+                {renderHText(o.FoodComponent?.Description, meal.MealDescription)}
+                {variants.map((variant) => renderHText(o.FoodComponent?.Versions, variant.MealVariant, !variant.Available))}
+                {renderHText(o.FoodComponent?.Price, meal.Price)}
             </div>
         )
     }
