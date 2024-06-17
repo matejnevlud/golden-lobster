@@ -8,6 +8,7 @@ import { useState } from "react";
 import { useLocalStorage } from 'usehooks-ts'
 import Cookies from 'js-cookie'
 import Workspace from "@/app/menu/Workspace";
+import dynamic from "next/dynamic";
 
 export type InteractiveMenuProps = {
     languages: DBT_Languages[]
@@ -19,7 +20,8 @@ export type InteractiveMenuProps = {
     menuSetUp: DBT_MenuSetUp
 }
 
-export default function InteractiveMenu(props: InteractiveMenuProps) {
+
+function InteractiveMenu(props: InteractiveMenuProps) {
 
     const { languages, layouts, meals, mealGroups, mealsInGroups, variants, menuSetUp } = props;
 
@@ -137,3 +139,7 @@ export default function InteractiveMenu(props: InteractiveMenuProps) {
 
 
 }
+
+
+const InteractiveMenuNoSSR = dynamic(() => Promise.resolve(InteractiveMenu), { ssr: false })
+export default InteractiveMenuNoSSR
