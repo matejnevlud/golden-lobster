@@ -1,4 +1,4 @@
-import { DBT_Layouts, DBT_MealGroups, DBT_Meals, DBT_Variants, PrismaClient } from '../generated/prisma-client'
+import { DBT_Layouts, DBT_MealGroups, DBT_Meals, DBT_Variants, PrismaClient, DBT_Languages, DBT_MealsInGroups, DBT_MenuSetUp } from '../generated/prisma-client'
 import { cookies } from "next/headers";
 
 const globalForPrisma = globalThis as unknown as {
@@ -105,4 +105,28 @@ export async function getMenuSetUp() {
     result.FooterText = await translate(result?.FooterText, language);
 
     return result;
+}
+
+
+
+export type ALL_DATA = {
+    languages: DBT_Languages[]
+    layouts: DBT_Layouts[]
+    meals: DBT_Meals[]
+    mealGroups: DBT_MealGroups[]
+    mealsInGroups: DBT_MealsInGroups[]
+    variants: DBT_Variants[]
+    menuSetUp: DBT_MenuSetUp
+
+}
+export async function getAllData(): Promise<ALL_DATA> {
+    const languages = await getLanguages();
+    const layouts = await getLayouts();
+    const mealGroups = await getMealGroups();
+    const meals = await getMeals();
+    const mealsInGroups = await getMealsInGroups();
+    const variants = await getVariants();
+    const menuSetUp = await getMenuSetUp();
+
+    return { languages, layouts, meals, mealGroups, mealsInGroups, variants, menuSetUp };
 }

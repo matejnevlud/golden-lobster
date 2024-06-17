@@ -1,5 +1,5 @@
 'use client'
-import { DBT_Languages, DBT_Layouts, DBT_MealGroups, DBT_Meals, DBT_MealsInGroups, DBT_MenuSetUp, DBT_Variants } from "../../../generated/prisma-client";
+import { DBT_Languages, DBT_Layouts, DBT_MealGroups, DBT_Meals, DBT_MealsInGroups, DBT_MenuSetUp, DBT_Variants } from "../../generated/prisma-client";
 import { XMLParser } from "fast-xml-parser";
 import { parseBasic } from "@/utils/xmlParser";
 import Image from "next/image";
@@ -7,7 +7,7 @@ import { base64DataUri, numberToRGBAString } from "@/utils/utils";
 import { useState } from "react";
 import { useLocalStorage } from 'usehooks-ts'
 import Cookies from 'js-cookie'
-import Workspace from "@/app/menu/Workspace";
+import Workspace from "@/components/Workspace";
 import dynamic from "next/dynamic";
 
 export type InteractiveMenuProps = {
