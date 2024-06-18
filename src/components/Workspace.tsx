@@ -14,19 +14,21 @@ export type WorkspaceProps = {
     meals: DBT_Meals[]
     mealGroup: DBT_MealGroups
     variants: DBT_Variants[]
+    setSelectedMealId: (id: bigint | null) => void
 }
 
 export default function Workspace(props: WorkspaceProps) {
 
-    const { languages, layouts, meals, mealGroup, variants } = props;
+    const { setSelectedMealId, languages, layouts, meals, mealGroup, variants } = props;
 
     const headLayout = layouts.find((layout) => layout.Type == "Head");
     const mealGroupLayout = layouts.find((layout) => layout.ID == mealGroup?.ID_Layout);
 
 
     const parser = new XMLParser({ ignoreAttributes : false });
-    let jsonObj = parser.parse(mealGroupLayout?.Xml ?? "");
-    console.log('mealGroupLayout', jsonObj)
+    let mealJsonObj = parser.parse(mealGroupLayout?.Xml ?? "");
+    let headJsonObj = parser.parse(headLayout?.Xml ?? "");
+    console.log('mealGroupLayout headJsonObj', headJsonObj?.Head.PopUpWindow)
 
 
     const renderLogo = (o: any) => {
@@ -84,12 +86,19 @@ export default function Workspace(props: WorkspaceProps) {
     const renderPrice = (o: any, text: any) => {
         const isPriceTitleLine = !!o?.TitleLine && o?.TitleLine == 'True';
 
-        if (!isPriceTitleLine) return renderHText(o, text);
+        const float = parseFloat(text);
+        console.log('float', float)
+
+        // format price in format OMR 0.000
+        const formattedPrice = `OMR ${float.toFixed(3)}`;
+
+        if (!isPriceTitleLine) return renderHText(o, formattedPrice);
+
 
         const container = parseBasic(o, null);
         return (
             <div style={{ position: 'absolute', top: 0, left: container.left, width: container.width, height: container.height, textAlign: container.textAlign, font: container.font.font, color: container.font.color }} key={text}>
-                <p>{text}</p>
+                <p>{formattedPrice}</p>
             </div>
         );
     }
@@ -105,7 +114,9 @@ export default function Workspace(props: WorkspaceProps) {
                 marginBottom: vh(o?.FoodComponent?.BlockBottomSpace ?? 0, null),
                 position: 'relative'
             }}>
+                <a onClick={() => setSelectedMealId(meal.ID)} style={{ cursor: 'pointer' }}>
                 {renderHText(o.FoodComponent?.Title, meal.Meal)}
+                </a>
                 {renderHText(o.FoodComponent?.Description, meal.MealDescription)}
                 {variants.map((variant) => renderHText(o.FoodComponent?.Versions, variant.MealVariant, !variant.Available))}
                 {renderPrice(o.FoodComponent?.Price, meal.Price)}
@@ -120,7 +131,7 @@ export default function Workspace(props: WorkspaceProps) {
         for (let i = 0; i < meals.length; i++) {
             const meal = meals[i];
             const meal_variants = variants.filter((v) => v.ID_Meal === meal.ID);
-            render.push(renderSingleMeal(jsonObj, i, meal, meal_variants));
+            render.push(renderSingleMeal(mealJsonObj, i, meal, meal_variants));
         }
 
         return render;

@@ -32,7 +32,7 @@ function InteractiveMenu(props: InteractiveMenuProps) {
     const [currentMealGroupID, setCurrentMealGroupID] = useState<bigint>(BigInt(localStorage.getItem('mealGroup') ?? '1'));
     const [currentLanguageID, setCurrentLanguageID] = useState<bigint>(BigInt(localStorage.getItem('language') ?? '1'));
 
-
+    const [selectedMealId, setSelectedMealId] = useState<bigint | null>(null);
 
     const parser = new XMLParser({ ignoreAttributes : false });
     let jsonObj = parser.parse(headLayout?.Xml ?? "");
@@ -55,7 +55,7 @@ function InteractiveMenu(props: InteractiveMenuProps) {
         const rect = parseBasic(o);
         return (
             <div style={{ position: 'absolute', top: rect.top, left: rect.left, width: rect.width, height: rect.height }} key='l'>
-                <img src={base64DataUri(menuSetUp.LogoImage)} alt="logo" style={{ maxWidth: '100%', maxHeight: '100%' }} />
+                <img src={base64DataUri(menuSetUp?.LogoImage)} alt="logo" style={{ maxWidth: '100%', maxHeight: '100%' }} />
             </div>
         );
     }
@@ -106,12 +106,35 @@ function InteractiveMenu(props: InteractiveMenuProps) {
 
 
         const mealGroup = mealGroups.find((mg) => (mg.ID == currentMealGroupID));
-        const mealsFilter = meals.filter((meal) => (meal.ID_MealGroup == currentMealGroupID));
+        const mealsInGroup = mealsInGroups.filter((mig) => (mig.ID_Group == currentMealGroupID)) ?? [];
+        console.log('mealsInGroup', mealsInGroup)
+        const mealsFilter = meals.filter((m) => (mealsInGroup.some((mig) => mig.ID_Meal == m.ID)));
+
+
 
         return (
             <div style={{ position: 'absolute', top: container.top, left: container.left, width: container.width, height: container.height, overflow: 'hidden' }} key='w'>
-                <Workspace languages={languages} layouts={layouts} meals={mealsFilter} mealGroup={mealGroup} variants={variants} />
+                <Workspace languages={languages} layouts={layouts} meals={mealsFilter} mealGroup={mealGroup} variants={variants} setSelectedMealId={setSelectedMealId} />
             </div>
+        );
+    }
+
+    const renderPopUpWindow = (o: any) => {
+        const container = parseBasic(o);
+        const description = parseBasic(o?.Description);
+        if (!selectedMealId) return null;
+
+        return (
+            <a onClick={() => setSelectedMealId(null)}>
+                <div style={{ position: 'absolute', top: 0, left: 0,  width: '100vw', height: '100vh', backgroundColor: 'rgba(0,0,0,0.5)', zIndex: 998 }} ></div>
+
+                <div style={{ position: 'absolute', top: container.top, left: container.left, width: container.width, height: '100px', backgroundColor: 'black', zIndex: 999 }}>
+                    <div style={{ position: 'absolute', top: description.top, left: description.left, width: description.width, height: description.height, backgroundColor: 'white', zIndex: 1000 }}>
+                        <p>{meals.find((m) => m.ID == selectedMealId)?.PictureDescription}</p>
+                    </div>
+
+                </div>
+            </a>
         );
     }
 
@@ -119,6 +142,7 @@ function InteractiveMenu(props: InteractiveMenuProps) {
 
     return (
         <div className="min-w-full min-h-screen" style={{ backgroundColor: numberToRGBAString(menuSetUp.BackgroundColor)}}>
+            {renderPopUpWindow(jsonObj.Head?.PopUpWindow)}
             {renderLogo(jsonObj.Head?.Logo)}
             {renderText(jsonObj.Head?.HeaderText, menuSetUp.HeaderText)}
             {renderLanguageBar(jsonObj.Head?.LanguageBar)}
@@ -126,7 +150,6 @@ function InteractiveMenu(props: InteractiveMenuProps) {
             {renderMealGroups(jsonObj.Head?.MealGroups)}
 
             {renderWorkspace(jsonObj.Head?.Workspace)}
-
 
 
             {renderText(jsonObj.Head?.FooterText, menuSetUp.FooterText)}
