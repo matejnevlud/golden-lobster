@@ -1,7 +1,7 @@
 'use client'
 import { DBT_Languages, DBT_Layouts, DBT_MealGroups, DBT_Meals, DBT_MealsInGroups, DBT_MenuSetUp, DBT_Variants } from "../../generated/prisma-client";
 import { XMLParser } from "fast-xml-parser";
-import { parseBasic } from "@/utils/xmlParser";
+import { parseBasic, vh, vw } from "@/utils/xmlParser";
 import Image from "next/image";
 import { base64DataUri, numberToRGBAString } from "@/utils/utils";
 import { useState } from "react";
@@ -122,26 +122,39 @@ function InteractiveMenu(props: InteractiveMenuProps) {
     const renderPopUpWindow = (o: any) => {
         const container = parseBasic(o);
         const description = parseBasic(o?.Description);
+        // add container to description
+        description.left = vw(o?.Left + o?.Description?.Left, null);
+        description.top = vh(o?.Top + o?.Description?.Top, null);
+
         if (!selectedMealId) return null;
+
+        const imageUrl = "https://www.allrecipes.com/thmb/stS53UvguoiwYbxDeQwZAQDmQ24=/0x512/filters:no_upscale():max_bytes(150000):strip_icc()/36996-Grilled-Rock-Lobsters-109-4x3-fb4e7e3c2ea34a5b8de9caf3697ed5b9.jpg"
+
+        // Load image and determine aspect ratio
+
 
         return (
             <a onClick={() => setSelectedMealId(null)}>
-                <div style={{ position: 'absolute', top: 0, left: 0,  width: '100vw', height: '100vh', backgroundColor: 'rgba(0,0,0,0.5)', zIndex: 998 }} ></div>
+                <div style={{ position: 'absolute', top: 0, left: 0, width: '100vw', height: '100vh', backgroundColor: 'rgba(0,0,0,0.5)', zIndex: 997 }}></div>
 
-                <div style={{ position: 'absolute', top: container.top, left: container.left, width: container.width, height: '100px', backgroundColor: 'black', zIndex: 999 }}>
-                    <div style={{ position: 'absolute', top: description.top, left: description.left, width: description.width, height: description.height, backgroundColor: 'white', zIndex: 1000 }}>
-                        <p>{meals.find((m) => m.ID == selectedMealId)?.PictureDescription}</p>
-                    </div>
-
+                <img src={imageUrl} style={{ position: 'absolute', top: container.top, left: container.left, width: container.width, height: container.height, zIndex: 998 }}/>
+                <div style={{ position: 'absolute', top: description.top, left: description.left, width: description.width, height: description.height, backgroundColor: 'white', zIndex: 1000 }}>
+                    <p>{meals.find((m) => m.ID == selectedMealId)?.PictureDescription}</p>
                 </div>
             </a>
         );
     }
 
 
+    const renderBG = () => {
+        const mealGroup = mealGroups.find((mg) => (mg.ID == currentMealGroupID));
+
+        return <img src={base64DataUri(mealGroup?.BackgroudPicture)} style={{ position: 'absolute', top: 0, left: 0, width: '100vw', height: '100vh', zIndex: -1 }} />
+    }
 
     return (
-        <div className="min-w-full min-h-screen" style={{ backgroundColor: numberToRGBAString(menuSetUp.BackgroundColor)}}>
+        <div className="min-w-full min-h-screen" style={{ backgroundColor: numberToRGBAString(menuSetUp.BackgroundColor) }}>
+            {renderBG()}
             {renderPopUpWindow(jsonObj.Head?.PopUpWindow)}
             {renderLogo(jsonObj.Head?.Logo)}
             {renderText(jsonObj.Head?.HeaderText, menuSetUp.HeaderText)}
