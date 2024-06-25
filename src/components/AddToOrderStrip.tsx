@@ -8,7 +8,7 @@ import Image from "next/image";
 import { base64DataUri, numberToRGBAString } from "@/utils/utils";
 import { useState } from "react";
 
-export type WorkspaceProps = {
+export type AddToOrderStripProps = {
     languages: DBT_Languages[]
     layouts: DBT_Layouts[]
     meals: DBT_Meals[]
@@ -17,7 +17,7 @@ export type WorkspaceProps = {
     setSelectedMealId: (id: bigint | null) => void
 }
 
-export default function Workspace(props: WorkspaceProps) {
+export default function AddToOrderStrip(props: AddToOrderStripProps) {
 
     const { setSelectedMealId, languages, layouts, meals, mealGroup, variants } = props;
 

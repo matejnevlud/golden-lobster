@@ -5,16 +5,19 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="42a16207-629e-4e0c-9512-37544dcc1cdf" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/src/components/AddToOrderStrip.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/generated/prisma-client/edge.js" beforeDir="false" afterPath="$PROJECT_DIR$/generated/prisma-client/edge.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/generated/prisma-client/index-browser.js" beforeDir="false" afterPath="$PROJECT_DIR$/generated/prisma-client/index-browser.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/generated/prisma-client/index.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/generated/prisma-client/index.d.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/generated/prisma-client/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/generated/prisma-client/index.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/generated/prisma-client/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/generated/prisma-client/package.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/generated/prisma-client/schema.prisma" beforeDir="false" afterPath="$PROJECT_DIR$/generated/prisma-client/schema.prisma" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/next.config.mjs" beforeDir="false" afterPath="$PROJECT_DIR$/next.config.mjs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/generated/prisma-client/wasm.js" beforeDir="false" afterPath="$PROJECT_DIR$/generated/prisma-client/wasm.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/prisma/schema.prisma" beforeDir="false" afterPath="$PROJECT_DIR$/prisma/schema.prisma" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/menu/InteractiveMenu.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/menu/InteractiveMenu.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/menu/Workspace.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/menu/Workspace.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/utils/xmlParser.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/utils/xmlParser.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/waiter_order/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/waiter_order/page.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/WaiterView.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/WaiterView.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Workspace.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Workspace.tsx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -24,8 +27,8 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
-        <option value="TypeScript JSX File" />
         <option value="TypeScript File" />
+        <option value="TypeScript JSX File" />
       </list>
     </option>
   </component>
@@ -57,7 +60,7 @@
     &quot;ASKED_SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
     &quot;git-widget-placeholder&quot;: &quot;main&quot;,
-    &quot;last_opened_file_path&quot;: &quot;/Users/matejnevlud/github/golden-lobster/src/app/menu&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/Users/matejnevlud/github/golden-lobster/src/components&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
     &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
     &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
@@ -75,9 +78,12 @@
 }</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/src/components" />
+      <recent name="$PROJECT_DIR$/src/app" />
       <recent name="$PROJECT_DIR$/src/app/menu" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/src/components" />
       <recent name="$PROJECT_DIR$/src" />
     </key>
   </component>
@@ -109,7 +115,12 @@
       <workItem from="1717481552561" duration="7000" />
       <workItem from="1718260446334" duration="2327000" />
       <workItem from="1718543234833" duration="73000" />
-      <workItem from="1718543318763" duration="13019000" />
+      <workItem from="1718543318763" duration="14694000" />
+      <workItem from="1718618008533" duration="16494000" />
+      <workItem from="1718786808929" duration="2363000" />
+      <workItem from="1718790274930" duration="2555000" />
+      <workItem from="1718986486650" duration="7363000" />
+      <workItem from="1719314893792" duration="104000" />
     </task>
     <servers />
   </component>

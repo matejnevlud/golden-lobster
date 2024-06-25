@@ -34,7 +34,12 @@ export async function translate(text: string | null, id_language: number) {
         var result = await prisma.$queryRaw`SELECT dbo.Translate(${text}, ${id_language})`;
         console.log('Translating', text, 'to', id_language, 'result:', result[0][''] as string ?? text)
         //@ts-ignore
-        return result[0][''] as string ?? text;
+        const returnText = result[0][''] as string ?? text;
+
+        if (returnText == "{}") return "";
+        if (returnText == "{ }") return " ";
+
+        return returnText;
     } catch (e) {
         console.error('Error translating', text, 'to', id_language, 'error:', e);
         return text;

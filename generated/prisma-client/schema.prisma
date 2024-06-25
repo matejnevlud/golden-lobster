@@ -6,9 +6,7 @@ generator client {
 
 datasource db {
   provider = "sqlserver"
-  //url      = "sqlserver://bicodigital.a.pinggy.link:18627;database=GoldenLobster_1;user=prisma;password=prisma;trustServerCertificate=true"
-  //url      = "sqlserver://lobsterdev.database.windows.net:1433;database=lobstertest;user=matejnevlud@lobsterdev;password=Manzes1997;encrypt=true;trustServerCertificate=true"
-  url      = "sqlserver://host.docker.internal:1433;database=GoldenLobster_1;user=prisma;password=prisma;trustServerCertificate=true"
+  url      = "sqlserver://bicodigital.a.pinggy.link:18627;database=GoldenLobster_1;user=prisma;password=prisma;trustServerCertificate=true"
 }
 
 model DBT_Customer {
@@ -51,7 +49,6 @@ model DBT_Meals {
   ID                 BigInt   @id(map: "PK_DBT_Meals") @default(autoincrement())
   Active             Boolean  @default(true, map: "DF_DBT_Meals_Active")
   Kitchen            Boolean? @default(true, map: "DF_DBT_Meals_Kitchen")
-  ID_MealGroup       BigInt?
   Available          Boolean? @default(true, map: "DF_DBT_Meals_Available")
   Meal               String?  @db.VarChar(Max)
   MealDescription    String?  @db.VarChar(Max)

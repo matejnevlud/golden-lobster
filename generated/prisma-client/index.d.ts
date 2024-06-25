@@ -5652,13 +5652,11 @@ export namespace Prisma {
 
   export type DBT_MealsAvgAggregateOutputType = {
     ID: number | null
-    ID_MealGroup: number | null
     Price: Decimal | null
   }
 
   export type DBT_MealsSumAggregateOutputType = {
     ID: bigint | null
-    ID_MealGroup: bigint | null
     Price: Decimal | null
   }
 
@@ -5666,7 +5664,6 @@ export namespace Prisma {
     ID: bigint | null
     Active: boolean | null
     Kitchen: boolean | null
-    ID_MealGroup: bigint | null
     Available: boolean | null
     Meal: string | null
     MealDescription: string | null
@@ -5680,7 +5677,6 @@ export namespace Prisma {
     ID: bigint | null
     Active: boolean | null
     Kitchen: boolean | null
-    ID_MealGroup: bigint | null
     Available: boolean | null
     Meal: string | null
     MealDescription: string | null
@@ -5694,7 +5690,6 @@ export namespace Prisma {
     ID: number
     Active: number
     Kitchen: number
-    ID_MealGroup: number
     Available: number
     Meal: number
     MealDescription: number
@@ -5708,13 +5703,11 @@ export namespace Prisma {
 
   export type DBT_MealsAvgAggregateInputType = {
     ID?: true
-    ID_MealGroup?: true
     Price?: true
   }
 
   export type DBT_MealsSumAggregateInputType = {
     ID?: true
-    ID_MealGroup?: true
     Price?: true
   }
 
@@ -5722,7 +5715,6 @@ export namespace Prisma {
     ID?: true
     Active?: true
     Kitchen?: true
-    ID_MealGroup?: true
     Available?: true
     Meal?: true
     MealDescription?: true
@@ -5736,7 +5728,6 @@ export namespace Prisma {
     ID?: true
     Active?: true
     Kitchen?: true
-    ID_MealGroup?: true
     Available?: true
     Meal?: true
     MealDescription?: true
@@ -5750,7 +5741,6 @@ export namespace Prisma {
     ID?: true
     Active?: true
     Kitchen?: true
-    ID_MealGroup?: true
     Available?: true
     Meal?: true
     MealDescription?: true
@@ -5851,7 +5841,6 @@ export namespace Prisma {
     ID: bigint
     Active: boolean
     Kitchen: boolean | null
-    ID_MealGroup: bigint | null
     Available: boolean | null
     Meal: string | null
     MealDescription: string | null
@@ -5884,7 +5873,6 @@ export namespace Prisma {
     ID?: boolean
     Active?: boolean
     Kitchen?: boolean
-    ID_MealGroup?: boolean
     Available?: boolean
     Meal?: boolean
     MealDescription?: boolean
@@ -5898,7 +5886,6 @@ export namespace Prisma {
     ID?: boolean
     Active?: boolean
     Kitchen?: boolean
-    ID_MealGroup?: boolean
     Available?: boolean
     Meal?: boolean
     MealDescription?: boolean
@@ -5917,7 +5904,6 @@ export namespace Prisma {
       ID: bigint
       Active: boolean
       Kitchen: boolean | null
-      ID_MealGroup: bigint | null
       Available: boolean | null
       Meal: string | null
       MealDescription: string | null
@@ -6322,7 +6308,6 @@ export namespace Prisma {
     readonly ID: FieldRef<"DBT_Meals", 'BigInt'>
     readonly Active: FieldRef<"DBT_Meals", 'Boolean'>
     readonly Kitchen: FieldRef<"DBT_Meals", 'Boolean'>
-    readonly ID_MealGroup: FieldRef<"DBT_Meals", 'BigInt'>
     readonly Available: FieldRef<"DBT_Meals", 'Boolean'>
     readonly Meal: FieldRef<"DBT_Meals", 'String'>
     readonly MealDescription: FieldRef<"DBT_Meals", 'String'>
@@ -15673,7 +15658,6 @@ export namespace Prisma {
     ID: 'ID',
     Active: 'Active',
     Kitchen: 'Kitchen',
-    ID_MealGroup: 'ID_MealGroup',
     Available: 'Available',
     Meal: 'Meal',
     MealDescription: 'MealDescription',
@@ -16123,7 +16107,6 @@ export namespace Prisma {
     ID?: BigIntFilter<"DBT_Meals"> | bigint | number
     Active?: BoolFilter<"DBT_Meals"> | boolean
     Kitchen?: BoolNullableFilter<"DBT_Meals"> | boolean | null
-    ID_MealGroup?: BigIntNullableFilter<"DBT_Meals"> | bigint | number | null
     Available?: BoolNullableFilter<"DBT_Meals"> | boolean | null
     Meal?: StringNullableFilter<"DBT_Meals"> | string | null
     MealDescription?: StringNullableFilter<"DBT_Meals"> | string | null
@@ -16137,7 +16120,6 @@ export namespace Prisma {
     ID?: SortOrder
     Active?: SortOrder
     Kitchen?: SortOrderInput | SortOrder
-    ID_MealGroup?: SortOrderInput | SortOrder
     Available?: SortOrderInput | SortOrder
     Meal?: SortOrderInput | SortOrder
     MealDescription?: SortOrderInput | SortOrder
@@ -16154,7 +16136,6 @@ export namespace Prisma {
     NOT?: DBT_MealsWhereInput | DBT_MealsWhereInput[]
     Active?: BoolFilter<"DBT_Meals"> | boolean
     Kitchen?: BoolNullableFilter<"DBT_Meals"> | boolean | null
-    ID_MealGroup?: BigIntNullableFilter<"DBT_Meals"> | bigint | number | null
     Available?: BoolNullableFilter<"DBT_Meals"> | boolean | null
     Meal?: StringNullableFilter<"DBT_Meals"> | string | null
     MealDescription?: StringNullableFilter<"DBT_Meals"> | string | null
@@ -16168,7 +16149,6 @@ export namespace Prisma {
     ID?: SortOrder
     Active?: SortOrder
     Kitchen?: SortOrderInput | SortOrder
-    ID_MealGroup?: SortOrderInput | SortOrder
     Available?: SortOrderInput | SortOrder
     Meal?: SortOrderInput | SortOrder
     MealDescription?: SortOrderInput | SortOrder
@@ -16190,7 +16170,6 @@ export namespace Prisma {
     ID?: BigIntWithAggregatesFilter<"DBT_Meals"> | bigint | number
     Active?: BoolWithAggregatesFilter<"DBT_Meals"> | boolean
     Kitchen?: BoolNullableWithAggregatesFilter<"DBT_Meals"> | boolean | null
-    ID_MealGroup?: BigIntNullableWithAggregatesFilter<"DBT_Meals"> | bigint | number | null
     Available?: BoolNullableWithAggregatesFilter<"DBT_Meals"> | boolean | null
     Meal?: StringNullableWithAggregatesFilter<"DBT_Meals"> | string | null
     MealDescription?: StringNullableWithAggregatesFilter<"DBT_Meals"> | string | null
@@ -17012,7 +16991,6 @@ export namespace Prisma {
     ID?: bigint | number
     Active?: boolean
     Kitchen?: boolean | null
-    ID_MealGroup?: bigint | number | null
     Available?: boolean | null
     Meal?: string | null
     MealDescription?: string | null
@@ -17026,7 +17004,6 @@ export namespace Prisma {
     ID?: bigint | number
     Active?: boolean
     Kitchen?: boolean | null
-    ID_MealGroup?: bigint | number | null
     Available?: boolean | null
     Meal?: string | null
     MealDescription?: string | null
@@ -17040,7 +17017,6 @@ export namespace Prisma {
     ID?: BigIntFieldUpdateOperationsInput | bigint | number
     Active?: BoolFieldUpdateOperationsInput | boolean
     Kitchen?: NullableBoolFieldUpdateOperationsInput | boolean | null
-    ID_MealGroup?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     Available?: NullableBoolFieldUpdateOperationsInput | boolean | null
     Meal?: NullableStringFieldUpdateOperationsInput | string | null
     MealDescription?: NullableStringFieldUpdateOperationsInput | string | null
@@ -17054,7 +17030,6 @@ export namespace Prisma {
     ID?: BigIntFieldUpdateOperationsInput | bigint | number
     Active?: BoolFieldUpdateOperationsInput | boolean
     Kitchen?: NullableBoolFieldUpdateOperationsInput | boolean | null
-    ID_MealGroup?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     Available?: NullableBoolFieldUpdateOperationsInput | boolean | null
     Meal?: NullableStringFieldUpdateOperationsInput | string | null
     MealDescription?: NullableStringFieldUpdateOperationsInput | string | null
@@ -17067,7 +17042,6 @@ export namespace Prisma {
   export type DBT_MealsCreateManyInput = {
     Active?: boolean
     Kitchen?: boolean | null
-    ID_MealGroup?: bigint | number | null
     Available?: boolean | null
     Meal?: string | null
     MealDescription?: string | null
@@ -17081,7 +17055,6 @@ export namespace Prisma {
     ID?: BigIntFieldUpdateOperationsInput | bigint | number
     Active?: BoolFieldUpdateOperationsInput | boolean
     Kitchen?: NullableBoolFieldUpdateOperationsInput | boolean | null
-    ID_MealGroup?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     Available?: NullableBoolFieldUpdateOperationsInput | boolean | null
     Meal?: NullableStringFieldUpdateOperationsInput | string | null
     MealDescription?: NullableStringFieldUpdateOperationsInput | string | null
@@ -17095,7 +17068,6 @@ export namespace Prisma {
     ID?: BigIntFieldUpdateOperationsInput | bigint | number
     Active?: BoolFieldUpdateOperationsInput | boolean
     Kitchen?: NullableBoolFieldUpdateOperationsInput | boolean | null
-    ID_MealGroup?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     Available?: NullableBoolFieldUpdateOperationsInput | boolean | null
     Meal?: NullableStringFieldUpdateOperationsInput | string | null
     MealDescription?: NullableStringFieldUpdateOperationsInput | string | null
@@ -18020,7 +17992,6 @@ export namespace Prisma {
     ID?: SortOrder
     Active?: SortOrder
     Kitchen?: SortOrder
-    ID_MealGroup?: SortOrder
     Available?: SortOrder
     Meal?: SortOrder
     MealDescription?: SortOrder
@@ -18032,7 +18003,6 @@ export namespace Prisma {
 
   export type DBT_MealsAvgOrderByAggregateInput = {
     ID?: SortOrder
-    ID_MealGroup?: SortOrder
     Price?: SortOrder
   }
 
@@ -18040,7 +18010,6 @@ export namespace Prisma {
     ID?: SortOrder
     Active?: SortOrder
     Kitchen?: SortOrder
-    ID_MealGroup?: SortOrder
     Available?: SortOrder
     Meal?: SortOrder
     MealDescription?: SortOrder
@@ -18054,7 +18023,6 @@ export namespace Prisma {
     ID?: SortOrder
     Active?: SortOrder
     Kitchen?: SortOrder
-    ID_MealGroup?: SortOrder
     Available?: SortOrder
     Meal?: SortOrder
     MealDescription?: SortOrder
@@ -18066,7 +18034,6 @@ export namespace Prisma {
 
   export type DBT_MealsSumOrderByAggregateInput = {
     ID?: SortOrder
-    ID_MealGroup?: SortOrder
     Price?: SortOrder
   }
 

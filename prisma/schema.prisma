@@ -1,5 +1,5 @@
 generator client {
-  provider = "prisma-client-js"
+  provider      = "prisma-client-js"
   output        = "../generated/prisma-client"
   binaryTargets = ["native", "debian-openssl-1.1.x", "linux-musl-openssl-3.0.x", "linux-musl-arm64-openssl-3.0.x"]
 }
@@ -51,7 +51,6 @@ model DBT_Meals {
   ID                 BigInt   @id(map: "PK_DBT_Meals") @default(autoincrement())
   Active             Boolean  @default(true, map: "DF_DBT_Meals_Active")
   Kitchen            Boolean? @default(true, map: "DF_DBT_Meals_Kitchen")
-  ID_MealGroup       BigInt?
   Available          Boolean? @default(true, map: "DF_DBT_Meals_Available")
   Meal               String?  @db.VarChar(Max)
   MealDescription    String?  @db.VarChar(Max)

@@ -160,7 +160,6 @@ exports.Prisma.DBT_MealsScalarFieldEnum = {
   ID: 'ID',
   Active: 'Active',
   Kitchen: 'Kitchen',
-  ID_MealGroup: 'ID_MealGroup',
   Available: 'Available',
   Meal: 'Meal',
   MealDescription: 'MealDescription',
