@@ -113,7 +113,7 @@ function InteractiveMenu(props: InteractiveMenuProps) {
 
 
         return (
-            <div style={{ position: 'absolute', top: container.top, left: container.left, width: container.width, height: container.height, overflow: 'hidden' }} key='w'>
+            <div style={{ position: 'absolute', top: container.top, left: container.left, width: container.width, height: container.height, overflow: 'visible' }} key='w'>
                 <Workspace languages={languages} layouts={layouts} meals={mealsFilter} mealGroup={mealGroup} variants={variants} setSelectedMealId={setSelectedMealId} />
             </div>
         );

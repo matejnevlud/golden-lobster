@@ -37,7 +37,7 @@ export async function translate(text: string | null, id_language: number) {
         const returnText = result[0][''] as string ?? text;
 
         if (returnText == "{}") return "";
-        if (returnText == "{ }") return " ";
+        if (returnText == "{ }") return "\u00A0";
 
         return returnText;
     } catch (e) {
