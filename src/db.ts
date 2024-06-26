@@ -1,7 +1,6 @@
 import { DBT_Layouts, DBT_MealGroups, DBT_Meals, DBT_Variants, PrismaClient, DBT_Languages, DBT_MealsInGroups, DBT_MenuSetUp } from '../generated/prisma-client'
 import { cookies } from "next/headers";
 
-const sql = require('mssql')
 
 const globalForPrisma = globalThis as unknown as {
     prisma: PrismaClient | undefined;
