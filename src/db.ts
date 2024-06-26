@@ -1,6 +1,8 @@
 import { DBT_Layouts, DBT_MealGroups, DBT_Meals, DBT_Variants, PrismaClient, DBT_Languages, DBT_MealsInGroups, DBT_MenuSetUp } from '../generated/prisma-client'
 import { cookies } from "next/headers";
 
+const sql = require('mssql')
+
 const globalForPrisma = globalThis as unknown as {
     prisma: PrismaClient | undefined;
 };
@@ -31,10 +33,16 @@ export async function getLanguages() {
 export async function translate(text: string | null, id_language: number) {
     // call function dbo.Translate
     try {
-        var result = await prisma.$queryRaw`SELECT dbo.Translate(${text}, ${id_language})`;
-        console.log('Translating', text, 'to', id_language, 'result:', result[0][''] as string ?? text)
+        const just_run_procedure = await prisma.$queryRaw`SELECT dbo.Translate(${text}, ${id_language})`;
+
+        const result = await prisma.dBT_Translations.findFirst({ where: { ID_Language: id_language, Text: text } });
+
+        if (!result) return text;
+
+        console.log(result)
+        console.log('Translating', text, 'to', id_language, 'result:', result.Translation as string ?? text)
         //@ts-ignore
-        const returnText = result[0][''] as string ?? text;
+        const returnText = result.Translation as string ?? text;
 
         if (returnText == "{}") return "";
         if (returnText == "{ }") return "\u00A0";
