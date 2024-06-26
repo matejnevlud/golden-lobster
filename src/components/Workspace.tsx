@@ -38,6 +38,7 @@ export default function Workspace(props: WorkspaceProps) {
             marginBottom: vh(o?.BottomSpace ?? 0, null )
         }
 
+        if(!text) return null;
 
         return (
             <div key={text} style={{ textAlign: container.textAlign, font: container.font.font, color: container.font.color, ...positionStyle, ...(strike ? { textDecoration: 'line-through' } : {}) }}>
@@ -50,7 +51,8 @@ export default function Workspace(props: WorkspaceProps) {
         const isPriceTitleLine = !!o?.TitleLine && o?.TitleLine == 'True';
 
         const float = parseFloat(text);
-        console.log('float', float)
+
+        if (!text || isNaN(float)) return null;
 
         // format price in format OMR 0.000
         const formattedPrice = `OMR ${float.toFixed(3)}`;
@@ -90,7 +92,8 @@ export default function Workspace(props: WorkspaceProps) {
 
         for (let i = 0; i < meals.length; i++) {
             const meal = meals[i];
-            const meal_variants = variants.filter((v) => v.ID_Meal === meal.ID);
+            const meal_variants = variants.filter((v) => v.ID_Meal === meal.ID)
+
             render.push(renderSingleMeal(mealJsonObj, i, meal, meal_variants));
         }
 

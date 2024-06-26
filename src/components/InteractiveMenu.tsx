@@ -109,6 +109,7 @@ function InteractiveMenu(props: InteractiveMenuProps) {
         const mealsInGroup = mealsInGroups.filter((mig) => (mig.ID_Group == currentMealGroupID)) ?? [];
         console.log('mealsInGroup', mealsInGroup)
         const mealsFilter = meals.filter((m) => (mealsInGroup.some((mig) => mig.ID_Meal == m.ID)));
+        const mealsOrdered = mealsFilter.sort((a, b) => (mealsInGroup.find((mig) => mig.ID_Meal == a.ID)?.Order ?? 0) - (mealsInGroup.find((mig) => mig.ID_Meal == b.ID)?.Order ?? 0));
 
 
 
@@ -128,7 +129,7 @@ function InteractiveMenu(props: InteractiveMenuProps) {
 
         if (!selectedMealId) return null;
 
-        const imageUrl = "https://www.allrecipes.com/thmb/stS53UvguoiwYbxDeQwZAQDmQ24=/0x512/filters:no_upscale():max_bytes(150000):strip_icc()/36996-Grilled-Rock-Lobsters-109-4x3-fb4e7e3c2ea34a5b8de9caf3697ed5b9.jpg"
+        const imageUrl = base64DataUri(meals.find((m) => m.ID == selectedMealId)?.Picture ?? '');
 
         // Load image and determine aspect ratio
 
