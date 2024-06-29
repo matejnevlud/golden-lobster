@@ -140,7 +140,7 @@ export default function WaiterView(props) {
         }
         return (
             <button style={style} key={meal.ID} onClick={() => addMealToOrder(meal.ID)}>
-                >
+                {'>'}
             </button>
         )
     }
