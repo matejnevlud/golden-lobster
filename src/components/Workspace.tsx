@@ -6,7 +6,34 @@ import { XMLParser } from "fast-xml-parser";
 import { parseBasic, vh } from "@/utils/xmlParser";
 import Image from "next/image";
 import { base64DataUri, numberToRGBAString } from "@/utils/utils";
-import { useState } from "react";
+import { Component, createRef, useEffect, useState } from "react";
+import ReactDOM from 'react-dom';
+
+class SizeableAcko extends Component {
+
+    divRef = createRef(null);
+
+    componentDidMount() {
+        const meal = this.props.meal as DBT_Meals;
+        const mealGroup = this.props.mealGroup as DBT_MealGroups;
+        const div = this.divRef.current;
+        if (div) {
+            const rect = div.getBoundingClientRect();
+            console.log('mealDidMount', meal, mealGroup, rect)
+            if (rect.height > 0 && meal.Meal != ' ')
+                localStorage.setItem(`mg_${mealGroup.ID}_m_${meal.ID}`, rect.y.toString());
+        }
+
+    }
+
+
+    render() {
+
+        return (
+            <a ref={this.divRef} {...this.props} />
+        )
+    }
+}
 
 export type WorkspaceProps = {
     languages: DBT_Languages[]
@@ -16,7 +43,6 @@ export type WorkspaceProps = {
     variants: DBT_Variants[]
     setSelectedMealId: (id: bigint | null) => void
 }
-
 export default function Workspace(props: WorkspaceProps) {
 
     const { setSelectedMealId, languages, layouts, meals, mealGroup, variants } = props;
@@ -29,6 +55,12 @@ export default function Workspace(props: WorkspaceProps) {
     let mealJsonObj = parser.parse(mealGroupLayout?.Xml ?? "");
     let headJsonObj = parser.parse(headLayout?.Xml ?? "");
     console.log('mealGroupLayout headJsonObj', headJsonObj?.Head.PopUpWindow)
+    // delete all mg_ keys from local storage
+    Object.keys(localStorage).forEach((key) => {
+        if (key.startsWith('mg_')) {
+            localStorage.removeItem(key);
+        }
+    });
 
     const renderHText = (o: any, text: any, strike: boolean = false) => {
         const container = parseBasic(o, null);
@@ -76,9 +108,16 @@ export default function Workspace(props: WorkspaceProps) {
                 marginBottom: vh(o?.FoodComponent?.BlockBottomSpace ?? 0, null),
                 position: 'relative'
             }}>
-                <a onClick={() => setSelectedMealId(meal.ID)} style={{ cursor: 'pointer' }}>
-                {renderHText(o.FoodComponent?.Title, meal.Meal)}
-                </a>
+                <SizeableAcko
+                    key={meal.ID}
+                    onClick={() => setSelectedMealId(meal.ID)}
+                    style={{ cursor: 'pointer' }}
+                    className={"mealName"}
+                    meal={meal}
+                    mealGroup={mealGroup}
+                >
+                    {renderHText(o.FoodComponent?.Title, meal.Meal)}
+                </SizeableAcko>
                 {renderHText(o.FoodComponent?.Description, meal.MealDescription)}
                 {variants.map((variant) => renderHText(o.FoodComponent?.Versions, variant.MealVariant, !variant.Available))}
                 {renderPrice(o.FoodComponent?.Price, meal.Price)}

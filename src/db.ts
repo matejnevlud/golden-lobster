@@ -1,12 +1,13 @@
-import { DBT_Layouts, DBT_MealGroups, DBT_Meals, DBT_Variants, PrismaClient, DBT_Languages, DBT_MealsInGroups, DBT_MenuSetUp } from '../generated/prisma-client'
-import { cookies } from "next/headers";
+'use server';
+import { DBT_Layouts, DBT_MealGroups, DBT_Meals, DBT_Variants, PrismaClient, DBT_Languages, DBT_MealsInGroups, DBT_MenuSetUp, DBT_Orders, DBT_OrderItems, DBT_PaymentMethods, DBT_Customer, DBT_Tables, DBT_Users, DBT_Taxes } from '../generated/prisma-client'
+
 
 
 const globalForPrisma = globalThis as unknown as {
     prisma: PrismaClient | undefined;
 };
 
-export const prisma = globalForPrisma.prisma ?? new PrismaClient();
+const prisma = globalForPrisma.prisma ?? new PrismaClient();
 
 if (process.env.NODE_ENV !== "production") globalForPrisma.prisma = prisma;
 
@@ -30,23 +31,23 @@ export async function getLanguages() {
 }
 
 export async function translate(text: string | null, id_language: number) {
-    // call function dbo.Translate
+    // if DEV, return text
+    //if (process.env.NODE_ENV === 'development') return text;
     try {
-        const just_run_procedure = await prisma.$queryRaw`SELECT dbo.Translate(${text}, ${id_language})`;
+        const procedure = await prisma.$queryRaw`SELECT dbo.Translate(${text}, ${id_language})`;
+        const procedure_string = procedure[0]?.[''];
 
         const result = await prisma.dBT_Translations.findFirst({ where: { ID_Language: id_language, Text: text } });
+        const result_string = result?.Translation;
 
-        if (!result) return text;
+        //console.log(text, procedure_string, result_string)
 
-        console.log(result)
-        console.log('Translating', text, 'to', id_language, 'result:', result.Translation as string ?? text)
-        //@ts-ignore
-        const returnText = result.Translation as string ?? text;
+        if (procedure_string == "{}") return "";
+        if (procedure_string == "{ }") return "\u00A0";
+        if (typeof procedure_string === 'string' && procedure_string.includes("{")) return procedure_string;
 
-        if (returnText == "{}") return "";
-        if (returnText == "{ }") return "\u00A0";
-
-        return returnText;
+        if (!result || !result_string) return text;
+        return result_string;
     } catch (e) {
         console.error('Error translating', text, 'to', id_language, 'error:', e);
         return text;
@@ -60,9 +61,11 @@ export async function getLayouts() {
 }
 
 export async function getMealGroups() {
+
     var result = await prisma.dBT_MealGroups.findMany({ where: { Active: true}, orderBy: { Order: 'asc' } });
     result = convertUint8ArraysToBase64(result);
 
+    const { cookies } = require('next/headers');
     const language = parseInt(cookies().get('language')?.value ?? '1');
     result = await Promise.all(result.map(async (mg: DBT_MealGroups) => {
         mg.MealGroup = await translate(mg.MealGroup, language);
@@ -77,6 +80,7 @@ export async function getMeals() {
     result = convertUint8ArraysToBase64(result);
 
     // translate
+    const { cookies } = require('next/headers');
     const language = parseInt(cookies().get('language')?.value ?? '1');
     result = await Promise.all(result.map(async (meal: DBT_Meals) => {
         meal.Meal = await translate(meal.Meal, language);
@@ -99,6 +103,7 @@ export async function getVariants() {
 
     result = convertUint8ArraysToBase64(result);
 
+    const { cookies } = require('next/headers');
     const language = parseInt(cookies().get('language')?.value ?? '1');
     result = await Promise.all(result.map(async (meal: DBT_Variants) => {
         meal.MealVariant = await translate(meal.MealVariant, language);
@@ -112,12 +117,38 @@ export async function getMenuSetUp() {
     var result = await prisma.dBT_MenuSetUp.findFirst({ where: { Active: true} });
     result = convertUint8ArraysToBase64(result);
 
+    const { cookies } = require('next/headers');
     const language = parseInt(cookies().get('language')?.value ?? '1');
     result.HeaderText = await translate(result?.HeaderText, language);
     result.FooterText = await translate(result?.FooterText, language);
 
     return result;
 }
+
+
+
+export type WAITER_DATA = {
+    customers: DBT_Customer[]
+    orders: DBT_Orders[]
+    orderItems: DBT_OrderItems[]
+    paymentMethods: DBT_PaymentMethods[]
+    tables: DBT_Tables[]
+    users: DBT_Users[]
+    taxes: DBT_Taxes[]
+
+}
+export async function getWaiterData(): Promise<WAITER_DATA> {
+    const customers = await prisma.dBT_Customer.findMany();
+    const orders = await prisma.dBT_Orders.findMany();
+    const orderItems = await prisma.dBT_OrderItems.findMany();
+    const paymentMethods = await prisma.dBT_PaymentMethods.findMany();
+    const tables = await prisma.dBT_Tables.findMany();
+    const users = await prisma.dBT_Users.findMany();
+    const taxes = await prisma.dBT_Taxes.findMany();
+
+    return { customers, orders, orderItems, paymentMethods, tables, users, taxes };
+}
+
 
 
 
@@ -141,4 +172,57 @@ export async function getAllData(): Promise<ALL_DATA> {
     const menuSetUp = await getMenuSetUp();
 
     return { languages, layouts, meals, mealGroups, mealsInGroups, variants, menuSetUp };
+}
+
+
+
+
+
+export async function createNewOrder(table: number): Promise<DBT_Orders> {
+    const order = await prisma.dBT_Orders.create({
+        data: {
+            ID_Table: table,
+            //ID_User: 1,
+            //ID_OrderStatus: 1,
+            //OrderDate: new Date(),
+        }
+    });
+    return order;
+}
+
+export async function createNewOrderItem(order_id: number, meal_id: number): Promise<DBT_OrderItems> {
+    const meal = await prisma.dBT_Meals.findFirst({ where: { ID: meal_id } });
+    // check if meal has any variants, if so, take the first one
+    const firstVariant = await prisma.dBT_Variants.findFirst({ where: { ID_Meal: meal_id, Available: true } });
+
+    const orderItem = await prisma.dBT_OrderItems.create({
+        data: {
+            ID_Order: order_id.toString(),
+            ID_Meal: meal_id,
+            ID_Variant: firstVariant?.ID,
+            Price: meal?.Price,
+
+        }
+    });
+    return orderItem;
+}
+
+export async function DB_changeOrderItemVariant(order_item_id: number, variant_id: number): Promise<DBT_OrderItems> {
+    const orderItem = await prisma.dBT_OrderItems.update({
+        where: { ID: order_item_id },
+        data: {
+            ID_Variant: variant_id,
+        }
+    });
+    return orderItem;
+}
+
+export async function DB_cancelOrderItem(order_item_id: number): Promise<DBT_OrderItems> {
+    const orderItem = await prisma.dBT_OrderItems.update({
+        where: { ID: order_item_id },
+        data: {
+            Canceled: true,
+        }
+    });
+    return orderItem;
 }
