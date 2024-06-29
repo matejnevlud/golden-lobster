@@ -405,7 +405,7 @@ export default function WaiterView(props) {
                         <div className="flex flex-col">
                             <FormGroup>
                             {orderItems.filter((orderItem) => orderItem.ID_Order == selectedOrderId).map((orderItem) => (
-                                <FormControlLabel control={<Checkbox disabled checked={checkboxes[orderItem.ID.toString()]} onChange={onCheckboxChange} name={orderItem.ID.toString()}/>} label={`${meals.find((meal) => meal.ID == orderItem.ID_Meal)?.Meal} ${variants.find((variant) => variant.ID == orderItem.ID_Variant)?.MealVariant ?? ''}`} />
+                                <FormControlLabel key={orderItem.ID} control={<Checkbox disabled checked={checkboxes[orderItem.ID.toString()]} onChange={onCheckboxChange} name={orderItem.ID.toString()}/>} label={`${meals.find((meal) => meal.ID == orderItem.ID_Meal)?.Meal} ${variants.find((variant) => variant.ID == orderItem.ID_Variant)?.MealVariant ?? ''}`} />
                             ))}
                             </FormGroup>
                         </div>
@@ -414,7 +414,7 @@ export default function WaiterView(props) {
                         </Typography>
                         <div className="flex">
                             {taxes.map((tax) => (
-                                <FormControlLabel control={<Checkbox name={tax.TaxName} checked={checkboxes[tax.TaxName]} onChange={onCheckboxChange} />} label={`${tax.TaxName} - ${tax.Percentage ? tax.Percentage + '%' : tax.Value}`} />
+                                <FormControlLabel key={tax.ID} control={<Checkbox name={tax.TaxName} checked={checkboxes[tax.TaxName]} onChange={onCheckboxChange} />} label={`${tax.TaxName} - ${tax.Percentage ? tax.Percentage + '%' : tax.Value}`} />
                             ))}
                         </div>
                         <Typography variant="h6" component="h2" className="pt-2 pb-2">
@@ -422,7 +422,7 @@ export default function WaiterView(props) {
                         </Typography>
                         <div className="flex">
                             {paymentMethods.map((paymentMethod) => (
-                                <FormControlLabel control={<Checkbox name={paymentMethod.PaymentMethod} checked={checkboxes[paymentMethod.PaymentMethod]} onChange={onCheckboxChange} />} label={`${paymentMethod.PaymentMethod}`} />
+                                <FormControlLabel key={paymentMethod.ID} control={<Checkbox name={paymentMethod.PaymentMethod} checked={checkboxes[paymentMethod.PaymentMethod]} onChange={onCheckboxChange} />} label={`${paymentMethod.PaymentMethod}`} />
                             ))}
                         </div>
 
