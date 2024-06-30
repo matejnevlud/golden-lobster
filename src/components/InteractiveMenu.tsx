@@ -107,15 +107,13 @@ function InteractiveMenu(props: InteractiveMenuProps) {
 
         const mealGroup = mealGroups.find((mg) => (mg.ID == currentMealGroupID));
         const mealsInGroup = mealsInGroups.filter((mig) => (mig.ID_Group == currentMealGroupID)) ?? [];
-        console.log('mealsInGroup', mealsInGroup)
-        const mealsFilter = meals.filter((m) => (mealsInGroup.some((mig) => mig.ID_Meal == m.ID)));
-        const mealsOrdered = mealsFilter.sort((a, b) => (mealsInGroup.find((mig) => mig.ID_Meal == a.ID)?.Order ?? 0) - (mealsInGroup.find((mig) => mig.ID_Meal == b.ID)?.Order ?? 0));
-
+        const mealsFilter = mealsInGroup.map((mig) => ({...(meals.find((m) => m.ID == mig.ID_Meal)), order: mig.Order })).filter((m) => m != null);
+        const mealsOrdered = mealsFilter.sort((a, b) => a.order - b.order)  as DBT_Meals[];
 
 
         return (
             <div style={{ position: 'absolute', top: container.top, left: container.left, width: container.width, height: container.height, overflow: 'visible' }} key='w'>
-                <Workspace languages={languages} layouts={layouts} meals={mealsFilter} mealGroup={mealGroup} variants={variants} setSelectedMealId={setSelectedMealId} />
+                <Workspace languages={languages} layouts={layouts} meals={mealsOrdered} mealGroup={mealGroup} variants={variants} setSelectedMealId={setSelectedMealId} />
             </div>
         );
     }
@@ -124,8 +122,8 @@ function InteractiveMenu(props: InteractiveMenuProps) {
         const container = parseBasic(o);
         const description = parseBasic(o?.Description);
         // add container to description
-        description.left = vw(o?.Left + o?.Description?.Left, null);
-        description.top = vh(o?.Top + o?.Description?.Top, null);
+        //description.left = vw(o?.Left + o?.Description?.Left, null);
+        //description.top = vh(o?.Top + o?.Description?.Top, null);
 
         if (!selectedMealId) return null;
 

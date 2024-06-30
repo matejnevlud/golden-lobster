@@ -16,12 +16,13 @@ class SizeableAcko extends Component {
     componentDidMount() {
         const meal = this.props.meal as DBT_Meals;
         const mealGroup = this.props.mealGroup as DBT_MealGroups;
+        const idx = this.props.idx as number;
         const div = this.divRef.current;
         if (div) {
             const rect = div.getBoundingClientRect();
             console.log('mealDidMount', meal, mealGroup, rect)
             if (rect.height > 0 && meal.Meal != ' ')
-                localStorage.setItem(`mg_${mealGroup.ID}_m_${meal.ID}`, rect.y.toString());
+                localStorage.setItem(`mg_${mealGroup.ID}_m_${meal.ID}_idx_${idx}`, rect.y.toString());
         }
 
     }
@@ -109,12 +110,13 @@ export default function Workspace(props: WorkspaceProps) {
                 position: 'relative'
             }}>
                 <SizeableAcko
-                    key={meal.ID}
+                    key={`mg_${mealGroup.ID}_m_${meal.ID}_idx_${idx}`}
                     onClick={() => setSelectedMealId(meal.ID)}
                     style={{ cursor: 'pointer' }}
                     className={"mealName"}
                     meal={meal}
                     mealGroup={mealGroup}
+                    idx={idx}
                 >
                     {renderHText(o.FoodComponent?.Title, meal.Meal)}
                 </SizeableAcko>

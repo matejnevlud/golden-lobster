@@ -8,6 +8,7 @@ import { useEffect, useState } from "react";
 import { DataGrid } from "@mui/x-data-grid";
 import { Box, Button, CardHeader, Checkbox, FormControlLabel, FormGroup, Modal, Typography } from "@mui/material";
 import { changeOrderItemVariant, createNewOrder, createNewOrderItem, DB_cancelOrderItem, DB_changeOrderItemVariant } from "@/db";
+import { DBT_Meals } from "../../generated/prisma-client";
 
 export default function WaiterView(props) {
 
@@ -118,10 +119,11 @@ export default function WaiterView(props) {
         console.log('newOrderItem', newOrderItem)
         setOrderItems([...orderItems, newOrderItem]);
     }
-    const renderAddToOrderButton = (meal: any) => {
+    const renderAddToOrderButton = (meal: any, idx: number) => {
         // get y position from local storage
-        const y = localStorage.getItem(`mg_${currentMealGroupID}_m_${meal.ID}`) ?? null;
-        if (y == null) return null;
+        const y = localStorage.getItem(`mg_${currentMealGroupID}_m_${meal.ID}_idx_${idx}`) ?? null;
+        if (y == null || !meal.Meal || meal.Meal?.trim?.() == '') return null;
+        console.log('renderAddToOrderButton', meal, idx, y)
 
         const style = {
             position: 'absolute',
@@ -139,7 +141,7 @@ export default function WaiterView(props) {
             border: '2px solid lime',
         }
         return (
-            <button style={style} key={meal.ID} onClick={() => addMealToOrder(meal.ID)}>
+            <button style={style} key={`mg_${currentMealGroupID}_m_${meal.ID}_idx_${idx}`} onClick={() => addMealToOrder(meal.ID)}>
                 {'>'}
             </button>
         )
@@ -151,14 +153,14 @@ export default function WaiterView(props) {
 
         const mealGroup = mealGroups.find((mg) => (mg.ID == currentMealGroupID));
         const mealsInGroup = mealsInGroups.filter((mig) => (mig.ID_Group == currentMealGroupID)) ?? [];
-        const mealsFilter = meals.filter((m) => (mealsInGroup.some((mig) => mig.ID_Meal == m.ID)));
-
+        const mealsFilter = mealsInGroup.map((mig) => ({...(meals.find((m) => m.ID == mig.ID_Meal)), order: mig.Order })).filter((m) => m != null);
+        const mealsOrdered = mealsFilter.sort((a, b) => a.order - b.order)  as DBT_Meals[];
 
 
         return (
             <div style={{ position: 'relative'}} key='w'>
-                {mealsFilter.map((meal) => {
-                    return renderAddToOrderButton(meal)
+                {mealsOrdered.map((meal, idx) => {
+                    return renderAddToOrderButton(meal, idx)
                 })}
             </div>
         );
