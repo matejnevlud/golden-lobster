@@ -9,6 +9,20 @@ import { base64DataUri, numberToRGBAString } from "@/utils/utils";
 import { Component, createRef, useEffect, useState } from "react";
 import ReactDOM from 'react-dom';
 
+
+const Eye = (props) => (
+    <svg
+        xmlns="http://www.w3.org/2000/svg"
+        height={24}
+        viewBox="0 0 24 24"
+        width={20}
+        {...props}
+    >
+        <path d="M0 0h24v24H0z" fill="none" />
+        <path fill={props.color ?? 'black'} d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z" />
+    </svg>
+);
+
 class SizeableAcko extends Component {
 
     divRef = createRef(null);
@@ -63,6 +77,26 @@ export default function Workspace(props: WorkspaceProps) {
         }
     });
 
+
+    const renderMealNameText = (o: any, text: any, strike: boolean, meal: DBT_Meals) => {
+        const container = parseBasic(o, null);
+        const positionStyle = {
+            marginLeft: container.left,
+            width: container.width,
+            marginBottom: vh(o?.BottomSpace ?? 0, null )
+        }
+
+        if(!text) return null;
+
+        const showEye = meal.PictureDescription || meal.Picture
+
+        return (
+            <div key={text} style={{ textAlign: container.textAlign, font: container.font.font, color: container.font.color, ...positionStyle, ...(strike ? { textDecoration: 'line-through' } : {}) }}>
+                {showEye && <Eye style={{ position:'absolute', marginLeft: '-32px' }} color={container.font.color}/>}
+                <p>{text}</p>
+            </div>
+        );
+    }
     const renderHText = (o: any, text: any, strike: boolean = false) => {
         const container = parseBasic(o, null);
         const positionStyle = {
@@ -118,7 +152,7 @@ export default function Workspace(props: WorkspaceProps) {
                     mealGroup={mealGroup}
                     idx={idx}
                 >
-                    {renderHText(o.FoodComponent?.Title, meal.Meal)}
+                    {renderMealNameText(o.FoodComponent?.Title, meal.Meal, !meal.Active || !meal.Available, meal)}
                 </SizeableAcko>
                 {renderHText(o.FoodComponent?.Description, meal.MealDescription)}
                 {variants.map((variant) => renderHText(o.FoodComponent?.Versions, variant.MealVariant, !variant.Available))}

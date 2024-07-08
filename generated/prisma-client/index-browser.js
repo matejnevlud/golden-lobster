@@ -166,7 +166,8 @@ exports.Prisma.DBT_MealsScalarFieldEnum = {
   Price: 'Price',
   IsCombo: 'IsCombo',
   Picture: 'Picture',
-  PictureDescription: 'PictureDescription'
+  PictureDescription: 'PictureDescription',
+  Recipe: 'Recipe'
 };
 
 exports.Prisma.DBT_MenuSetUpScalarFieldEnum = {
@@ -253,6 +254,21 @@ exports.Prisma.DBT_VariantsScalarFieldEnum = {
   MealVariant: 'MealVariant'
 };
 
+exports.Prisma.DBT_PaymentDetailScalarFieldEnum = {
+  ID: 'ID',
+  ID_Payments: 'ID_Payments',
+  ID_OrderItem: 'ID_OrderItem'
+};
+
+exports.Prisma.DBT_PaymentsScalarFieldEnum = {
+  ID: 'ID',
+  TotalAmount: 'TotalAmount',
+  ID_PaymentMethod: 'ID_PaymentMethod',
+  Discount: 'Discount',
+  ID_Customer: 'ID_Customer',
+  Closed: 'Closed'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -279,7 +295,9 @@ exports.Prisma.ModelName = {
   DBT_Translations: 'DBT_Translations',
   DBT_Users: 'DBT_Users',
   DBT_MealsInGroups: 'DBT_MealsInGroups',
-  DBT_Variants: 'DBT_Variants'
+  DBT_Variants: 'DBT_Variants',
+  DBT_PaymentDetail: 'DBT_PaymentDetail',
+  DBT_Payments: 'DBT_Payments'
 };
 
 /**

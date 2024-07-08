@@ -6,9 +6,10 @@ generator client {
 
 datasource db {
   provider = "sqlserver"
-  //url      = "sqlserver://bicodigital.a.pinggy.link:18627;database=GoldenLobster_1;user=prisma;password=prisma;trustServerCertificate=true"
+  url      = "sqlserver://bicodigital.a.pinggy.link:18627;database=GoldenLobster_1;user=prisma;password=prisma;trustServerCertificate=true"
   //url      = "sqlserver://lobsterdev.database.windows.net:1433;database=lobstertest;user=matejnevlud@lobsterdev;password=Manzes1997;encrypt=true;trustServerCertificate=true"
-  url      = "sqlserver://host.docker.internal:1433;database=GoldenLobster_1;user=prisma;password=prisma;trustServerCertificate=true"
+  //url      = "sqlserver://host.docker.internal:1433;database=GoldenLobster_1;user=prisma;password=prisma;trustServerCertificate=true"
+  //url      = "sqlserver://127.0.0.1:1433;database=GoldenLobster_1;user=sa;password=Manzes1997;trustServerCertificate=true"
 }
 
 model DBT_Customer {
@@ -58,6 +59,7 @@ model DBT_Meals {
   IsCombo            Boolean  @default(false, map: "DF_DBT_Meals_IsCombo")
   Picture            Bytes?
   PictureDescription String?  @db.VarChar(Max)
+  Recipe             Bytes?
 }
 
 model DBT_MenuSetUp {
@@ -142,4 +144,19 @@ model DBT_Variants {
   Available   Boolean? @default(true, map: "DF_DBT_Variants_Available")
   ID_Meal     BigInt?
   MealVariant String?  @db.VarChar(Max)
+}
+
+model DBT_PaymentDetail {
+  ID           BigInt  @id(map: "PK_DBT_PaymentDetail")
+  ID_Payments  BigInt?
+  ID_OrderItem BigInt?
+}
+
+model DBT_Payments {
+  ID               BigInt   @id(map: "PK_DBT_Payments")
+  TotalAmount      Decimal? @db.Decimal(18, 0)
+  ID_PaymentMethod BigInt?
+  Discount         BigInt?
+  ID_Customer      BigInt?
+  Closed           Boolean?
 }

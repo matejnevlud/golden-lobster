@@ -48,6 +48,7 @@ function InteractiveMenu(props: InteractiveMenuProps) {
     const setMealGroupFunc = (id: number) => {
         localStorage.setItem('mealGroup', id);
         setCurrentMealGroupID(id);
+        location.reload();
     }
 
 
@@ -128,6 +129,9 @@ function InteractiveMenu(props: InteractiveMenuProps) {
         if (!selectedMealId) return null;
 
         const imageUrl = base64DataUri(meals.find((m) => m.ID == selectedMealId)?.Picture ?? '');
+        const descriptionText = meals.find((m) => m.ID == selectedMealId)?.PictureDescription ?? '';
+
+        if (imageUrl == '' && descriptionText == '') return null;
 
         // Load image and determine aspect ratio
 
@@ -136,10 +140,13 @@ function InteractiveMenu(props: InteractiveMenuProps) {
             <a onClick={() => setSelectedMealId(null)}>
                 <div style={{ position: 'absolute', top: 0, left: 0, width: '100vw', height: '100vh', backgroundColor: 'rgba(0,0,0,0.5)', zIndex: 997 }}></div>
 
-                <img src={imageUrl} style={{ position: 'absolute', top: container.top, left: container.left, width: container.width, height: container.height, zIndex: 998 }}/>
-                <div style={{ position: 'absolute', top: description.top, left: description.left, width: description.width, height: description.height, backgroundColor: 'white', zIndex: 1000 }}>
-                    <p>{meals.find((m) => m.ID == selectedMealId)?.PictureDescription}</p>
-                </div>
+                {imageUrl != '' && <img src={imageUrl} style={{ position: 'absolute', top: container.top, left: container.left, width: container.width, height: container.height, zIndex: 998 }}/>}
+
+                {descriptionText != '' &&
+                    <div style={{ borderRadius: '4px', position: 'absolute', top: description.top, left: description.left, width: description.width, height: description.height, backgroundColor: 'white', zIndex: 1000, padding: '1em' }}>
+                        <p>{descriptionText}</p>
+                    </div>
+                }
             </a>
         );
     }
