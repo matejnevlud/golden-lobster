@@ -54,19 +54,26 @@ export async function translate(text: string | null, id_language: number) {
     }
 }
 
-export async function getLayouts() {
+export async function getLayouts(langID?: number) {
     var result = await prisma.dBT_Layouts.findMany({ where: { Active: true} });
     result = convertUint8ArraysToBase64(result);
+
+    const { cookies } = require('next/headers');
+    const language = langID ?? parseInt(cookies().get('language')?.value ?? '1');
+    result = await Promise.all(result.map(async (layout: DBT_Layouts) => {
+        layout.TextBox = await translate(layout.TextBox, language);
+        return layout;
+    }));
     return result;
 }
 
-export async function getMealGroups() {
+export async function getMealGroups(langID?: number) {
 
     var result = await prisma.dBT_MealGroups.findMany({ where: { Active: true}, orderBy: { Order: 'asc' } });
     result = convertUint8ArraysToBase64(result);
 
     const { cookies } = require('next/headers');
-    const language = parseInt(cookies().get('language')?.value ?? '1');
+    const language = langID ?? parseInt(cookies().get('language')?.value ?? '1');
     result = await Promise.all(result.map(async (mg: DBT_MealGroups) => {
         mg.MealGroup = await translate(mg.MealGroup, language);
         return mg;
@@ -75,13 +82,13 @@ export async function getMealGroups() {
     return result;
 }
 
-export async function getMeals() {
+export async function getMeals(langID?: number) {
     var result = await prisma.dBT_Meals.findMany({ where: { Active: true} });
     result = convertUint8ArraysToBase64(result);
 
     // translate
     const { cookies } = require('next/headers');
-    const language = parseInt(cookies().get('language')?.value ?? '1');
+    const language = langID ?? parseInt(cookies().get('language')?.value ?? '1');
     result = await Promise.all(result.map(async (meal: DBT_Meals) => {
         meal.Meal = await translate(meal.Meal, language);
         meal.MealDescription = await translate(meal.MealDescription, language);
@@ -98,13 +105,13 @@ export async function getMealsInGroups() {
     return result;
 }
 
-export async function getVariants() {
+export async function getVariants(langID?: number) {
     var result = await prisma.dBT_Variants.findMany({ where: { Active: true} });
 
     result = convertUint8ArraysToBase64(result);
 
     const { cookies } = require('next/headers');
-    const language = parseInt(cookies().get('language')?.value ?? '1');
+    const language = langID ?? parseInt(cookies().get('language')?.value ?? '1');
     result = await Promise.all(result.map(async (meal: DBT_Variants) => {
         meal.MealVariant = await translate(meal.MealVariant, language);
         return meal;
@@ -113,12 +120,13 @@ export async function getVariants() {
     return result;
 }
 
-export async function getMenuSetUp() {
+export async function getMenuSetUp(langID?: number) {
     var result = await prisma.dBT_MenuSetUp.findFirst({ where: { Active: true} });
     result = convertUint8ArraysToBase64(result);
 
+
     const { cookies } = require('next/headers');
-    const language = parseInt(cookies().get('language')?.value ?? '1');
+    const language = langID ?? parseInt(cookies().get('language')?.value ?? '1');
     result.HeaderText = await translate(result?.HeaderText, language);
     result.FooterText = await translate(result?.FooterText, language);
 
@@ -161,6 +169,15 @@ export type ALL_DATA = {
     variants: DBT_Variants[]
     menuSetUp: DBT_MenuSetUp
 
+    translatedData : {
+        [key: number]: {
+            mealGroups: DBT_MealGroups[]
+            meals: DBT_Meals[]
+            variants: DBT_Variants[]
+            menuSetUp: DBT_MenuSetUp
+            layouts: DBT_Layouts[]
+        }
+    }
 }
 export async function getAllData(): Promise<ALL_DATA> {
     const languages = await getLanguages();
@@ -171,7 +188,21 @@ export async function getAllData(): Promise<ALL_DATA> {
     const variants = await getVariants();
     const menuSetUp = await getMenuSetUp();
 
-    return { languages, layouts, meals, mealGroups, mealsInGroups, variants, menuSetUp };
+
+    // download all data in different languages
+    const translatedData = {};
+    for (const language of languages) {
+        const langID = language.ID as unknown as number;
+        translatedData[langID] = {
+            mealGroups : await getMealGroups(langID),
+            meals : await getMeals(langID),
+            variants : await getVariants(langID),
+            menuSetUp : await getMenuSetUp(langID),
+            layouts : await getLayouts(langID),
+        }
+    }
+
+    return { languages, layouts, meals, mealGroups, mealsInGroups, variants, menuSetUp, translatedData };
 }
 
 

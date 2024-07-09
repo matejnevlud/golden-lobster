@@ -18,13 +18,31 @@ export type InteractiveMenuProps = {
     mealsInGroups: DBT_MealsInGroups[]
     variants: DBT_Variants[]
     menuSetUp: DBT_MenuSetUp
+    translatedData: {
+        [key: number]: {
+            mealGroups: DBT_MealGroups[]
+            meals: DBT_Meals[]
+            variants: DBT_Variants[]
+            menuSetUp: DBT_MenuSetUp
+            layouts: DBT_Layouts[]
+        }
+    }
 }
 
 
 function InteractiveMenu(props: InteractiveMenuProps) {
 
-    const { languages, layouts, meals, mealGroups, mealsInGroups, variants, menuSetUp } = props;
+    const { languages, mealsInGroups } = props;
+    const { translatedData } = props;
 
+    const [reloadClickCounter, setReloadClickCounter] = useState(0);
+
+
+    const [mealGroups, setMealGroups] = useState<DBT_MealGroups[]>(props.mealGroups);
+    const [meals, setMeals] = useState<DBT_Meals[]>(props.meals);
+    const [variants, setVariants] = useState<DBT_Variants[]>(props.variants);
+    const [menuSetUp, setMenuSetUp] = useState<DBT_MenuSetUp>(props.menuSetUp);
+    const [layouts, setLayouts] = useState<DBT_Layouts[]>(props.layouts);
 
     const headLayout = layouts.find((layout) => layout.Type === "Head" && layout.Active);
 
@@ -42,13 +60,19 @@ function InteractiveMenu(props: InteractiveMenuProps) {
         Cookies.set('language', id);
         localStorage.setItem('language', id);
         setCurrentLanguageID(id);
-        location.reload();
+
+        const translated = translatedData[id];
+        setMealGroups(translated.mealGroups);
+        setMeals(translated.meals);
+        setVariants(translated.variants);
+        setMenuSetUp(translated.menuSetUp);
+        setLayouts(translated.layouts);
+
     }
 
     const setMealGroupFunc = (id: number) => {
         localStorage.setItem('mealGroup', id);
         setCurrentMealGroupID(id);
-        location.reload();
     }
 
 
@@ -158,6 +182,40 @@ function InteractiveMenu(props: InteractiveMenuProps) {
         return <img src={base64DataUri(mealGroup?.BackgroudPicture)} style={{ position: 'absolute', top: 0, left: 0, width: '100vw', height: '100vh', zIndex: -1 }} />
     }
 
+
+    const renderMealGroupTextBox = () => {
+        const mealGroup = mealGroups.find((mg) => (mg.ID == currentMealGroupID));
+        const mealGroupLayout = layouts.find((layout) => layout.ID == mealGroup?.ID_Layout);
+        if (!mealGroupLayout) return null;
+
+        const mealJsonObj = parser.parse(mealGroupLayout?.Xml ?? "");
+        if (!mealJsonObj?.FoodComponent?.TextBox) return null;
+
+        const text = mealGroupLayout.TextBox;
+        if (!text) return null;
+
+
+        const container = parseBasic(mealJsonObj?.FoodComponent?.TextBox);
+        return (
+            <div style={{ position: 'absolute', top: container.top, left: container.left, width: container.width, height: container.height, textAlign: container.textAlign, font: container.font.font, color: container.font.color }} key={text}>
+                <p>{text}</p>
+            </div>
+        );
+    }
+
+    const renderRefresh = () => {
+        return (
+            <div style={{ position: 'absolute', bottom: '10px', left: '10px', width: '32px', height: '32px', zIndex: 999, opacity: 0.2}}>
+                <button onClick={() => reloadClickCounter >= 5 ? location.reload() : setReloadClickCounter(reloadClickCounter + 1)}>
+                    <svg xmlns="http://www.w3.org/2000/svg" height="32px" viewBox="0 0 24 24" width="32px" fill="white">
+                        <path d="M0 0h24v24H0V0z" fill="none"/>
+                        <path d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/>
+                    </svg>
+                </button>
+            </div>
+        );
+    }
+
     return (
         <div className="min-w-full min-h-screen" style={{ backgroundColor: numberToRGBAString(menuSetUp.BackgroundColor) }}>
             {renderBG()}
@@ -172,6 +230,9 @@ function InteractiveMenu(props: InteractiveMenuProps) {
 
 
             {renderText(jsonObj.Head?.FooterText, menuSetUp.FooterText)}
+            {renderMealGroupTextBox()}
+
+            {renderRefresh()}
         </div>
     );
 

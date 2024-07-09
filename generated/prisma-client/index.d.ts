@@ -4029,6 +4029,7 @@ export namespace Prisma {
     Type: string | null
     Name: string | null
     Xml: string | null
+    TextBox: string | null
   }
 
   export type DBT_LayoutsMaxAggregateOutputType = {
@@ -4037,6 +4038,7 @@ export namespace Prisma {
     Type: string | null
     Name: string | null
     Xml: string | null
+    TextBox: string | null
   }
 
   export type DBT_LayoutsCountAggregateOutputType = {
@@ -4045,6 +4047,7 @@ export namespace Prisma {
     Type: number
     Name: number
     Xml: number
+    TextBox: number
     _all: number
   }
 
@@ -4063,6 +4066,7 @@ export namespace Prisma {
     Type?: true
     Name?: true
     Xml?: true
+    TextBox?: true
   }
 
   export type DBT_LayoutsMaxAggregateInputType = {
@@ -4071,6 +4075,7 @@ export namespace Prisma {
     Type?: true
     Name?: true
     Xml?: true
+    TextBox?: true
   }
 
   export type DBT_LayoutsCountAggregateInputType = {
@@ -4079,6 +4084,7 @@ export namespace Prisma {
     Type?: true
     Name?: true
     Xml?: true
+    TextBox?: true
     _all?: true
   }
 
@@ -4174,6 +4180,7 @@ export namespace Prisma {
     Type: string | null
     Name: string | null
     Xml: string | null
+    TextBox: string | null
     _count: DBT_LayoutsCountAggregateOutputType | null
     _avg: DBT_LayoutsAvgAggregateOutputType | null
     _sum: DBT_LayoutsSumAggregateOutputType | null
@@ -4201,6 +4208,7 @@ export namespace Prisma {
     Type?: boolean
     Name?: boolean
     Xml?: boolean
+    TextBox?: boolean
   }, ExtArgs["result"]["dBT_Layouts"]>
 
   export type DBT_LayoutsSelectScalar = {
@@ -4209,6 +4217,7 @@ export namespace Prisma {
     Type?: boolean
     Name?: boolean
     Xml?: boolean
+    TextBox?: boolean
   }
 
 
@@ -4222,6 +4231,7 @@ export namespace Prisma {
       Type: string | null
       Name: string | null
       Xml: string | null
+      TextBox: string | null
     }, ExtArgs["result"]["dBT_Layouts"]>
     composites: {}
   }
@@ -4621,6 +4631,7 @@ export namespace Prisma {
     readonly Type: FieldRef<"DBT_Layouts", 'String'>
     readonly Name: FieldRef<"DBT_Layouts", 'String'>
     readonly Xml: FieldRef<"DBT_Layouts", 'String'>
+    readonly TextBox: FieldRef<"DBT_Layouts", 'String'>
   }
     
 
@@ -17604,7 +17615,8 @@ export namespace Prisma {
     Active: 'Active',
     Type: 'Type',
     Name: 'Name',
-    Xml: 'Xml'
+    Xml: 'Xml',
+    TextBox: 'TextBox'
   };
 
   export type DBT_LayoutsScalarFieldEnum = (typeof DBT_LayoutsScalarFieldEnum)[keyof typeof DBT_LayoutsScalarFieldEnum]
@@ -17986,6 +17998,7 @@ export namespace Prisma {
     Type?: StringNullableFilter<"DBT_Layouts"> | string | null
     Name?: StringNullableFilter<"DBT_Layouts"> | string | null
     Xml?: StringNullableFilter<"DBT_Layouts"> | string | null
+    TextBox?: StringNullableFilter<"DBT_Layouts"> | string | null
   }
 
   export type DBT_LayoutsOrderByWithRelationInput = {
@@ -17994,6 +18007,7 @@ export namespace Prisma {
     Type?: SortOrderInput | SortOrder
     Name?: SortOrderInput | SortOrder
     Xml?: SortOrderInput | SortOrder
+    TextBox?: SortOrderInput | SortOrder
   }
 
   export type DBT_LayoutsWhereUniqueInput = Prisma.AtLeast<{
@@ -18005,6 +18019,7 @@ export namespace Prisma {
     Type?: StringNullableFilter<"DBT_Layouts"> | string | null
     Name?: StringNullableFilter<"DBT_Layouts"> | string | null
     Xml?: StringNullableFilter<"DBT_Layouts"> | string | null
+    TextBox?: StringNullableFilter<"DBT_Layouts"> | string | null
   }, "ID">
 
   export type DBT_LayoutsOrderByWithAggregationInput = {
@@ -18013,6 +18028,7 @@ export namespace Prisma {
     Type?: SortOrderInput | SortOrder
     Name?: SortOrderInput | SortOrder
     Xml?: SortOrderInput | SortOrder
+    TextBox?: SortOrderInput | SortOrder
     _count?: DBT_LayoutsCountOrderByAggregateInput
     _avg?: DBT_LayoutsAvgOrderByAggregateInput
     _max?: DBT_LayoutsMaxOrderByAggregateInput
@@ -18029,6 +18045,7 @@ export namespace Prisma {
     Type?: StringNullableWithAggregatesFilter<"DBT_Layouts"> | string | null
     Name?: StringNullableWithAggregatesFilter<"DBT_Layouts"> | string | null
     Xml?: StringNullableWithAggregatesFilter<"DBT_Layouts"> | string | null
+    TextBox?: StringNullableWithAggregatesFilter<"DBT_Layouts"> | string | null
   }
 
   export type DBT_MealGroupsWhereInput = {
@@ -18974,6 +18991,7 @@ export namespace Prisma {
     Type?: string | null
     Name?: string | null
     Xml?: string | null
+    TextBox?: string | null
   }
 
   export type DBT_LayoutsUncheckedCreateInput = {
@@ -18982,6 +19000,7 @@ export namespace Prisma {
     Type?: string | null
     Name?: string | null
     Xml?: string | null
+    TextBox?: string | null
   }
 
   export type DBT_LayoutsUpdateInput = {
@@ -18990,6 +19009,7 @@ export namespace Prisma {
     Type?: NullableStringFieldUpdateOperationsInput | string | null
     Name?: NullableStringFieldUpdateOperationsInput | string | null
     Xml?: NullableStringFieldUpdateOperationsInput | string | null
+    TextBox?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type DBT_LayoutsUncheckedUpdateInput = {
@@ -18998,6 +19018,7 @@ export namespace Prisma {
     Type?: NullableStringFieldUpdateOperationsInput | string | null
     Name?: NullableStringFieldUpdateOperationsInput | string | null
     Xml?: NullableStringFieldUpdateOperationsInput | string | null
+    TextBox?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type DBT_LayoutsCreateManyInput = {
@@ -19005,6 +19026,7 @@ export namespace Prisma {
     Type?: string | null
     Name?: string | null
     Xml?: string | null
+    TextBox?: string | null
   }
 
   export type DBT_LayoutsUpdateManyMutationInput = {
@@ -19013,6 +19035,7 @@ export namespace Prisma {
     Type?: NullableStringFieldUpdateOperationsInput | string | null
     Name?: NullableStringFieldUpdateOperationsInput | string | null
     Xml?: NullableStringFieldUpdateOperationsInput | string | null
+    TextBox?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type DBT_LayoutsUncheckedUpdateManyInput = {
@@ -19021,6 +19044,7 @@ export namespace Prisma {
     Type?: NullableStringFieldUpdateOperationsInput | string | null
     Name?: NullableStringFieldUpdateOperationsInput | string | null
     Xml?: NullableStringFieldUpdateOperationsInput | string | null
+    TextBox?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type DBT_MealGroupsCreateInput = {
@@ -20079,6 +20103,7 @@ export namespace Prisma {
     Type?: SortOrder
     Name?: SortOrder
     Xml?: SortOrder
+    TextBox?: SortOrder
   }
 
   export type DBT_LayoutsAvgOrderByAggregateInput = {
@@ -20091,6 +20116,7 @@ export namespace Prisma {
     Type?: SortOrder
     Name?: SortOrder
     Xml?: SortOrder
+    TextBox?: SortOrder
   }
 
   export type DBT_LayoutsMinOrderByAggregateInput = {
@@ -20099,6 +20125,7 @@ export namespace Prisma {
     Type?: SortOrder
     Name?: SortOrder
     Xml?: SortOrder
+    TextBox?: SortOrder
   }
 
   export type DBT_LayoutsSumOrderByAggregateInput = {

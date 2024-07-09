@@ -7,7 +7,6 @@ generator client {
 datasource db {
   provider = "sqlserver"
   //url      = "sqlserver://bicodigital.a.pinggy.link:18627;database=GoldenLobster_1;user=prisma;password=prisma;trustServerCertificate=true"
-  //url      = "sqlserver://lobsterdev.database.windows.net:1433;database=lobstertest;user=matejnevlud@lobsterdev;password=Manzes1997;encrypt=true;trustServerCertificate=true"
   url      = "sqlserver://host.docker.internal:1433;database=GoldenLobster_1;user=prisma;password=prisma;trustServerCertificate=true"
   //url      = "sqlserver://127.0.0.1:1433;database=GoldenLobster_1;user=sa;password=Manzes1997;trustServerCertificate=true"
 }
@@ -32,11 +31,12 @@ model DBT_Languages {
 }
 
 model DBT_Layouts {
-  ID     BigInt  @id(map: "PK_DBT_Layouts") @default(autoincrement())
-  Active Boolean @default(true, map: "DF_DBT_Layouts_Active")
-  Type   String? @db.VarChar(Max)
-  Name   String? @db.VarChar(Max)
-  Xml    String? @db.Xml
+  ID      BigInt  @id(map: "PK_DBT_Layouts") @default(autoincrement())
+  Active  Boolean @default(true, map: "DF_DBT_Layouts_Active")
+  Type    String? @db.VarChar(Max)
+  Name    String? @db.VarChar(Max)
+  Xml     String? @db.Xml
+  TextBox String? @db.VarChar(Max)
 }
 
 model DBT_MealGroups {

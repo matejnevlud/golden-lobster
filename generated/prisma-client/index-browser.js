@@ -144,7 +144,8 @@ exports.Prisma.DBT_LayoutsScalarFieldEnum = {
   Active: 'Active',
   Type: 'Type',
   Name: 'Name',
-  Xml: 'Xml'
+  Xml: 'Xml',
+  TextBox: 'TextBox'
 };
 
 exports.Prisma.DBT_MealGroupsScalarFieldEnum = {

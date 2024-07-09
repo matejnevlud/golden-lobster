@@ -69,7 +69,7 @@ export default function Workspace(props: WorkspaceProps) {
     const parser = new XMLParser({ ignoreAttributes : false });
     let mealJsonObj = parser.parse(mealGroupLayout?.Xml ?? "");
     let headJsonObj = parser.parse(headLayout?.Xml ?? "");
-    console.log('mealGroupLayout headJsonObj', headJsonObj?.Head.PopUpWindow)
+    console.log('mealGroupLayout headJsonObj', mealJsonObj)
     // delete all mg_ keys from local storage
     Object.keys(localStorage).forEach((key) => {
         if (key.startsWith('mg_')) {
