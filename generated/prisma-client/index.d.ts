@@ -98,6 +98,11 @@ export type DBT_PaymentDetail = $Result.DefaultSelection<Prisma.$DBT_PaymentDeta
  * 
  */
 export type DBT_Payments = $Result.DefaultSelection<Prisma.$DBT_PaymentsPayload>
+/**
+ * Model DBT_PaymentTaxes
+ * 
+ */
+export type DBT_PaymentTaxes = $Result.DefaultSelection<Prisma.$DBT_PaymentTaxesPayload>
 
 /**
  * ##  Prisma Client ʲˢ
@@ -390,6 +395,16 @@ export class PrismaClient<
     * ```
     */
   get dBT_Payments(): Prisma.DBT_PaymentsDelegate<ExtArgs>;
+
+  /**
+   * `prisma.dBT_PaymentTaxes`: Exposes CRUD operations for the **DBT_PaymentTaxes** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more DBT_PaymentTaxes
+    * const dBT_PaymentTaxes = await prisma.dBT_PaymentTaxes.findMany()
+    * ```
+    */
+  get dBT_PaymentTaxes(): Prisma.DBT_PaymentTaxesDelegate<ExtArgs>;
 }
 
 export namespace Prisma {
@@ -883,7 +898,8 @@ export namespace Prisma {
     DBT_MealsInGroups: 'DBT_MealsInGroups',
     DBT_Variants: 'DBT_Variants',
     DBT_PaymentDetail: 'DBT_PaymentDetail',
-    DBT_Payments: 'DBT_Payments'
+    DBT_Payments: 'DBT_Payments',
+    DBT_PaymentTaxes: 'DBT_PaymentTaxes'
   };
 
   export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -900,7 +916,7 @@ export namespace Prisma {
 
   export type TypeMap<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     meta: {
-      modelProps: 'dBT_Customer' | 'dBT_Languages' | 'dBT_Layouts' | 'dBT_MealGroups' | 'dBT_Meals' | 'dBT_MenuSetUp' | 'dBT_OrderItems' | 'dBT_Orders' | 'dBT_PaymentMethods' | 'dBT_Tables' | 'dBT_Taxes' | 'dBT_Translations' | 'dBT_Users' | 'dBT_MealsInGroups' | 'dBT_Variants' | 'dBT_PaymentDetail' | 'dBT_Payments'
+      modelProps: 'dBT_Customer' | 'dBT_Languages' | 'dBT_Layouts' | 'dBT_MealGroups' | 'dBT_Meals' | 'dBT_MenuSetUp' | 'dBT_OrderItems' | 'dBT_Orders' | 'dBT_PaymentMethods' | 'dBT_Tables' | 'dBT_Taxes' | 'dBT_Translations' | 'dBT_Users' | 'dBT_MealsInGroups' | 'dBT_Variants' | 'dBT_PaymentDetail' | 'dBT_Payments' | 'dBT_PaymentTaxes'
       txIsolationLevel: Prisma.TransactionIsolationLevel
     },
     model: {
@@ -2023,6 +2039,72 @@ export namespace Prisma {
           count: {
             args: Prisma.DBT_PaymentsCountArgs<ExtArgs>,
             result: $Utils.Optional<DBT_PaymentsCountAggregateOutputType> | number
+          }
+        }
+      }
+      DBT_PaymentTaxes: {
+        payload: Prisma.$DBT_PaymentTaxesPayload<ExtArgs>
+        fields: Prisma.DBT_PaymentTaxesFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.DBT_PaymentTaxesFindUniqueArgs<ExtArgs>,
+            result: $Utils.PayloadToResult<Prisma.$DBT_PaymentTaxesPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.DBT_PaymentTaxesFindUniqueOrThrowArgs<ExtArgs>,
+            result: $Utils.PayloadToResult<Prisma.$DBT_PaymentTaxesPayload>
+          }
+          findFirst: {
+            args: Prisma.DBT_PaymentTaxesFindFirstArgs<ExtArgs>,
+            result: $Utils.PayloadToResult<Prisma.$DBT_PaymentTaxesPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.DBT_PaymentTaxesFindFirstOrThrowArgs<ExtArgs>,
+            result: $Utils.PayloadToResult<Prisma.$DBT_PaymentTaxesPayload>
+          }
+          findMany: {
+            args: Prisma.DBT_PaymentTaxesFindManyArgs<ExtArgs>,
+            result: $Utils.PayloadToResult<Prisma.$DBT_PaymentTaxesPayload>[]
+          }
+          create: {
+            args: Prisma.DBT_PaymentTaxesCreateArgs<ExtArgs>,
+            result: $Utils.PayloadToResult<Prisma.$DBT_PaymentTaxesPayload>
+          }
+          createMany: {
+            args: Prisma.DBT_PaymentTaxesCreateManyArgs<ExtArgs>,
+            result: Prisma.BatchPayload
+          }
+          delete: {
+            args: Prisma.DBT_PaymentTaxesDeleteArgs<ExtArgs>,
+            result: $Utils.PayloadToResult<Prisma.$DBT_PaymentTaxesPayload>
+          }
+          update: {
+            args: Prisma.DBT_PaymentTaxesUpdateArgs<ExtArgs>,
+            result: $Utils.PayloadToResult<Prisma.$DBT_PaymentTaxesPayload>
+          }
+          deleteMany: {
+            args: Prisma.DBT_PaymentTaxesDeleteManyArgs<ExtArgs>,
+            result: Prisma.BatchPayload
+          }
+          updateMany: {
+            args: Prisma.DBT_PaymentTaxesUpdateManyArgs<ExtArgs>,
+            result: Prisma.BatchPayload
+          }
+          upsert: {
+            args: Prisma.DBT_PaymentTaxesUpsertArgs<ExtArgs>,
+            result: $Utils.PayloadToResult<Prisma.$DBT_PaymentTaxesPayload>
+          }
+          aggregate: {
+            args: Prisma.DBT_PaymentTaxesAggregateArgs<ExtArgs>,
+            result: $Utils.Optional<AggregateDBT_PaymentTaxes>
+          }
+          groupBy: {
+            args: Prisma.DBT_PaymentTaxesGroupByArgs<ExtArgs>,
+            result: $Utils.Optional<DBT_PaymentTaxesGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.DBT_PaymentTaxesCountArgs<ExtArgs>,
+            result: $Utils.Optional<DBT_PaymentTaxesCountAggregateOutputType> | number
           }
         }
       }
@@ -7696,6 +7778,7 @@ export namespace Prisma {
     ID_Variant: number | null
     Price: Decimal | null
     ID_User: number | null
+    ID_Payment: number | null
   }
 
   export type DBT_OrderItemsSumAggregateOutputType = {
@@ -7704,6 +7787,7 @@ export namespace Prisma {
     ID_Variant: bigint | null
     Price: Decimal | null
     ID_User: bigint | null
+    ID_Payment: bigint | null
   }
 
   export type DBT_OrderItemsMinAggregateOutputType = {
@@ -7717,6 +7801,7 @@ export namespace Prisma {
     ID_User: bigint | null
     Time_Prepared: Date | null
     Time_Delivered: Date | null
+    ID_Payment: bigint | null
   }
 
   export type DBT_OrderItemsMaxAggregateOutputType = {
@@ -7730,6 +7815,7 @@ export namespace Prisma {
     ID_User: bigint | null
     Time_Prepared: Date | null
     Time_Delivered: Date | null
+    ID_Payment: bigint | null
   }
 
   export type DBT_OrderItemsCountAggregateOutputType = {
@@ -7743,6 +7829,7 @@ export namespace Prisma {
     ID_User: number
     Time_Prepared: number
     Time_Delivered: number
+    ID_Payment: number
     _all: number
   }
 
@@ -7753,6 +7840,7 @@ export namespace Prisma {
     ID_Variant?: true
     Price?: true
     ID_User?: true
+    ID_Payment?: true
   }
 
   export type DBT_OrderItemsSumAggregateInputType = {
@@ -7761,6 +7849,7 @@ export namespace Prisma {
     ID_Variant?: true
     Price?: true
     ID_User?: true
+    ID_Payment?: true
   }
 
   export type DBT_OrderItemsMinAggregateInputType = {
@@ -7774,6 +7863,7 @@ export namespace Prisma {
     ID_User?: true
     Time_Prepared?: true
     Time_Delivered?: true
+    ID_Payment?: true
   }
 
   export type DBT_OrderItemsMaxAggregateInputType = {
@@ -7787,6 +7877,7 @@ export namespace Prisma {
     ID_User?: true
     Time_Prepared?: true
     Time_Delivered?: true
+    ID_Payment?: true
   }
 
   export type DBT_OrderItemsCountAggregateInputType = {
@@ -7800,6 +7891,7 @@ export namespace Prisma {
     ID_User?: true
     Time_Prepared?: true
     Time_Delivered?: true
+    ID_Payment?: true
     _all?: true
   }
 
@@ -7900,6 +7992,7 @@ export namespace Prisma {
     ID_User: bigint | null
     Time_Prepared: Date | null
     Time_Delivered: Date | null
+    ID_Payment: bigint | null
     _count: DBT_OrderItemsCountAggregateOutputType | null
     _avg: DBT_OrderItemsAvgAggregateOutputType | null
     _sum: DBT_OrderItemsSumAggregateOutputType | null
@@ -7932,6 +8025,7 @@ export namespace Prisma {
     ID_User?: boolean
     Time_Prepared?: boolean
     Time_Delivered?: boolean
+    ID_Payment?: boolean
   }, ExtArgs["result"]["dBT_OrderItems"]>
 
   export type DBT_OrderItemsSelectScalar = {
@@ -7945,6 +8039,7 @@ export namespace Prisma {
     ID_User?: boolean
     Time_Prepared?: boolean
     Time_Delivered?: boolean
+    ID_Payment?: boolean
   }
 
 
@@ -7963,6 +8058,7 @@ export namespace Prisma {
       ID_User: bigint | null
       Time_Prepared: Date | null
       Time_Delivered: Date | null
+      ID_Payment: bigint | null
     }, ExtArgs["result"]["dBT_OrderItems"]>
     composites: {}
   }
@@ -8367,6 +8463,7 @@ export namespace Prisma {
     readonly ID_User: FieldRef<"DBT_OrderItems", 'BigInt'>
     readonly Time_Prepared: FieldRef<"DBT_OrderItems", 'DateTime'>
     readonly Time_Delivered: FieldRef<"DBT_OrderItems", 'DateTime'>
+    readonly ID_Payment: FieldRef<"DBT_OrderItems", 'BigInt'>
   }
     
 
@@ -16669,7 +16766,7 @@ export namespace Prisma {
     ID: number | null
     TotalAmount: Decimal | null
     ID_PaymentMethod: number | null
-    Discount: number | null
+    Discount: Decimal | null
     ID_Customer: number | null
   }
 
@@ -16677,7 +16774,7 @@ export namespace Prisma {
     ID: bigint | null
     TotalAmount: Decimal | null
     ID_PaymentMethod: bigint | null
-    Discount: bigint | null
+    Discount: Decimal | null
     ID_Customer: bigint | null
   }
 
@@ -16685,7 +16782,7 @@ export namespace Prisma {
     ID: bigint | null
     TotalAmount: Decimal | null
     ID_PaymentMethod: bigint | null
-    Discount: bigint | null
+    Discount: Decimal | null
     ID_Customer: bigint | null
     Closed: boolean | null
   }
@@ -16694,7 +16791,7 @@ export namespace Prisma {
     ID: bigint | null
     TotalAmount: Decimal | null
     ID_PaymentMethod: bigint | null
-    Discount: bigint | null
+    Discount: Decimal | null
     ID_Customer: bigint | null
     Closed: boolean | null
   }
@@ -16844,7 +16941,7 @@ export namespace Prisma {
     ID: bigint
     TotalAmount: Decimal | null
     ID_PaymentMethod: bigint | null
-    Discount: bigint | null
+    Discount: Decimal | null
     ID_Customer: bigint | null
     Closed: boolean | null
     _count: DBT_PaymentsCountAggregateOutputType | null
@@ -16895,7 +16992,7 @@ export namespace Prisma {
       ID: bigint
       TotalAmount: Prisma.Decimal | null
       ID_PaymentMethod: bigint | null
-      Discount: bigint | null
+      Discount: Prisma.Decimal | null
       ID_Customer: bigint | null
       Closed: boolean | null
     }, ExtArgs["result"]["dBT_Payments"]>
@@ -17295,7 +17392,7 @@ export namespace Prisma {
     readonly ID: FieldRef<"DBT_Payments", 'BigInt'>
     readonly TotalAmount: FieldRef<"DBT_Payments", 'Decimal'>
     readonly ID_PaymentMethod: FieldRef<"DBT_Payments", 'BigInt'>
-    readonly Discount: FieldRef<"DBT_Payments", 'BigInt'>
+    readonly Discount: FieldRef<"DBT_Payments", 'Decimal'>
     readonly ID_Customer: FieldRef<"DBT_Payments", 'BigInt'>
     readonly Closed: FieldRef<"DBT_Payments", 'Boolean'>
   }
@@ -17468,7 +17565,7 @@ export namespace Prisma {
     /**
      * The data needed to create a DBT_Payments.
      */
-    data: XOR<DBT_PaymentsCreateInput, DBT_PaymentsUncheckedCreateInput>
+    data?: XOR<DBT_PaymentsCreateInput, DBT_PaymentsUncheckedCreateInput>
   }
 
   /**
@@ -17567,6 +17664,882 @@ export namespace Prisma {
      * Select specific fields to fetch from the DBT_Payments
      */
     select?: DBT_PaymentsSelect<ExtArgs> | null
+  }
+
+
+  /**
+   * Model DBT_PaymentTaxes
+   */
+
+  export type AggregateDBT_PaymentTaxes = {
+    _count: DBT_PaymentTaxesCountAggregateOutputType | null
+    _avg: DBT_PaymentTaxesAvgAggregateOutputType | null
+    _sum: DBT_PaymentTaxesSumAggregateOutputType | null
+    _min: DBT_PaymentTaxesMinAggregateOutputType | null
+    _max: DBT_PaymentTaxesMaxAggregateOutputType | null
+  }
+
+  export type DBT_PaymentTaxesAvgAggregateOutputType = {
+    ID: number | null
+    ID_Payments: number | null
+    ID_Tax: number | null
+  }
+
+  export type DBT_PaymentTaxesSumAggregateOutputType = {
+    ID: bigint | null
+    ID_Payments: bigint | null
+    ID_Tax: bigint | null
+  }
+
+  export type DBT_PaymentTaxesMinAggregateOutputType = {
+    ID: bigint | null
+    ID_Payments: bigint | null
+    ID_Tax: bigint | null
+  }
+
+  export type DBT_PaymentTaxesMaxAggregateOutputType = {
+    ID: bigint | null
+    ID_Payments: bigint | null
+    ID_Tax: bigint | null
+  }
+
+  export type DBT_PaymentTaxesCountAggregateOutputType = {
+    ID: number
+    ID_Payments: number
+    ID_Tax: number
+    _all: number
+  }
+
+
+  export type DBT_PaymentTaxesAvgAggregateInputType = {
+    ID?: true
+    ID_Payments?: true
+    ID_Tax?: true
+  }
+
+  export type DBT_PaymentTaxesSumAggregateInputType = {
+    ID?: true
+    ID_Payments?: true
+    ID_Tax?: true
+  }
+
+  export type DBT_PaymentTaxesMinAggregateInputType = {
+    ID?: true
+    ID_Payments?: true
+    ID_Tax?: true
+  }
+
+  export type DBT_PaymentTaxesMaxAggregateInputType = {
+    ID?: true
+    ID_Payments?: true
+    ID_Tax?: true
+  }
+
+  export type DBT_PaymentTaxesCountAggregateInputType = {
+    ID?: true
+    ID_Payments?: true
+    ID_Tax?: true
+    _all?: true
+  }
+
+  export type DBT_PaymentTaxesAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which DBT_PaymentTaxes to aggregate.
+     */
+    where?: DBT_PaymentTaxesWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of DBT_PaymentTaxes to fetch.
+     */
+    orderBy?: DBT_PaymentTaxesOrderByWithRelationInput | DBT_PaymentTaxesOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: DBT_PaymentTaxesWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` DBT_PaymentTaxes from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` DBT_PaymentTaxes.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned DBT_PaymentTaxes
+    **/
+    _count?: true | DBT_PaymentTaxesCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: DBT_PaymentTaxesAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: DBT_PaymentTaxesSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: DBT_PaymentTaxesMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: DBT_PaymentTaxesMaxAggregateInputType
+  }
+
+  export type GetDBT_PaymentTaxesAggregateType<T extends DBT_PaymentTaxesAggregateArgs> = {
+        [P in keyof T & keyof AggregateDBT_PaymentTaxes]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateDBT_PaymentTaxes[P]>
+      : GetScalarType<T[P], AggregateDBT_PaymentTaxes[P]>
+  }
+
+
+
+
+  export type DBT_PaymentTaxesGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: DBT_PaymentTaxesWhereInput
+    orderBy?: DBT_PaymentTaxesOrderByWithAggregationInput | DBT_PaymentTaxesOrderByWithAggregationInput[]
+    by: DBT_PaymentTaxesScalarFieldEnum[] | DBT_PaymentTaxesScalarFieldEnum
+    having?: DBT_PaymentTaxesScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: DBT_PaymentTaxesCountAggregateInputType | true
+    _avg?: DBT_PaymentTaxesAvgAggregateInputType
+    _sum?: DBT_PaymentTaxesSumAggregateInputType
+    _min?: DBT_PaymentTaxesMinAggregateInputType
+    _max?: DBT_PaymentTaxesMaxAggregateInputType
+  }
+
+  export type DBT_PaymentTaxesGroupByOutputType = {
+    ID: bigint
+    ID_Payments: bigint | null
+    ID_Tax: bigint | null
+    _count: DBT_PaymentTaxesCountAggregateOutputType | null
+    _avg: DBT_PaymentTaxesAvgAggregateOutputType | null
+    _sum: DBT_PaymentTaxesSumAggregateOutputType | null
+    _min: DBT_PaymentTaxesMinAggregateOutputType | null
+    _max: DBT_PaymentTaxesMaxAggregateOutputType | null
+  }
+
+  type GetDBT_PaymentTaxesGroupByPayload<T extends DBT_PaymentTaxesGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<DBT_PaymentTaxesGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof DBT_PaymentTaxesGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], DBT_PaymentTaxesGroupByOutputType[P]>
+            : GetScalarType<T[P], DBT_PaymentTaxesGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type DBT_PaymentTaxesSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    ID?: boolean
+    ID_Payments?: boolean
+    ID_Tax?: boolean
+  }, ExtArgs["result"]["dBT_PaymentTaxes"]>
+
+  export type DBT_PaymentTaxesSelectScalar = {
+    ID?: boolean
+    ID_Payments?: boolean
+    ID_Tax?: boolean
+  }
+
+
+
+  export type $DBT_PaymentTaxesPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "DBT_PaymentTaxes"
+    objects: {}
+    scalars: $Extensions.GetPayloadResult<{
+      ID: bigint
+      ID_Payments: bigint | null
+      ID_Tax: bigint | null
+    }, ExtArgs["result"]["dBT_PaymentTaxes"]>
+    composites: {}
+  }
+
+
+  type DBT_PaymentTaxesGetPayload<S extends boolean | null | undefined | DBT_PaymentTaxesDefaultArgs> = $Result.GetResult<Prisma.$DBT_PaymentTaxesPayload, S>
+
+  type DBT_PaymentTaxesCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = 
+    Omit<DBT_PaymentTaxesFindManyArgs, 'select' | 'include' | 'distinct'> & {
+      select?: DBT_PaymentTaxesCountAggregateInputType | true
+    }
+
+  export interface DBT_PaymentTaxesDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['DBT_PaymentTaxes'], meta: { name: 'DBT_PaymentTaxes' } }
+    /**
+     * Find zero or one DBT_PaymentTaxes that matches the filter.
+     * @param {DBT_PaymentTaxesFindUniqueArgs} args - Arguments to find a DBT_PaymentTaxes
+     * @example
+     * // Get one DBT_PaymentTaxes
+     * const dBT_PaymentTaxes = await prisma.dBT_PaymentTaxes.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+    **/
+    findUnique<T extends DBT_PaymentTaxesFindUniqueArgs<ExtArgs>>(
+      args: SelectSubset<T, DBT_PaymentTaxesFindUniqueArgs<ExtArgs>>
+    ): Prisma__DBT_PaymentTaxesClient<$Result.GetResult<Prisma.$DBT_PaymentTaxesPayload<ExtArgs>, T, 'findUnique'> | null, null, ExtArgs>
+
+    /**
+     * Find one DBT_PaymentTaxes that matches the filter or throw an error with `error.code='P2025'` 
+     * if no matches were found.
+     * @param {DBT_PaymentTaxesFindUniqueOrThrowArgs} args - Arguments to find a DBT_PaymentTaxes
+     * @example
+     * // Get one DBT_PaymentTaxes
+     * const dBT_PaymentTaxes = await prisma.dBT_PaymentTaxes.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+    **/
+    findUniqueOrThrow<T extends DBT_PaymentTaxesFindUniqueOrThrowArgs<ExtArgs>>(
+      args?: SelectSubset<T, DBT_PaymentTaxesFindUniqueOrThrowArgs<ExtArgs>>
+    ): Prisma__DBT_PaymentTaxesClient<$Result.GetResult<Prisma.$DBT_PaymentTaxesPayload<ExtArgs>, T, 'findUniqueOrThrow'>, never, ExtArgs>
+
+    /**
+     * Find the first DBT_PaymentTaxes that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {DBT_PaymentTaxesFindFirstArgs} args - Arguments to find a DBT_PaymentTaxes
+     * @example
+     * // Get one DBT_PaymentTaxes
+     * const dBT_PaymentTaxes = await prisma.dBT_PaymentTaxes.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+    **/
+    findFirst<T extends DBT_PaymentTaxesFindFirstArgs<ExtArgs>>(
+      args?: SelectSubset<T, DBT_PaymentTaxesFindFirstArgs<ExtArgs>>
+    ): Prisma__DBT_PaymentTaxesClient<$Result.GetResult<Prisma.$DBT_PaymentTaxesPayload<ExtArgs>, T, 'findFirst'> | null, null, ExtArgs>
+
+    /**
+     * Find the first DBT_PaymentTaxes that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {DBT_PaymentTaxesFindFirstOrThrowArgs} args - Arguments to find a DBT_PaymentTaxes
+     * @example
+     * // Get one DBT_PaymentTaxes
+     * const dBT_PaymentTaxes = await prisma.dBT_PaymentTaxes.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+    **/
+    findFirstOrThrow<T extends DBT_PaymentTaxesFindFirstOrThrowArgs<ExtArgs>>(
+      args?: SelectSubset<T, DBT_PaymentTaxesFindFirstOrThrowArgs<ExtArgs>>
+    ): Prisma__DBT_PaymentTaxesClient<$Result.GetResult<Prisma.$DBT_PaymentTaxesPayload<ExtArgs>, T, 'findFirstOrThrow'>, never, ExtArgs>
+
+    /**
+     * Find zero or more DBT_PaymentTaxes that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {DBT_PaymentTaxesFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all DBT_PaymentTaxes
+     * const dBT_PaymentTaxes = await prisma.dBT_PaymentTaxes.findMany()
+     * 
+     * // Get first 10 DBT_PaymentTaxes
+     * const dBT_PaymentTaxes = await prisma.dBT_PaymentTaxes.findMany({ take: 10 })
+     * 
+     * // Only select the `ID`
+     * const dBT_PaymentTaxesWithIDOnly = await prisma.dBT_PaymentTaxes.findMany({ select: { ID: true } })
+     * 
+    **/
+    findMany<T extends DBT_PaymentTaxesFindManyArgs<ExtArgs>>(
+      args?: SelectSubset<T, DBT_PaymentTaxesFindManyArgs<ExtArgs>>
+    ): Prisma.PrismaPromise<$Result.GetResult<Prisma.$DBT_PaymentTaxesPayload<ExtArgs>, T, 'findMany'>>
+
+    /**
+     * Create a DBT_PaymentTaxes.
+     * @param {DBT_PaymentTaxesCreateArgs} args - Arguments to create a DBT_PaymentTaxes.
+     * @example
+     * // Create one DBT_PaymentTaxes
+     * const DBT_PaymentTaxes = await prisma.dBT_PaymentTaxes.create({
+     *   data: {
+     *     // ... data to create a DBT_PaymentTaxes
+     *   }
+     * })
+     * 
+    **/
+    create<T extends DBT_PaymentTaxesCreateArgs<ExtArgs>>(
+      args: SelectSubset<T, DBT_PaymentTaxesCreateArgs<ExtArgs>>
+    ): Prisma__DBT_PaymentTaxesClient<$Result.GetResult<Prisma.$DBT_PaymentTaxesPayload<ExtArgs>, T, 'create'>, never, ExtArgs>
+
+    /**
+     * Create many DBT_PaymentTaxes.
+     * @param {DBT_PaymentTaxesCreateManyArgs} args - Arguments to create many DBT_PaymentTaxes.
+     * @example
+     * // Create many DBT_PaymentTaxes
+     * const dBT_PaymentTaxes = await prisma.dBT_PaymentTaxes.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+    **/
+    createMany<T extends DBT_PaymentTaxesCreateManyArgs<ExtArgs>>(
+      args?: SelectSubset<T, DBT_PaymentTaxesCreateManyArgs<ExtArgs>>
+    ): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Delete a DBT_PaymentTaxes.
+     * @param {DBT_PaymentTaxesDeleteArgs} args - Arguments to delete one DBT_PaymentTaxes.
+     * @example
+     * // Delete one DBT_PaymentTaxes
+     * const DBT_PaymentTaxes = await prisma.dBT_PaymentTaxes.delete({
+     *   where: {
+     *     // ... filter to delete one DBT_PaymentTaxes
+     *   }
+     * })
+     * 
+    **/
+    delete<T extends DBT_PaymentTaxesDeleteArgs<ExtArgs>>(
+      args: SelectSubset<T, DBT_PaymentTaxesDeleteArgs<ExtArgs>>
+    ): Prisma__DBT_PaymentTaxesClient<$Result.GetResult<Prisma.$DBT_PaymentTaxesPayload<ExtArgs>, T, 'delete'>, never, ExtArgs>
+
+    /**
+     * Update one DBT_PaymentTaxes.
+     * @param {DBT_PaymentTaxesUpdateArgs} args - Arguments to update one DBT_PaymentTaxes.
+     * @example
+     * // Update one DBT_PaymentTaxes
+     * const dBT_PaymentTaxes = await prisma.dBT_PaymentTaxes.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+    **/
+    update<T extends DBT_PaymentTaxesUpdateArgs<ExtArgs>>(
+      args: SelectSubset<T, DBT_PaymentTaxesUpdateArgs<ExtArgs>>
+    ): Prisma__DBT_PaymentTaxesClient<$Result.GetResult<Prisma.$DBT_PaymentTaxesPayload<ExtArgs>, T, 'update'>, never, ExtArgs>
+
+    /**
+     * Delete zero or more DBT_PaymentTaxes.
+     * @param {DBT_PaymentTaxesDeleteManyArgs} args - Arguments to filter DBT_PaymentTaxes to delete.
+     * @example
+     * // Delete a few DBT_PaymentTaxes
+     * const { count } = await prisma.dBT_PaymentTaxes.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+    **/
+    deleteMany<T extends DBT_PaymentTaxesDeleteManyArgs<ExtArgs>>(
+      args?: SelectSubset<T, DBT_PaymentTaxesDeleteManyArgs<ExtArgs>>
+    ): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more DBT_PaymentTaxes.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {DBT_PaymentTaxesUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many DBT_PaymentTaxes
+     * const dBT_PaymentTaxes = await prisma.dBT_PaymentTaxes.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+    **/
+    updateMany<T extends DBT_PaymentTaxesUpdateManyArgs<ExtArgs>>(
+      args: SelectSubset<T, DBT_PaymentTaxesUpdateManyArgs<ExtArgs>>
+    ): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create or update one DBT_PaymentTaxes.
+     * @param {DBT_PaymentTaxesUpsertArgs} args - Arguments to update or create a DBT_PaymentTaxes.
+     * @example
+     * // Update or create a DBT_PaymentTaxes
+     * const dBT_PaymentTaxes = await prisma.dBT_PaymentTaxes.upsert({
+     *   create: {
+     *     // ... data to create a DBT_PaymentTaxes
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the DBT_PaymentTaxes we want to update
+     *   }
+     * })
+    **/
+    upsert<T extends DBT_PaymentTaxesUpsertArgs<ExtArgs>>(
+      args: SelectSubset<T, DBT_PaymentTaxesUpsertArgs<ExtArgs>>
+    ): Prisma__DBT_PaymentTaxesClient<$Result.GetResult<Prisma.$DBT_PaymentTaxesPayload<ExtArgs>, T, 'upsert'>, never, ExtArgs>
+
+    /**
+     * Count the number of DBT_PaymentTaxes.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {DBT_PaymentTaxesCountArgs} args - Arguments to filter DBT_PaymentTaxes to count.
+     * @example
+     * // Count the number of DBT_PaymentTaxes
+     * const count = await prisma.dBT_PaymentTaxes.count({
+     *   where: {
+     *     // ... the filter for the DBT_PaymentTaxes we want to count
+     *   }
+     * })
+    **/
+    count<T extends DBT_PaymentTaxesCountArgs>(
+      args?: Subset<T, DBT_PaymentTaxesCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], DBT_PaymentTaxesCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a DBT_PaymentTaxes.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {DBT_PaymentTaxesAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends DBT_PaymentTaxesAggregateArgs>(args: Subset<T, DBT_PaymentTaxesAggregateArgs>): Prisma.PrismaPromise<GetDBT_PaymentTaxesAggregateType<T>>
+
+    /**
+     * Group by DBT_PaymentTaxes.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {DBT_PaymentTaxesGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends DBT_PaymentTaxesGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: DBT_PaymentTaxesGroupByArgs['orderBy'] }
+        : { orderBy?: DBT_PaymentTaxesGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, DBT_PaymentTaxesGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetDBT_PaymentTaxesGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the DBT_PaymentTaxes model
+   */
+  readonly fields: DBT_PaymentTaxesFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for DBT_PaymentTaxes.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__DBT_PaymentTaxesClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: 'PrismaPromise';
+
+
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>;
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>;
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>;
+  }
+
+
+
+  /**
+   * Fields of the DBT_PaymentTaxes model
+   */ 
+  interface DBT_PaymentTaxesFieldRefs {
+    readonly ID: FieldRef<"DBT_PaymentTaxes", 'BigInt'>
+    readonly ID_Payments: FieldRef<"DBT_PaymentTaxes", 'BigInt'>
+    readonly ID_Tax: FieldRef<"DBT_PaymentTaxes", 'BigInt'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * DBT_PaymentTaxes findUnique
+   */
+  export type DBT_PaymentTaxesFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DBT_PaymentTaxes
+     */
+    select?: DBT_PaymentTaxesSelect<ExtArgs> | null
+    /**
+     * Filter, which DBT_PaymentTaxes to fetch.
+     */
+    where: DBT_PaymentTaxesWhereUniqueInput
+  }
+
+  /**
+   * DBT_PaymentTaxes findUniqueOrThrow
+   */
+  export type DBT_PaymentTaxesFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DBT_PaymentTaxes
+     */
+    select?: DBT_PaymentTaxesSelect<ExtArgs> | null
+    /**
+     * Filter, which DBT_PaymentTaxes to fetch.
+     */
+    where: DBT_PaymentTaxesWhereUniqueInput
+  }
+
+  /**
+   * DBT_PaymentTaxes findFirst
+   */
+  export type DBT_PaymentTaxesFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DBT_PaymentTaxes
+     */
+    select?: DBT_PaymentTaxesSelect<ExtArgs> | null
+    /**
+     * Filter, which DBT_PaymentTaxes to fetch.
+     */
+    where?: DBT_PaymentTaxesWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of DBT_PaymentTaxes to fetch.
+     */
+    orderBy?: DBT_PaymentTaxesOrderByWithRelationInput | DBT_PaymentTaxesOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for DBT_PaymentTaxes.
+     */
+    cursor?: DBT_PaymentTaxesWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` DBT_PaymentTaxes from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` DBT_PaymentTaxes.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of DBT_PaymentTaxes.
+     */
+    distinct?: DBT_PaymentTaxesScalarFieldEnum | DBT_PaymentTaxesScalarFieldEnum[]
+  }
+
+  /**
+   * DBT_PaymentTaxes findFirstOrThrow
+   */
+  export type DBT_PaymentTaxesFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DBT_PaymentTaxes
+     */
+    select?: DBT_PaymentTaxesSelect<ExtArgs> | null
+    /**
+     * Filter, which DBT_PaymentTaxes to fetch.
+     */
+    where?: DBT_PaymentTaxesWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of DBT_PaymentTaxes to fetch.
+     */
+    orderBy?: DBT_PaymentTaxesOrderByWithRelationInput | DBT_PaymentTaxesOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for DBT_PaymentTaxes.
+     */
+    cursor?: DBT_PaymentTaxesWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` DBT_PaymentTaxes from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` DBT_PaymentTaxes.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of DBT_PaymentTaxes.
+     */
+    distinct?: DBT_PaymentTaxesScalarFieldEnum | DBT_PaymentTaxesScalarFieldEnum[]
+  }
+
+  /**
+   * DBT_PaymentTaxes findMany
+   */
+  export type DBT_PaymentTaxesFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DBT_PaymentTaxes
+     */
+    select?: DBT_PaymentTaxesSelect<ExtArgs> | null
+    /**
+     * Filter, which DBT_PaymentTaxes to fetch.
+     */
+    where?: DBT_PaymentTaxesWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of DBT_PaymentTaxes to fetch.
+     */
+    orderBy?: DBT_PaymentTaxesOrderByWithRelationInput | DBT_PaymentTaxesOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing DBT_PaymentTaxes.
+     */
+    cursor?: DBT_PaymentTaxesWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` DBT_PaymentTaxes from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` DBT_PaymentTaxes.
+     */
+    skip?: number
+    distinct?: DBT_PaymentTaxesScalarFieldEnum | DBT_PaymentTaxesScalarFieldEnum[]
+  }
+
+  /**
+   * DBT_PaymentTaxes create
+   */
+  export type DBT_PaymentTaxesCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DBT_PaymentTaxes
+     */
+    select?: DBT_PaymentTaxesSelect<ExtArgs> | null
+    /**
+     * The data needed to create a DBT_PaymentTaxes.
+     */
+    data?: XOR<DBT_PaymentTaxesCreateInput, DBT_PaymentTaxesUncheckedCreateInput>
+  }
+
+  /**
+   * DBT_PaymentTaxes createMany
+   */
+  export type DBT_PaymentTaxesCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many DBT_PaymentTaxes.
+     */
+    data: DBT_PaymentTaxesCreateManyInput | DBT_PaymentTaxesCreateManyInput[]
+  }
+
+  /**
+   * DBT_PaymentTaxes update
+   */
+  export type DBT_PaymentTaxesUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DBT_PaymentTaxes
+     */
+    select?: DBT_PaymentTaxesSelect<ExtArgs> | null
+    /**
+     * The data needed to update a DBT_PaymentTaxes.
+     */
+    data: XOR<DBT_PaymentTaxesUpdateInput, DBT_PaymentTaxesUncheckedUpdateInput>
+    /**
+     * Choose, which DBT_PaymentTaxes to update.
+     */
+    where: DBT_PaymentTaxesWhereUniqueInput
+  }
+
+  /**
+   * DBT_PaymentTaxes updateMany
+   */
+  export type DBT_PaymentTaxesUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update DBT_PaymentTaxes.
+     */
+    data: XOR<DBT_PaymentTaxesUpdateManyMutationInput, DBT_PaymentTaxesUncheckedUpdateManyInput>
+    /**
+     * Filter which DBT_PaymentTaxes to update
+     */
+    where?: DBT_PaymentTaxesWhereInput
+  }
+
+  /**
+   * DBT_PaymentTaxes upsert
+   */
+  export type DBT_PaymentTaxesUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DBT_PaymentTaxes
+     */
+    select?: DBT_PaymentTaxesSelect<ExtArgs> | null
+    /**
+     * The filter to search for the DBT_PaymentTaxes to update in case it exists.
+     */
+    where: DBT_PaymentTaxesWhereUniqueInput
+    /**
+     * In case the DBT_PaymentTaxes found by the `where` argument doesn't exist, create a new DBT_PaymentTaxes with this data.
+     */
+    create: XOR<DBT_PaymentTaxesCreateInput, DBT_PaymentTaxesUncheckedCreateInput>
+    /**
+     * In case the DBT_PaymentTaxes was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<DBT_PaymentTaxesUpdateInput, DBT_PaymentTaxesUncheckedUpdateInput>
+  }
+
+  /**
+   * DBT_PaymentTaxes delete
+   */
+  export type DBT_PaymentTaxesDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DBT_PaymentTaxes
+     */
+    select?: DBT_PaymentTaxesSelect<ExtArgs> | null
+    /**
+     * Filter which DBT_PaymentTaxes to delete.
+     */
+    where: DBT_PaymentTaxesWhereUniqueInput
+  }
+
+  /**
+   * DBT_PaymentTaxes deleteMany
+   */
+  export type DBT_PaymentTaxesDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which DBT_PaymentTaxes to delete
+     */
+    where?: DBT_PaymentTaxesWhereInput
+  }
+
+  /**
+   * DBT_PaymentTaxes without action
+   */
+  export type DBT_PaymentTaxesDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DBT_PaymentTaxes
+     */
+    select?: DBT_PaymentTaxesSelect<ExtArgs> | null
   }
 
 
@@ -17673,7 +18646,8 @@ export namespace Prisma {
     TimeOfOrder: 'TimeOfOrder',
     ID_User: 'ID_User',
     Time_Prepared: 'Time_Prepared',
-    Time_Delivered: 'Time_Delivered'
+    Time_Delivered: 'Time_Delivered',
+    ID_Payment: 'ID_Payment'
   };
 
   export type DBT_OrderItemsScalarFieldEnum = (typeof DBT_OrderItemsScalarFieldEnum)[keyof typeof DBT_OrderItemsScalarFieldEnum]
@@ -17784,6 +18758,15 @@ export namespace Prisma {
   };
 
   export type DBT_PaymentsScalarFieldEnum = (typeof DBT_PaymentsScalarFieldEnum)[keyof typeof DBT_PaymentsScalarFieldEnum]
+
+
+  export const DBT_PaymentTaxesScalarFieldEnum: {
+    ID: 'ID',
+    ID_Payments: 'ID_Payments',
+    ID_Tax: 'ID_Tax'
+  };
+
+  export type DBT_PaymentTaxesScalarFieldEnum = (typeof DBT_PaymentTaxesScalarFieldEnum)[keyof typeof DBT_PaymentTaxesScalarFieldEnum]
 
 
   export const SortOrder: {
@@ -18264,6 +19247,7 @@ export namespace Prisma {
     ID_User?: BigIntNullableFilter<"DBT_OrderItems"> | bigint | number | null
     Time_Prepared?: DateTimeNullableFilter<"DBT_OrderItems"> | Date | string | null
     Time_Delivered?: DateTimeNullableFilter<"DBT_OrderItems"> | Date | string | null
+    ID_Payment?: BigIntNullableFilter<"DBT_OrderItems"> | bigint | number | null
   }
 
   export type DBT_OrderItemsOrderByWithRelationInput = {
@@ -18277,6 +19261,7 @@ export namespace Prisma {
     ID_User?: SortOrderInput | SortOrder
     Time_Prepared?: SortOrderInput | SortOrder
     Time_Delivered?: SortOrderInput | SortOrder
+    ID_Payment?: SortOrderInput | SortOrder
   }
 
   export type DBT_OrderItemsWhereUniqueInput = Prisma.AtLeast<{
@@ -18293,6 +19278,7 @@ export namespace Prisma {
     ID_User?: BigIntNullableFilter<"DBT_OrderItems"> | bigint | number | null
     Time_Prepared?: DateTimeNullableFilter<"DBT_OrderItems"> | Date | string | null
     Time_Delivered?: DateTimeNullableFilter<"DBT_OrderItems"> | Date | string | null
+    ID_Payment?: BigIntNullableFilter<"DBT_OrderItems"> | bigint | number | null
   }, "ID">
 
   export type DBT_OrderItemsOrderByWithAggregationInput = {
@@ -18306,6 +19292,7 @@ export namespace Prisma {
     ID_User?: SortOrderInput | SortOrder
     Time_Prepared?: SortOrderInput | SortOrder
     Time_Delivered?: SortOrderInput | SortOrder
+    ID_Payment?: SortOrderInput | SortOrder
     _count?: DBT_OrderItemsCountOrderByAggregateInput
     _avg?: DBT_OrderItemsAvgOrderByAggregateInput
     _max?: DBT_OrderItemsMaxOrderByAggregateInput
@@ -18327,6 +19314,7 @@ export namespace Prisma {
     ID_User?: BigIntNullableWithAggregatesFilter<"DBT_OrderItems"> | bigint | number | null
     Time_Prepared?: DateTimeNullableWithAggregatesFilter<"DBT_OrderItems"> | Date | string | null
     Time_Delivered?: DateTimeNullableWithAggregatesFilter<"DBT_OrderItems"> | Date | string | null
+    ID_Payment?: BigIntNullableWithAggregatesFilter<"DBT_OrderItems"> | bigint | number | null
   }
 
   export type DBT_OrdersWhereInput = {
@@ -18802,7 +19790,7 @@ export namespace Prisma {
     ID?: BigIntFilter<"DBT_Payments"> | bigint | number
     TotalAmount?: DecimalNullableFilter<"DBT_Payments"> | Decimal | DecimalJsLike | number | string | null
     ID_PaymentMethod?: BigIntNullableFilter<"DBT_Payments"> | bigint | number | null
-    Discount?: BigIntNullableFilter<"DBT_Payments"> | bigint | number | null
+    Discount?: DecimalNullableFilter<"DBT_Payments"> | Decimal | DecimalJsLike | number | string | null
     ID_Customer?: BigIntNullableFilter<"DBT_Payments"> | bigint | number | null
     Closed?: BoolNullableFilter<"DBT_Payments"> | boolean | null
   }
@@ -18823,7 +19811,7 @@ export namespace Prisma {
     NOT?: DBT_PaymentsWhereInput | DBT_PaymentsWhereInput[]
     TotalAmount?: DecimalNullableFilter<"DBT_Payments"> | Decimal | DecimalJsLike | number | string | null
     ID_PaymentMethod?: BigIntNullableFilter<"DBT_Payments"> | bigint | number | null
-    Discount?: BigIntNullableFilter<"DBT_Payments"> | bigint | number | null
+    Discount?: DecimalNullableFilter<"DBT_Payments"> | Decimal | DecimalJsLike | number | string | null
     ID_Customer?: BigIntNullableFilter<"DBT_Payments"> | bigint | number | null
     Closed?: BoolNullableFilter<"DBT_Payments"> | boolean | null
   }, "ID">
@@ -18849,9 +19837,53 @@ export namespace Prisma {
     ID?: BigIntWithAggregatesFilter<"DBT_Payments"> | bigint | number
     TotalAmount?: DecimalNullableWithAggregatesFilter<"DBT_Payments"> | Decimal | DecimalJsLike | number | string | null
     ID_PaymentMethod?: BigIntNullableWithAggregatesFilter<"DBT_Payments"> | bigint | number | null
-    Discount?: BigIntNullableWithAggregatesFilter<"DBT_Payments"> | bigint | number | null
+    Discount?: DecimalNullableWithAggregatesFilter<"DBT_Payments"> | Decimal | DecimalJsLike | number | string | null
     ID_Customer?: BigIntNullableWithAggregatesFilter<"DBT_Payments"> | bigint | number | null
     Closed?: BoolNullableWithAggregatesFilter<"DBT_Payments"> | boolean | null
+  }
+
+  export type DBT_PaymentTaxesWhereInput = {
+    AND?: DBT_PaymentTaxesWhereInput | DBT_PaymentTaxesWhereInput[]
+    OR?: DBT_PaymentTaxesWhereInput[]
+    NOT?: DBT_PaymentTaxesWhereInput | DBT_PaymentTaxesWhereInput[]
+    ID?: BigIntFilter<"DBT_PaymentTaxes"> | bigint | number
+    ID_Payments?: BigIntNullableFilter<"DBT_PaymentTaxes"> | bigint | number | null
+    ID_Tax?: BigIntNullableFilter<"DBT_PaymentTaxes"> | bigint | number | null
+  }
+
+  export type DBT_PaymentTaxesOrderByWithRelationInput = {
+    ID?: SortOrder
+    ID_Payments?: SortOrderInput | SortOrder
+    ID_Tax?: SortOrderInput | SortOrder
+  }
+
+  export type DBT_PaymentTaxesWhereUniqueInput = Prisma.AtLeast<{
+    ID?: bigint | number
+    AND?: DBT_PaymentTaxesWhereInput | DBT_PaymentTaxesWhereInput[]
+    OR?: DBT_PaymentTaxesWhereInput[]
+    NOT?: DBT_PaymentTaxesWhereInput | DBT_PaymentTaxesWhereInput[]
+    ID_Payments?: BigIntNullableFilter<"DBT_PaymentTaxes"> | bigint | number | null
+    ID_Tax?: BigIntNullableFilter<"DBT_PaymentTaxes"> | bigint | number | null
+  }, "ID">
+
+  export type DBT_PaymentTaxesOrderByWithAggregationInput = {
+    ID?: SortOrder
+    ID_Payments?: SortOrderInput | SortOrder
+    ID_Tax?: SortOrderInput | SortOrder
+    _count?: DBT_PaymentTaxesCountOrderByAggregateInput
+    _avg?: DBT_PaymentTaxesAvgOrderByAggregateInput
+    _max?: DBT_PaymentTaxesMaxOrderByAggregateInput
+    _min?: DBT_PaymentTaxesMinOrderByAggregateInput
+    _sum?: DBT_PaymentTaxesSumOrderByAggregateInput
+  }
+
+  export type DBT_PaymentTaxesScalarWhereWithAggregatesInput = {
+    AND?: DBT_PaymentTaxesScalarWhereWithAggregatesInput | DBT_PaymentTaxesScalarWhereWithAggregatesInput[]
+    OR?: DBT_PaymentTaxesScalarWhereWithAggregatesInput[]
+    NOT?: DBT_PaymentTaxesScalarWhereWithAggregatesInput | DBT_PaymentTaxesScalarWhereWithAggregatesInput[]
+    ID?: BigIntWithAggregatesFilter<"DBT_PaymentTaxes"> | bigint | number
+    ID_Payments?: BigIntNullableWithAggregatesFilter<"DBT_PaymentTaxes"> | bigint | number | null
+    ID_Tax?: BigIntNullableWithAggregatesFilter<"DBT_PaymentTaxes"> | bigint | number | null
   }
 
   export type DBT_CustomerCreateInput = {
@@ -19279,6 +20311,7 @@ export namespace Prisma {
     ID_User?: bigint | number | null
     Time_Prepared?: Date | string | null
     Time_Delivered?: Date | string | null
+    ID_Payment?: bigint | number | null
   }
 
   export type DBT_OrderItemsUncheckedCreateInput = {
@@ -19292,6 +20325,7 @@ export namespace Prisma {
     ID_User?: bigint | number | null
     Time_Prepared?: Date | string | null
     Time_Delivered?: Date | string | null
+    ID_Payment?: bigint | number | null
   }
 
   export type DBT_OrderItemsUpdateInput = {
@@ -19305,6 +20339,7 @@ export namespace Prisma {
     ID_User?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     Time_Prepared?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     Time_Delivered?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    ID_Payment?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
   }
 
   export type DBT_OrderItemsUncheckedUpdateInput = {
@@ -19318,6 +20353,7 @@ export namespace Prisma {
     ID_User?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     Time_Prepared?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     Time_Delivered?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    ID_Payment?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
   }
 
   export type DBT_OrderItemsCreateManyInput = {
@@ -19330,6 +20366,7 @@ export namespace Prisma {
     ID_User?: bigint | number | null
     Time_Prepared?: Date | string | null
     Time_Delivered?: Date | string | null
+    ID_Payment?: bigint | number | null
   }
 
   export type DBT_OrderItemsUpdateManyMutationInput = {
@@ -19343,6 +20380,7 @@ export namespace Prisma {
     ID_User?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     Time_Prepared?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     Time_Delivered?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    ID_Payment?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
   }
 
   export type DBT_OrderItemsUncheckedUpdateManyInput = {
@@ -19356,6 +20394,7 @@ export namespace Prisma {
     ID_User?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     Time_Prepared?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     Time_Delivered?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    ID_Payment?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
   }
 
   export type DBT_OrdersCreateInput = {
@@ -19827,19 +20866,19 @@ export namespace Prisma {
   }
 
   export type DBT_PaymentsCreateInput = {
-    ID: bigint | number
+    ID?: bigint | number
     TotalAmount?: Decimal | DecimalJsLike | number | string | null
     ID_PaymentMethod?: bigint | number | null
-    Discount?: bigint | number | null
+    Discount?: Decimal | DecimalJsLike | number | string | null
     ID_Customer?: bigint | number | null
     Closed?: boolean | null
   }
 
   export type DBT_PaymentsUncheckedCreateInput = {
-    ID: bigint | number
+    ID?: bigint | number
     TotalAmount?: Decimal | DecimalJsLike | number | string | null
     ID_PaymentMethod?: bigint | number | null
-    Discount?: bigint | number | null
+    Discount?: Decimal | DecimalJsLike | number | string | null
     ID_Customer?: bigint | number | null
     Closed?: boolean | null
   }
@@ -19848,7 +20887,7 @@ export namespace Prisma {
     ID?: BigIntFieldUpdateOperationsInput | bigint | number
     TotalAmount?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     ID_PaymentMethod?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
-    Discount?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    Discount?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     ID_Customer?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     Closed?: NullableBoolFieldUpdateOperationsInput | boolean | null
   }
@@ -19857,16 +20896,15 @@ export namespace Prisma {
     ID?: BigIntFieldUpdateOperationsInput | bigint | number
     TotalAmount?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     ID_PaymentMethod?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
-    Discount?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    Discount?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     ID_Customer?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     Closed?: NullableBoolFieldUpdateOperationsInput | boolean | null
   }
 
   export type DBT_PaymentsCreateManyInput = {
-    ID: bigint | number
     TotalAmount?: Decimal | DecimalJsLike | number | string | null
     ID_PaymentMethod?: bigint | number | null
-    Discount?: bigint | number | null
+    Discount?: Decimal | DecimalJsLike | number | string | null
     ID_Customer?: bigint | number | null
     Closed?: boolean | null
   }
@@ -19875,7 +20913,7 @@ export namespace Prisma {
     ID?: BigIntFieldUpdateOperationsInput | bigint | number
     TotalAmount?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     ID_PaymentMethod?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
-    Discount?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    Discount?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     ID_Customer?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     Closed?: NullableBoolFieldUpdateOperationsInput | boolean | null
   }
@@ -19884,9 +20922,50 @@ export namespace Prisma {
     ID?: BigIntFieldUpdateOperationsInput | bigint | number
     TotalAmount?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     ID_PaymentMethod?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
-    Discount?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    Discount?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     ID_Customer?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     Closed?: NullableBoolFieldUpdateOperationsInput | boolean | null
+  }
+
+  export type DBT_PaymentTaxesCreateInput = {
+    ID?: bigint | number
+    ID_Payments?: bigint | number | null
+    ID_Tax?: bigint | number | null
+  }
+
+  export type DBT_PaymentTaxesUncheckedCreateInput = {
+    ID?: bigint | number
+    ID_Payments?: bigint | number | null
+    ID_Tax?: bigint | number | null
+  }
+
+  export type DBT_PaymentTaxesUpdateInput = {
+    ID?: BigIntFieldUpdateOperationsInput | bigint | number
+    ID_Payments?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    ID_Tax?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  }
+
+  export type DBT_PaymentTaxesUncheckedUpdateInput = {
+    ID?: BigIntFieldUpdateOperationsInput | bigint | number
+    ID_Payments?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    ID_Tax?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  }
+
+  export type DBT_PaymentTaxesCreateManyInput = {
+    ID_Payments?: bigint | number | null
+    ID_Tax?: bigint | number | null
+  }
+
+  export type DBT_PaymentTaxesUpdateManyMutationInput = {
+    ID?: BigIntFieldUpdateOperationsInput | bigint | number
+    ID_Payments?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    ID_Tax?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  }
+
+  export type DBT_PaymentTaxesUncheckedUpdateManyInput = {
+    ID?: BigIntFieldUpdateOperationsInput | bigint | number
+    ID_Payments?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    ID_Tax?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
   }
 
   export type BigIntFilter<$PrismaModel = never> = {
@@ -20336,6 +21415,7 @@ export namespace Prisma {
     ID_User?: SortOrder
     Time_Prepared?: SortOrder
     Time_Delivered?: SortOrder
+    ID_Payment?: SortOrder
   }
 
   export type DBT_OrderItemsAvgOrderByAggregateInput = {
@@ -20344,6 +21424,7 @@ export namespace Prisma {
     ID_Variant?: SortOrder
     Price?: SortOrder
     ID_User?: SortOrder
+    ID_Payment?: SortOrder
   }
 
   export type DBT_OrderItemsMaxOrderByAggregateInput = {
@@ -20357,6 +21438,7 @@ export namespace Prisma {
     ID_User?: SortOrder
     Time_Prepared?: SortOrder
     Time_Delivered?: SortOrder
+    ID_Payment?: SortOrder
   }
 
   export type DBT_OrderItemsMinOrderByAggregateInput = {
@@ -20370,6 +21452,7 @@ export namespace Prisma {
     ID_User?: SortOrder
     Time_Prepared?: SortOrder
     Time_Delivered?: SortOrder
+    ID_Payment?: SortOrder
   }
 
   export type DBT_OrderItemsSumOrderByAggregateInput = {
@@ -20378,6 +21461,7 @@ export namespace Prisma {
     ID_Variant?: SortOrder
     Price?: SortOrder
     ID_User?: SortOrder
+    ID_Payment?: SortOrder
   }
 
   export type DateTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
@@ -20735,6 +21819,36 @@ export namespace Prisma {
     ID_PaymentMethod?: SortOrder
     Discount?: SortOrder
     ID_Customer?: SortOrder
+  }
+
+  export type DBT_PaymentTaxesCountOrderByAggregateInput = {
+    ID?: SortOrder
+    ID_Payments?: SortOrder
+    ID_Tax?: SortOrder
+  }
+
+  export type DBT_PaymentTaxesAvgOrderByAggregateInput = {
+    ID?: SortOrder
+    ID_Payments?: SortOrder
+    ID_Tax?: SortOrder
+  }
+
+  export type DBT_PaymentTaxesMaxOrderByAggregateInput = {
+    ID?: SortOrder
+    ID_Payments?: SortOrder
+    ID_Tax?: SortOrder
+  }
+
+  export type DBT_PaymentTaxesMinOrderByAggregateInput = {
+    ID?: SortOrder
+    ID_Payments?: SortOrder
+    ID_Tax?: SortOrder
+  }
+
+  export type DBT_PaymentTaxesSumOrderByAggregateInput = {
+    ID?: SortOrder
+    ID_Payments?: SortOrder
+    ID_Tax?: SortOrder
   }
 
   export type BigIntFieldUpdateOperationsInput = {
@@ -21102,6 +22216,10 @@ export namespace Prisma {
      * @deprecated Use DBT_PaymentsDefaultArgs instead
      */
     export type DBT_PaymentsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = DBT_PaymentsDefaultArgs<ExtArgs>
+    /**
+     * @deprecated Use DBT_PaymentTaxesDefaultArgs instead
+     */
+    export type DBT_PaymentTaxesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = DBT_PaymentTaxesDefaultArgs<ExtArgs>
 
   /**
    * Batch Payload for updateMany & deleteMany & createMany

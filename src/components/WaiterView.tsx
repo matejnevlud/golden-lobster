@@ -6,9 +6,10 @@ import { parseBasic } from "@/utils/xmlParser";
 import Workspace from "@/components/Workspace";
 import { useEffect, useState } from "react";
 import { DataGrid } from "@mui/x-data-grid";
-import { Box, Button, CardHeader, Checkbox, FormControlLabel, FormGroup, Modal, Typography } from "@mui/material";
-import { changeOrderItemVariant, createNewOrder, createNewOrderItem, DB_cancelOrderItem, DB_changeOrderItemVariant } from "@/db";
+import { Box, Button, ButtonGroup, CardHeader, Checkbox, FormControlLabel, FormGroup, InputAdornment, Modal, TextField, ToggleButton, ToggleButtonGroup, Typography } from "@mui/material";
+import { changeOrderItemVariant, createNewOrder, createNewOrderItem, DB_bindOrderItemToPayment, DB_bindTaxToPayment, DB_cancelOrder, DB_cancelOrderItem, DB_changeOrderItemVariant, DB_closeOrder, DB_createPayment } from "@/db";
 import { DBT_Meals } from "../../generated/prisma-client";
+import { DBT_OrderItems } from "@prisma/client";
 
 export default function WaiterView(props) {
 
@@ -18,9 +19,12 @@ export default function WaiterView(props) {
     const parser = new XMLParser({ ignoreAttributes : false });
     let jsonObj = parser.parse(headLayout?.Xml ?? "");
 
-
+    const [ordersFilterToggle, setOrdersFilterToggle] = useState('active');
     const [orders, setOrders] = useState(props.orders);
     const [orderItems, setOrderItems] = useState(props.orderItems);
+    const [payments, setPayments] = useState(props.payments);
+    const [paymentTaxes, setPaymentTaxes] = useState(props.paymentTaxes);
+
 
     const [currentMealGroupID, setCurrentMealGroupID] = useState<bigint>(BigInt(localStorage.getItem('mealGroup') ?? '1'));
     const [selectedOrderId, setSelectedOrderId] = useState<bigint | null>(null);
@@ -33,9 +37,16 @@ export default function WaiterView(props) {
 
     const [openPayModal, setOpenPayModal] = useState(false);
     const [checkboxes, setCheckboxes] = useState({ });
-    const [orderCost, setOrderCost] = useState(0);
-    const [orderTaxes, setOrderTaxes] = useState(0);
-    const [orderTotal, setOrderTotal] = useState(0);
+    const [newPaymentCost, setNewPaymentCost] = useState(0);
+    const [newPaymentTaxes, setNewPaymentTaxes] = useState(0);
+    const [newPaymentTotal, setNewPaymentTotal] = useState(0);
+    const [discountText, setDiscountText] = useState('');
+    const [discount, setDiscount] = useState(0);
+    const [newPaymentTotalAfterDiscount, setNewPaymentTotalAfterDiscount] = useState(0);
+
+
+    const [orderSum, setOrderSum] = useState(0);
+    const [orderSumToPay, setOrderSumToPay] = useState(0);
 
 
     useEffect(() => {
@@ -43,7 +54,11 @@ export default function WaiterView(props) {
 
         var newCheckboxes = {};
 
-        const ois = orderItems.filter((orderItem) => orderItem.ID_Order == selectedOrderId);
+
+
+        setOrderSum(orderItems.filter((orderItem) => orderItem.ID_Order == selectedOrderId && !orderItem.Canceled).reduce((acc, oi) => acc + parseFloat(oi.Price ?? '0'), 0));
+        setOrderSumToPay(orderItems.filter((orderItem) => orderItem.ID_Order == selectedOrderId && !orderItem.Canceled && !orderItem.ID_Payment).reduce((acc, oi) => acc + parseFloat(oi.Price ?? '0'), 0));
+        const ois = orderItems.filter((orderItem) => orderItem.ID_Order == selectedOrderId && !orderItem.Canceled && !orderItem.ID_Payment);
         for (const orderItem of ois) {
             newCheckboxes[orderItem.ID.toString()] = true;
         }
@@ -57,6 +72,8 @@ export default function WaiterView(props) {
         }
 
         setCheckboxes(newCheckboxes);
+        setDiscount(0);
+        setDiscountText('');
 
     }, [selectedOrderId, orderItems]);
 
@@ -78,6 +95,21 @@ export default function WaiterView(props) {
         setCheckboxes({ ...checkboxes, [e.target.name]: e.target.checked });
     }
 
+    const hasPaymentChecked = () => {
+        return Object.keys(checkboxes).some((key) => paymentMethods.some((paymentMethod) => paymentMethod.PaymentMethod == key) && checkboxes[key]);
+    }
+
+
+    const isOrderCanceled = () => {
+        return orders.find((order) => order.ID == selectedOrderId)?.Canceled;
+    }
+    const isOrderClosed = () => {
+        return orders.find((order) => order.ID == selectedOrderId)?.OrderClosed;
+    }
+    const isOrderClosedOrCanceled = () => {
+        return isOrderCanceled() || isOrderClosed();
+    }
+
     useEffect(() => {
         if (!selectedOrderId) return;
         if (Object.keys(checkboxes).length === 0) return;
@@ -95,11 +127,12 @@ export default function WaiterView(props) {
 
         console.log('cost', cost, 'tax', tax, 'total', total)
 
-        setOrderCost(cost);
-        setOrderTaxes(tax);
-        setOrderTotal(total);
+        setNewPaymentCost(cost);
+        setNewPaymentTaxes(tax);
+        setNewPaymentTotal(total);
+        setNewPaymentTotalAfterDiscount(total - discount);
 
-    }, [checkboxes, orderItems]);
+    }, [checkboxes, orderItems, discount]);
 
     window.addEventListener('storage', function(event) {
         console.log('storage event', event)
@@ -107,9 +140,6 @@ export default function WaiterView(props) {
             setCurrentMealGroupID(BigInt(event.newValue));
         }
 
-        if (event.key === 'language') {
-            window.location.reload();
-        }
     });
 
     const addMealToOrder = async (mealId: bigint) => {
@@ -175,6 +205,8 @@ export default function WaiterView(props) {
 
         setOrders([...orders, newOrder]);
         setOpenTableModal(false)
+
+        setSelectedOrderId(newOrder.ID);
     }
 
     const renderOrdersList = () => {
@@ -193,22 +225,35 @@ export default function WaiterView(props) {
             ID_Table: parseInt(order.ID_Table),
             Table: tables.find((table) => table.ID == order.ID_Table)?.TableName,
             ID_Customer: parseInt(order.ID_Customer),
-            DateTime: order.DateTime?.toLocaleTimeString(),
+            DateTime: order.DateTime?.toLocaleString(),
             Canceled: order.Canceled,
             Price: order.Price,
             OrderClosed: order.OrderClosed,
-        }));
+        })).filter((order) => ordersFilterToggle == 'active' ? !order.OrderClosed && !order.Canceled : ordersFilterToggle == 'closed' ? order.OrderClosed : ordersFilterToggle == 'canceled' ? order.Canceled : true);
 
         return (
-            <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', height: '100vh' }}>
 
-                <div className="flex justify-items-center me-4">
-                    <CardHeader title="Orders" className="flex-1" />
-                    <div className="mt-3.5">
-                        <Button variant={"contained"} className="p-4" onClick={() => setOpenTableModal(true)}>Create New Order</Button>
-                    </div>
+                <div className="flex items-center me-4">
+                    <CardHeader title="Orders" className=""/>
+                    <ToggleButtonGroup
+                        color="primary"
+                        value={ordersFilterToggle}
+                        exclusive
+                        onChange={(e, newValue) => setOrdersFilterToggle(newValue)}
+                        aria-label="Platform"
+                    >
+                        <ToggleButton value="active">Active</ToggleButton>
+                        <ToggleButton value="closed">Closed</ToggleButton>
+                        <ToggleButton value="canceled">Canceled</ToggleButton>
+                        <ToggleButton value="all">All</ToggleButton>
+                    </ToggleButtonGroup>
+                    <div className="flex-1"></div>
+                    <Button variant={"contained"} className="p-4" onClick={() => setOpenTableModal(true)}>Create New Order</Button>
+
                 </div>
                 <DataGrid
+                    isRowSelectable={() => false}
                     style={{flex:1}}
                     initialState={{
                         sorting: {
@@ -259,7 +304,61 @@ export default function WaiterView(props) {
 
 
 
+    const pay = async () => {
+        console.log('pay')
+        const ois = orderItems.filter((orderItem) => orderItem.ID_Order == selectedOrderId && checkboxes[orderItem.ID.toString()] && !orderItem.Canceled);
+        const ts = taxes.filter((tax) => checkboxes[tax.TaxName]);
+        const paymentMethod = paymentMethods.find((paymentMethod) => checkboxes[paymentMethod.PaymentMethod]);
 
+        console.log('ois', ois, 'ts', ts, 'paymentMethod', paymentMethod)
+
+        if (!paymentMethod) return;
+        if (!ois.length) return;
+
+
+        // 1. Create DBT_Payment
+        const newPayment = await DB_createPayment(newPaymentTotal, discount, paymentMethod.ID);
+        if (!newPayment) return;
+
+        // 2. Update DBT_OrderItem with ID_Payment
+        const updatedOrderItems: DBT_OrderItems[] = [];
+        for (const oi of ois) {
+            const updatedOrderItem = await DB_bindOrderItemToPayment(oi.ID, newPayment.ID);
+            updatedOrderItems.push(updatedOrderItem);
+        }
+
+        // 3. Create multiple DBT_PaymentTax
+        for (const t of ts) {
+            await DB_bindTaxToPayment(t.ID, newPayment.ID);
+        }
+
+        // Revalidate the orderItems and payments
+        setOrderItems(orderItems.map((orderItem: DBT_OrderItems) => updatedOrderItems.find((oi) => oi.ID == orderItem.ID) ?? orderItem));
+        setPayments([...payments, newPayment]);
+        setPaymentTaxes([...paymentTaxes, ...ts]);
+        setCheckboxes({});
+        setDiscount(0);
+        setDiscountText('');
+        setOpenPayModal(false);
+
+
+    }
+
+    const closeOrder = async () => {
+        const updatedOrder = await DB_closeOrder(selectedOrderId);
+        if (!updatedOrder) return;
+        setOrders(orders.map((order) => order.ID == selectedOrderId ? updatedOrder : order));
+        setSelectedOrderId(null);
+
+    }
+
+    const cancelOrder = async () => {
+        const { updatedOrder, updatedOrderItems } = await DB_cancelOrder(selectedOrderId);
+        if (!updatedOrder) return;
+        setOrders(orders.map((order) => order.ID == selectedOrderId ? updatedOrder : order));
+        setOrderItems(orderItems.map((orderItem) => updatedOrderItems.find((oi) => oi.ID == orderItem.ID) ?? orderItem));
+        setSelectedOrderId(null);
+    }
     const cancelOrderItem = async (orderItemId: number) => {
         const orderItem = orderItems.find((orderItem) => orderItem.ID == orderItemId);
         if (!orderItem) return;
@@ -286,6 +385,7 @@ export default function WaiterView(props) {
             { field: 'TimeOfOrder', headerName: 'TimeOfOrder', flex: 1},
             { field: 'Price', headerName: 'Price', flex: 1 },
             { field: 'Canceled', headerName: 'Canceled', renderCell: (params) => params.value ? 'Canceled' : '' },
+            { field: 'Status', headerName: 'Status'},
         ]
 
         const rows = orderItems.filter((orderItem) => orderItem.ID_Order == selectedOrderId).map((orderItem) =>  ({
@@ -295,28 +395,33 @@ export default function WaiterView(props) {
             Meal: meals.find((meal) => meal.ID == orderItem.ID_Meal)?.Meal,
             ID_Variant: parseInt(orderItem.ID_Variant),
             Variant: variants.find((variant) => variant.ID == orderItem.ID_Variant)?.MealVariant,
-            TimeOfOrder: orderItem.TimeOfOrder?.toLocaleTimeString(),
-            Canceled: orderItem.Canceled,
+            TimeOfOrder: orderItem.TimeOfOrder?.toLocaleString(),
             Price: orderItem.Price,
-            OrderClosed: orderItem.OrderClosed,
+            Canceled: orderItem.Canceled,
+            ID_Payment: orderItem.ID_Payment,
+
+
+            Status: orderItem.ID_Payment ? 'Paid' : orderItem.Canceled ? 'Canceled' : '',
         }));
 
-
         return (
-            <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', height: '100vh' }}>
 
-                <div className="flex justify-items-center me-4">
-                    <div className="mt-3.5 ms-4">
-                        <Button variant={"contained"} className="p-4" onClick={() => setSelectedOrderId(null)}>Back</Button>
-                    </div>
+                <div className="flex items-center me-4 ms-4">
+
+                    <Button variant={"contained"} className="p-4" onClick={() => setSelectedOrderId(null)}>Back</Button>
                     <CardHeader title={"Order no. " + selectedOrderId} className="flex-1"/>
+                    {isOrderClosed() && <CardHeader title={"ORDER IS CLOSED"} className="flex-1"/>}
+                    {isOrderCanceled() && <CardHeader title={"ORDER IS CANCELED"} className="flex-1"/>}
+                    {!isOrderClosedOrCanceled() && <Button variant={"contained"} className="p-4" color={"error"} onClick={() => cancelOrder()}>Cancel Order</Button>}
                 </div>
                 <DataGrid
-                    style={{ flex: 1 }}
+                    isRowSelectable={() => false}
+                    style={{ flex: 1, overflow: 'scroll' }}
                     initialState={{
                         sorting: {
                             sortModel: [
-                                { field: 'OrderClosed', sort: 'asc' },
+                                { field: 'Canceled', sort: 'asc' },
                                 { field: 'DateTime', sort: 'desc' },
                             ],
                         },
@@ -331,23 +436,31 @@ export default function WaiterView(props) {
                     setSelectedOrderItemId(id);
                     setOpenOrderItemActionsModal(true);
                 }}
-                    getRowClassName={(params) => params.row.Canceled ? 'bg-red-200' : ''}
+                    getRowClassName={(params) => params.row.Status == 'Canceled' ? 'bg-red-200' : params.row.Status == 'Paid' ? 'bg-green-200' : '' }
                 />
+                {!isOrderClosedOrCanceled() &&
                 <div className="flex justify-items-center me-4">
                     <div className="mt-3.5 ms-4 mb-3.5">
-
+                        Sum : OMR {orderSum.toFixed(3)}
                     </div>
                     <div className="mt-3.5 ms-4 mb-3.5">
-
+                        Sum To Pay : OMR {orderSumToPay.toFixed(3)}
                     </div>
                     <div className="mt-3.5 ms-4 mb-3.5">
 
                     </div>
                     <div className="flex-1"></div>
-                    <div className="mt-3.5 ms-4 mb-3.5">
+                    <div className="mt-3.5 ms-4 mb-3.5 flex">
+
+                        <div className="p-2"></div>
                         <Button variant={"contained"} className="p-4" color={"success"} onClick={() => setOpenPayModal(true)}>Pay Order</Button>
+                        <div className="p-2"></div>
+                        <Button disabled={orderSumToPay > 0} variant={"contained"} className="p-4" color={"success"} onClick={() => closeOrder()}>Close Order</Button>
+
                     </div>
                 </div>
+                }
+
                 <Modal
                     open={openOrderItemActionsModal}
                     onClose={() => setOpenOrderItemActionsModal(false)}
@@ -400,44 +513,99 @@ export default function WaiterView(props) {
                         boxShadow: 24,
                         p: 4,
                         overflow: 'scroll',
+                        display: 'flex',
+                        flexDirection: 'column',
+                        maxHeight: '95vh',
                     }}>
                         <Typography variant="h6" component="h2" className="pt-2 pb-2">
                             Items to pay
                         </Typography>
-                        <div className="flex flex-col">
+                        <div className="flex-1">
                             <FormGroup>
-                            {orderItems.filter((orderItem) => orderItem.ID_Order == selectedOrderId).map((orderItem) => (
-                                <FormControlLabel key={orderItem.ID} control={<Checkbox disabled checked={checkboxes[orderItem.ID.toString()]} onChange={onCheckboxChange} name={orderItem.ID.toString()}/>} label={`${meals.find((meal) => meal.ID == orderItem.ID_Meal)?.Meal} ${variants.find((variant) => variant.ID == orderItem.ID_Variant)?.MealVariant ?? ''}`} />
-                            ))}
+                                {orderItems.filter((orderItem) => orderItem.ID_Order == selectedOrderId && !orderItem.Canceled && !orderItem.ID_Payment).map((orderItem) => (
+                                    <FormControlLabel key={orderItem.ID}
+                                                      control={<Checkbox checked={checkboxes[orderItem.ID.toString()]}
+                                                                         onChange={onCheckboxChange}
+                                                                         name={orderItem.ID.toString()}/>}
+                                                      label={`${meals.find((meal) => meal.ID == orderItem.ID_Meal)?.Meal} ${variants.find((variant) => variant.ID == orderItem.ID_Variant)?.MealVariant ?? ''}   -   OMR ${orderItem.Price}`}/>
+                                ))}
                             </FormGroup>
                         </div>
                         <Typography variant="h6" component="h2" className="pt-2 pb-2">
                             Taxes
                         </Typography>
-                        <div className="flex">
+                        <div className="flex-1">
                             {taxes.map((tax) => (
-                                <FormControlLabel key={tax.ID} control={<Checkbox name={tax.TaxName} checked={checkboxes[tax.TaxName]} onChange={onCheckboxChange} />} label={`${tax.TaxName} - ${tax.Percentage ? tax.Percentage + '%' : tax.Value}`} />
+                                <FormControlLabel key={tax.ID} control={<Checkbox name={tax.TaxName} checked={checkboxes[tax.TaxName]} onChange={onCheckboxChange}/>} label={`${tax.TaxName} - ${tax.Percentage ? tax.Percentage + '%' : tax.Value}`}/>
                             ))}
+                        </div>
+                        <Typography variant="h6" component="h2" className="pt-2 pb-2">
+                            Discount
+                        </Typography>
+                        <div className="flex-1 flex items-center">
+                            <TextField
+                                id="outlined-basic"
+                                variant="outlined"
+                                value={discountText}
+                                onChange={(e) => {
+                                    setDiscountText(e.target.value);
+
+                                    if (e.target.value == '') {
+                                        setDiscount(0);
+                                    }
+                                    else if (isNaN(parseFloat(e.target.value))) setDiscount(0);
+                                    else setDiscount(parseFloat(e.target.value));
+                                }}
+                                sx={{ width: '25ch' }}
+                                InputProps={{
+                                    startAdornment: <InputAdornment position="start">OMR</InputAdornment>,
+                                }}
+                            />
+
+                            <ButtonGroup variant="text" aria-label="Basic button group">
+                                <Button onClick={() => {
+                                    setDiscountText(Math.floor(newPaymentTotal * 0.05 * 1000) / 1000)
+                                    setDiscount(Math.floor(newPaymentTotal * 0.05 * 1000) / 1000)
+                                }}>5 %</Button>
+                                <Button onClick={() => {
+                                    setDiscountText(Math.floor(newPaymentTotal * 0.1 * 1000) / 1000)
+                                    setDiscount(Math.floor(newPaymentTotal * 0.1 * 1000) / 1000)
+                                }}>10 %</Button>
+                                <Button onClick={() => {
+                                    setDiscountText(Math.floor(newPaymentTotal * 0.15 * 1000) / 1000)
+                                    setDiscount(Math.floor(newPaymentTotal * 0.15 * 1000) / 1000)
+                                }}>15 %</Button>
+                            </ButtonGroup>
                         </div>
                         <Typography variant="h6" component="h2" className="pt-2 pb-2">
                             Payment type
                         </Typography>
                         <div className="flex">
                             {paymentMethods.map((paymentMethod) => (
-                                <FormControlLabel key={paymentMethod.ID} control={<Checkbox name={paymentMethod.PaymentMethod} checked={checkboxes[paymentMethod.PaymentMethod]} onChange={onCheckboxChange} />} label={`${paymentMethod.PaymentMethod}`} />
+                                <FormControlLabel key={paymentMethod.ID} control={<Checkbox name={paymentMethod.PaymentMethod} checked={checkboxes[paymentMethod.PaymentMethod]} onChange={onCheckboxChange}/>} label={`${paymentMethod.PaymentMethod}`}/>
                             ))}
                         </div>
 
-                        <div id="horizontal-line" style={{borderTop: '1px solid black', width: '100%', margin: '10px 0'}}></div>
+                        <div id="horizontal-line" style={{ borderTop: '1px solid black', width: '100%', margin: '10px 0' }}></div>
                         <Typography variant="h6" component="h6" className="pt-2 pb-2">
-                            Cost: OMR {orderCost.toFixed(3)}
+                            Cost: OMR {newPaymentCost.toFixed(3)}
                         </Typography>
                         <Typography variant="h6" component="h6" className="pt-2 pb-2">
-                            Taxes: OMR {orderTaxes.toFixed(3)}
+                            Taxes: OMR {newPaymentTaxes.toFixed(3)}
                         </Typography>
-                        <Typography variant="h4" component="h6" className="pt-2 pb-2">
-                            Total: OMR {orderTotal.toFixed(3)}
+                        <Typography variant="h6" component="h6" className="pt-2 pb-2">
+                            Subtotal: OMR {newPaymentTotal.toFixed(3)}
                         </Typography>
+                        <Typography variant="h6" component="h6" className="pt-2 pb-2">
+                            Discount: OMR {discount.toFixed(3)}
+                        </Typography>
+                        <div className="flex justify-items-center me-4">
+                            <Typography variant="h4" component="h6" className="pt-2 pb-2">
+                                Total: OMR {newPaymentTotalAfterDiscount.toFixed(3)}
+                            </Typography>
+                            <div className="flex-1"></div>
+                            <Button disabled={!hasPaymentChecked()} variant={"contained"} className="p-4" color={"success"} onClick={pay}>Pay</Button>
+                        </div>
                     </Box>
                 </Modal>
             </div>

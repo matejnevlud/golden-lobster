@@ -82,6 +82,7 @@ model DBT_OrderItems {
   ID_User        BigInt?
   Time_Prepared  DateTime? @db.DateTime
   Time_Delivered DateTime? @db.DateTime
+  ID_Payment     BigInt?
 }
 
 model DBT_Orders {
@@ -153,10 +154,16 @@ model DBT_PaymentDetail {
 }
 
 model DBT_Payments {
-  ID               BigInt   @id(map: "PK_DBT_Payments")
-  TotalAmount      Decimal? @db.Decimal(18, 0)
+  ID               BigInt   @id(map: "PK_DBT_Payments") @default(autoincrement())
+  TotalAmount      Decimal? @db.Decimal(18, 3)
   ID_PaymentMethod BigInt?
-  Discount         BigInt?
+  Discount         Decimal? @db.Decimal(18, 3)
   ID_Customer      BigInt?
   Closed           Boolean?
+}
+
+model DBT_PaymentTaxes {
+  ID          BigInt  @id(map: "PK_DBT_PaymentTaxes") @default(autoincrement())
+  ID_Payments BigInt?
+  ID_Tax      BigInt?
 }

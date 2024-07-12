@@ -190,7 +190,8 @@ exports.Prisma.DBT_OrderItemsScalarFieldEnum = {
   TimeOfOrder: 'TimeOfOrder',
   ID_User: 'ID_User',
   Time_Prepared: 'Time_Prepared',
-  Time_Delivered: 'Time_Delivered'
+  Time_Delivered: 'Time_Delivered',
+  ID_Payment: 'ID_Payment'
 };
 
 exports.Prisma.DBT_OrdersScalarFieldEnum = {
@@ -270,6 +271,12 @@ exports.Prisma.DBT_PaymentsScalarFieldEnum = {
   Closed: 'Closed'
 };
 
+exports.Prisma.DBT_PaymentTaxesScalarFieldEnum = {
+  ID: 'ID',
+  ID_Payments: 'ID_Payments',
+  ID_Tax: 'ID_Tax'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -298,7 +305,8 @@ exports.Prisma.ModelName = {
   DBT_MealsInGroups: 'DBT_MealsInGroups',
   DBT_Variants: 'DBT_Variants',
   DBT_PaymentDetail: 'DBT_PaymentDetail',
-  DBT_Payments: 'DBT_Payments'
+  DBT_Payments: 'DBT_Payments',
+  DBT_PaymentTaxes: 'DBT_PaymentTaxes'
 };
 
 /**

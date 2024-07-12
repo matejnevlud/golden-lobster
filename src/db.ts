@@ -1,5 +1,5 @@
 'use server';
-import { DBT_Layouts, DBT_MealGroups, DBT_Meals, DBT_Variants, PrismaClient, DBT_Languages, DBT_MealsInGroups, DBT_MenuSetUp, DBT_Orders, DBT_OrderItems, DBT_PaymentMethods, DBT_Customer, DBT_Tables, DBT_Users, DBT_Taxes } from '../generated/prisma-client'
+import { DBT_Layouts, DBT_MealGroups, DBT_Meals, DBT_Variants, PrismaClient, DBT_Languages, DBT_MealsInGroups, DBT_MenuSetUp, DBT_Orders, DBT_OrderItems, DBT_PaymentMethods, DBT_Customer, DBT_Tables, DBT_Users, DBT_Taxes, DBT_Payments, DBT_PaymentTaxes } from '../generated/prisma-client'
 
 
 
@@ -144,6 +144,9 @@ export type WAITER_DATA = {
     users: DBT_Users[]
     taxes: DBT_Taxes[]
 
+    payments: DBT_Payments[]
+    paymentTaxes: DBT_PaymentTaxes[]
+
 }
 export async function getWaiterData(): Promise<WAITER_DATA> {
     const customers = await prisma.dBT_Customer.findMany();
@@ -154,7 +157,10 @@ export async function getWaiterData(): Promise<WAITER_DATA> {
     const users = await prisma.dBT_Users.findMany();
     const taxes = await prisma.dBT_Taxes.findMany();
 
-    return { customers, orders, orderItems, paymentMethods, tables, users, taxes };
+    const payments = await prisma.dBT_Payments.findMany();
+    const paymentTaxes = await prisma.dBT_PaymentTaxes.findMany();
+
+    return { customers, orders, orderItems, paymentMethods, tables, users, taxes, payments, paymentTaxes };
 }
 
 
@@ -248,7 +254,7 @@ export async function DB_changeOrderItemVariant(order_item_id: number, variant_i
     return orderItem;
 }
 
-export async function DB_cancelOrderItem(order_item_id: number): Promise<DBT_OrderItems> {
+export async function DB_cancelOrderItem(order_item_id: number | bigint): Promise<DBT_OrderItems> {
     const orderItem = await prisma.dBT_OrderItems.update({
         where: { ID: order_item_id },
         data: {
@@ -256,4 +262,83 @@ export async function DB_cancelOrderItem(order_item_id: number): Promise<DBT_Ord
         }
     });
     return orderItem;
+}
+
+
+export async function DB_createPayment(total_amount: number, discount: number, payment_method_id: number): Promise<DBT_Payments> {
+    const payment = await prisma.dBT_Payments.create({
+        data: {
+            TotalAmount: total_amount,
+            ID_PaymentMethod: payment_method_id,
+            Discount: discount,
+        }
+    });
+
+    return payment;
+}
+
+export async function DB_bindOrderItemToPayment(order_item_id: number | bigint, payment_id: number | bigint): Promise<DBT_OrderItems> {
+    const orderItem = await prisma.dBT_OrderItems.update({
+        where: { ID: order_item_id },
+        data: {
+            ID_Payment: payment_id,
+        }
+    });
+    return orderItem;
+}
+
+export async function DB_bindTaxToPayment(tax_id: number | bigint, payment_id: number | bigint): Promise<DBT_PaymentTaxes> {
+    const paymentTax = await prisma.dBT_PaymentTaxes.create({
+        data: {
+            ID_Payments: payment_id,
+            ID_Tax: tax_id,
+        }
+    });
+    return paymentTax;
+}
+
+
+export async function DB_closeOrder(order_id: number | bigint): Promise<DBT_Orders> {
+
+    // select all payment ids from all orderitems where order_id = order_id
+    const orderItems = await prisma.dBT_OrderItems.findMany({ where: { ID_Order: String(order_id) } });
+
+    // get only unique payment ids
+    const paymentIDs = orderItems.map(orderItem => orderItem.ID_Payment).filter((value, index, self) => self.indexOf(value) === index);
+
+    let paymentAmounts: number = 0;
+    for (const paymentID of paymentIDs) {
+        if (!paymentID) continue;
+        const payment = await prisma.dBT_Payments.findFirst({ where: { ID: paymentID } });
+        paymentAmounts += payment?.TotalAmount?.toNumber() ?? 0;
+    }
+
+
+    const order = await prisma.dBT_Orders.update({
+        where: { ID: order_id },
+        data: {
+            OrderClosed: true,
+            Price: paymentAmounts
+        }
+    });
+    return order;
+}
+
+export async function DB_cancelOrder(order_id: number | bigint): Promise<{ updatedOrder: DBT_Orders, updatedOrderItems: DBT_OrderItems[] }> {
+    const updatedOrder = await prisma.dBT_Orders.update({
+        where: { ID: order_id },
+        data: {
+            Canceled: true,
+        }
+    });
+
+    // cancel all order items
+    const orderItems = await prisma.dBT_OrderItems.findMany({ where: { ID_Order: String(order_id) } });
+    const updatedOrderItems = [];
+    for (const orderItem of orderItems) {
+        const updatedOI = await DB_cancelOrderItem(orderItem.ID);
+        updatedOrderItems.push(updatedOI);
+    }
+
+    return { updatedOrder, updatedOrderItems };
 }
