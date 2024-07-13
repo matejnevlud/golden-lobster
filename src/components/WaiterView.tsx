@@ -370,14 +370,16 @@ export default function WaiterView(props) {
         }
 
         // 3. Create multiple DBT_PaymentTax
+        const newPts = [];
         for (const t of ts) {
-            await DB_bindTaxToPayment(t.ID, newPayment.ID);
+            const newpt = await DB_bindTaxToPayment(t.ID, newPayment.ID);
+            newPts.push(newpt);
         }
 
         // Revalidate the orderItems and payments
         setOrderItems(orderItems.map((orderItem: DBT_OrderItems) => updatedOrderItems.find((oi) => oi.ID == orderItem.ID) ?? orderItem));
         setPayments([...payments, newPayment]);
-        setPaymentTaxes([...paymentTaxes, ...ts]);
+        setPaymentTaxes([...paymentTaxes, ...newPts]);
         setCheckboxes({});
         setDiscount(0);
         setDiscountText('');
