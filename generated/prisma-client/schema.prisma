@@ -154,12 +154,15 @@ model DBT_PaymentDetail {
 }
 
 model DBT_Payments {
-  ID               BigInt   @id(map: "PK_DBT_Payments") @default(autoincrement())
-  TotalAmount      Decimal? @db.Decimal(18, 3)
+  ID               BigInt    @id(map: "PK_DBT_Payments") @default(autoincrement())
+  TotalAmount      Decimal?  @db.Decimal(18, 3)
   ID_PaymentMethod BigInt?
-  Discount         Decimal? @db.Decimal(18, 3)
+  Discount         Decimal?  @db.Decimal(18, 3)
   ID_Customer      BigInt?
   Closed           Boolean?
+  ItemsCost        Decimal?  @db.Decimal(18, 3)
+  Taxes            Decimal?  @db.Decimal(18, 3)
+  TimeOfPay        DateTime? @default(now(), map: "DF__DBT_Payme__TimeO__160F4887") @db.DateTime
 }
 
 model DBT_PaymentTaxes {

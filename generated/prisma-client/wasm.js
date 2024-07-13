@@ -268,7 +268,10 @@ exports.Prisma.DBT_PaymentsScalarFieldEnum = {
   ID_PaymentMethod: 'ID_PaymentMethod',
   Discount: 'Discount',
   ID_Customer: 'ID_Customer',
-  Closed: 'Closed'
+  Closed: 'Closed',
+  ItemsCost: 'ItemsCost',
+  Taxes: 'Taxes',
+  TimeOfPay: 'TimeOfPay'
 };
 
 exports.Prisma.DBT_PaymentTaxesScalarFieldEnum = {

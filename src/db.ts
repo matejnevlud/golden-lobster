@@ -150,15 +150,17 @@ export type WAITER_DATA = {
 }
 export async function getWaiterData(): Promise<WAITER_DATA> {
     const customers = await prisma.dBT_Customer.findMany();
-    const orders = await prisma.dBT_Orders.findMany();
-    const orderItems = await prisma.dBT_OrderItems.findMany();
+    // get last 1000 orders
+    const orders = await prisma.dBT_Orders.findMany({ take: 10000, orderBy: { ID: 'desc' } });
+    // get last 10000 orders
+    const orderItems = await prisma.dBT_OrderItems.findMany({ take: 10000, orderBy: { ID: 'desc' } });
     const paymentMethods = await prisma.dBT_PaymentMethods.findMany();
     const tables = await prisma.dBT_Tables.findMany();
     const users = await prisma.dBT_Users.findMany();
     const taxes = await prisma.dBT_Taxes.findMany();
 
-    const payments = await prisma.dBT_Payments.findMany();
-    const paymentTaxes = await prisma.dBT_PaymentTaxes.findMany();
+    const payments = await prisma.dBT_Payments.findMany({ take: 10000, orderBy: { ID: 'desc' } });
+    const paymentTaxes = await prisma.dBT_PaymentTaxes.findMany({ take: 10000, orderBy: { ID: 'desc' } });
 
     return { customers, orders, orderItems, paymentMethods, tables, users, taxes, payments, paymentTaxes };
 }
@@ -265,12 +267,14 @@ export async function DB_cancelOrderItem(order_item_id: number | bigint): Promis
 }
 
 
-export async function DB_createPayment(total_amount: number, discount: number, payment_method_id: number): Promise<DBT_Payments> {
+export async function DB_createPayment(total_amount: number, discount: number, payment_method_id: number, items_cost: number, taxes: number): Promise<DBT_Payments> {
     const payment = await prisma.dBT_Payments.create({
         data: {
-            TotalAmount: total_amount,
             ID_PaymentMethod: payment_method_id,
             Discount: discount,
+            ItemsCost: items_cost,
+            Taxes: taxes,
+            TotalAmount: total_amount,
         }
     });
 
@@ -342,3 +346,4 @@ export async function DB_cancelOrder(order_id: number | bigint): Promise<{ updat
 
     return { updatedOrder, updatedOrderItems };
 }
+

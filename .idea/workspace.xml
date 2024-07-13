@@ -14,6 +14,7 @@
       <change beforePath="$PROJECT_DIR$/generated/prisma-client/schema.prisma" beforeDir="false" afterPath="$PROJECT_DIR$/generated/prisma-client/schema.prisma" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/generated/prisma-client/wasm.js" beforeDir="false" afterPath="$PROJECT_DIR$/generated/prisma-client/wasm.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/prisma/schema.prisma" beforeDir="false" afterPath="$PROJECT_DIR$/prisma/schema.prisma" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/menu/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/waiter/page.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/WaiterView.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/WaiterView.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/db.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/db.ts" afterDir="false" />
     </list>
@@ -125,7 +126,8 @@
       <workItem from="1720035724529" duration="41000" />
       <workItem from="1720435128038" duration="4823000" />
       <workItem from="1720462827536" duration="7379000" />
-      <workItem from="1720599829684" duration="27192000" />
+      <workItem from="1720599829684" duration="28853000" />
+      <workItem from="1720805763096" duration="14057000" />
     </task>
     <servers />
   </component>

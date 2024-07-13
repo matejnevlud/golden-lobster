@@ -6,7 +6,7 @@ import { parseBasic } from "@/utils/xmlParser";
 import Workspace from "@/components/Workspace";
 import { useEffect, useState } from "react";
 import { DataGrid } from "@mui/x-data-grid";
-import { Box, Button, ButtonGroup, CardHeader, Checkbox, FormControlLabel, FormGroup, InputAdornment, Modal, TextField, ToggleButton, ToggleButtonGroup, Typography } from "@mui/material";
+import { Box, Button, ButtonGroup, CardHeader, Checkbox, FormControl, FormControlLabel, FormGroup, InputAdornment, InputLabel, MenuItem, Modal, Select, TextField, ToggleButton, ToggleButtonGroup, Typography } from "@mui/material";
 import { changeOrderItemVariant, createNewOrder, createNewOrderItem, DB_bindOrderItemToPayment, DB_bindTaxToPayment, DB_cancelOrder, DB_cancelOrderItem, DB_changeOrderItemVariant, DB_closeOrder, DB_createPayment } from "@/db";
 import { DBT_Meals } from "../../generated/prisma-client";
 import { DBT_OrderItems } from "@prisma/client";
@@ -49,6 +49,12 @@ export default function WaiterView(props) {
     const [orderSumToPay, setOrderSumToPay] = useState(0);
 
 
+    const [selectedPaymentId, setSelectedPaymentId] = useState<bigint | null>(null);
+    const [selectedPayment, setSelectedPayment] = useState(null);
+    const [selectedPaymentTaxes, setSelectedPaymentTaxes] = useState([]);
+    const [selectedPaymentItems, setSelectedPaymentItems] = useState([]);
+    const [selectedCustomer, setSelectedCustomer] = useState(null);
+
     useEffect(() => {
         if (!selectedOrderId) return;
 
@@ -77,6 +83,39 @@ export default function WaiterView(props) {
 
     }, [selectedOrderId, orderItems]);
 
+
+    useEffect(() => {
+
+        if (!selectedPaymentId) return;
+        const payment = payments.find((payment) => payment.ID == selectedPaymentId);
+        if (!payment) return;
+
+
+        setSelectedPaymentItems(
+            orderItems
+            .filter((orderItem) => orderItem.ID_Payment == selectedPaymentId)
+            // use reduce to group by meal and variant in array of objects {key, count, orderItem)
+            .reduce((acc, orderItem) => {
+                console.log('orderItem', orderItem)
+                const key = `${orderItem.ID_Meal}_${orderItem.ID_Variant}`;
+                // try to find the key in the accumulator
+                const found = acc.find((item) => item.key === key);
+                if (found) {
+                    acc[acc.indexOf(found)] = { ...found, count: found.count + 1 }
+                } else {
+                    // if not found, create a new object and push it to the accumulator
+                    acc.push({ key, count: 1, orderItem });
+                }
+
+                return acc;
+            }, [])
+        );
+        setSelectedPayment(payment);
+
+        const taxesIDs = paymentTaxes.filter((paymentTax) => paymentTax.ID_Payments == selectedPaymentId).map((paymentTax) => paymentTax.ID_Tax);
+        setSelectedPaymentTaxes(taxes.filter((tax) => taxesIDs.includes(tax.ID)));
+
+    }, [selectedPaymentId]);
 
     const onCheckboxChange = (e) => {
         // set all payment methods to false and then set the clicked one to true
@@ -109,6 +148,9 @@ export default function WaiterView(props) {
     const isOrderClosedOrCanceled = () => {
         return isOrderCanceled() || isOrderClosed();
     }
+
+    // find all orderItems from the selected order, get distinct ID_Payment from them, and then find all payments with those IDs
+    const orderPayments = orderItems.filter((orderItem) => orderItem.ID_Order == selectedOrderId).map((orderItem) => orderItem.ID_Payment).filter((id, index, self) => self.indexOf(id) === index).map((id) => payments.find((payment) => payment.ID == id)).filter((payment) => payment != null) as any[];
 
     useEffect(() => {
         if (!selectedOrderId) return;
@@ -317,7 +359,7 @@ export default function WaiterView(props) {
 
 
         // 1. Create DBT_Payment
-        const newPayment = await DB_createPayment(newPaymentTotal, discount, paymentMethod.ID);
+        const newPayment = await DB_createPayment(newPaymentTotalAfterDiscount, discount, paymentMethod.ID, newPaymentCost, newPaymentTaxes);
         if (!newPayment) return;
 
         // 2. Update DBT_OrderItem with ID_Payment
@@ -340,6 +382,7 @@ export default function WaiterView(props) {
         setDiscount(0);
         setDiscountText('');
         setOpenPayModal(false);
+        setSelectedCustomer(null);
 
 
     }
@@ -433,13 +476,28 @@ export default function WaiterView(props) {
                         }
                     }}
                     rows={rows} columns={orderItemCols} onRowClick={({ id, row }) => {
-                    setSelectedOrderItemId(id);
-                    setOpenOrderItemActionsModal(true);
+                        if (isOrderClosedOrCanceled()) return;
+                        setSelectedOrderItemId(id);
+                        setOpenOrderItemActionsModal(true);
                 }}
                     getRowClassName={(params) => params.row.Status == 'Canceled' ? 'bg-red-200' : params.row.Status == 'Paid' ? 'bg-green-200' : '' }
                 />
+
+                <div className="flex items-center me-4 ms-4 mt-4">
+                    <div className="">
+                        Payments:
+                    </div>
+
+                    <ButtonGroup variant="text" aria-label="Basic button group">
+                        {!orderPayments.length && <Button>No bills</Button>}
+                        {orderPayments.map((payment) => (
+                            <Button key={payment?.ID?.toString()} onClick={() => setSelectedPaymentId(payment?.ID)}>Bill no. {payment?.ID?.toString()}</Button>
+                        ))}
+                    </ButtonGroup>
+
+                </div>
                 {!isOrderClosedOrCanceled() &&
-                <div className="flex justify-items-center me-4">
+                    <div className="flex justify-items-center me-4">
                     <div className="mt-3.5 ms-4 mb-3.5">
                         Sum : OMR {orderSum.toFixed(3)}
                     </div>
@@ -542,6 +600,33 @@ export default function WaiterView(props) {
                         <Typography variant="h6" component="h2" className="pt-2 pb-2">
                             Discount
                         </Typography>
+                        <div className="flex-1 flex items-center mb-2">
+                            <FormControl fullWidth>
+                                <InputLabel id="demo-simple-select-label">Customer</InputLabel>
+                                <Select
+                                    labelId="demo-simple-select-label"
+                                    id="demo-simple-select"
+                                    value={selectedCustomer}
+                                    label="Customer"
+                                    onChange={(e) => setSelectedCustomer(e.target.value)}
+                                >
+                                    {customers.map((customer) => (
+                                        <MenuItem
+                                            key={customer.ID}
+                                            value={customer.ID}
+                                        >{`${customer.Name} ${customer.Surname} - ${customer.Discount}%`}</MenuItem>
+                                    ))}
+                                </Select>
+                            </FormControl>
+                            <Button
+                                disabled={!selectedCustomer}
+                                onClick={() => {
+                                    const customer = customers.find((customer) => customer.ID == selectedCustomer);
+                                    setDiscountText(Math.floor(newPaymentTotal * (parseFloat(customer.Discount) / 100) * 1000) / 1000)
+                                    setDiscount(Math.floor(newPaymentTotal * (parseFloat(customer.Discount) / 100) * 1000) / 1000)
+                                }}
+                            >Apply Customer Discount</Button>
+                        </div>
                         <div className="flex-1 flex items-center">
                             <TextField
                                 id="outlined-basic"
@@ -575,6 +660,19 @@ export default function WaiterView(props) {
                                     setDiscountText(Math.floor(newPaymentTotal * 0.15 * 1000) / 1000)
                                     setDiscount(Math.floor(newPaymentTotal * 0.15 * 1000) / 1000)
                                 }}>15 %</Button>
+                                <Button onClick={() => {
+                                    setDiscountText(Math.floor(newPaymentTotal * 0.2 * 1000) / 1000)
+                                    setDiscount(Math.floor(newPaymentTotal * 0.2 * 1000) / 1000)
+                                }}>20 %</Button>
+                                <Button onClick={() => {
+                                    setDiscountText(Math.floor(newPaymentTotal * 0.25 * 1000) / 1000)
+                                    setDiscount(Math.floor(newPaymentTotal * 0.25 * 1000) / 1000)
+                                }}>25 %</Button>
+                                <Button onClick={() => {
+                                    setDiscountText(Math.floor(newPaymentTotal * 0.3 * 1000) / 1000)
+                                    setDiscount(Math.floor(newPaymentTotal * 0.3 * 1000) / 1000)
+                                }}>30 %</Button>
+
                             </ButtonGroup>
                         </div>
                         <Typography variant="h6" component="h2" className="pt-2 pb-2">
@@ -587,16 +685,16 @@ export default function WaiterView(props) {
                         </div>
 
                         <div id="horizontal-line" style={{ borderTop: '1px solid black', width: '100%', margin: '10px 0' }}></div>
-                        <Typography variant="h6" component="h6" className="pt-2 pb-2">
+                        <Typography variant="body" className="pt-1 pb-1">
                             Cost: OMR {newPaymentCost.toFixed(3)}
                         </Typography>
-                        <Typography variant="h6" component="h6" className="pt-2 pb-2">
+                        <Typography variant="body" className="pt-1 pb-1">
                             Taxes: OMR {newPaymentTaxes.toFixed(3)}
                         </Typography>
-                        <Typography variant="h6" component="h6" className="pt-2 pb-2">
+                        <Typography variant="body" className="pt-1 pb-1">
                             Subtotal: OMR {newPaymentTotal.toFixed(3)}
                         </Typography>
-                        <Typography variant="h6" component="h6" className="pt-2 pb-2">
+                        <Typography variant="body" className="pt-1 pb-1">
                             Discount: OMR {discount.toFixed(3)}
                         </Typography>
                         <div className="flex justify-items-center me-4">
@@ -606,6 +704,99 @@ export default function WaiterView(props) {
                             <div className="flex-1"></div>
                             <Button disabled={!hasPaymentChecked()} variant={"contained"} className="p-4" color={"success"} onClick={pay}>Pay</Button>
                         </div>
+                    </Box>
+                </Modal>
+
+
+
+                <Modal
+                    open={selectedPaymentId != null}
+                    onClose={() => setSelectedPaymentId(null)}
+                    aria-labelledby="modal-modal-title"
+                    aria-describedby="modal-modal-description"
+                >
+                    <Box sx={{
+                        position: 'absolute' as 'absolute',
+                        top: '50%',
+                        left: '50%',
+                        transform: 'translate(-50%, -50%)',
+                        width: 600,
+                        bgcolor: 'background.paper',
+                        border: '2px solid #000',
+                        boxShadow: 24,
+                        p: 4,
+                        overflow: 'scroll',
+                        display: 'flex',
+                        flexDirection: 'column',
+                        maxHeight: '95vh',
+                    }}>
+                        <div key={'title'} className="flex-1 flex items-center mb-4">
+                            <Typography variant="h5" component="h5">Payment no. {selectedPaymentId?.toString()}</Typography>
+                        </div>
+
+
+                        <div className="flex-1">
+
+                            {selectedPaymentItems
+                            .map(({ key, count, orderItem }) => (
+                                <div key={orderItem.ID} className="flex-1 flex items-center">
+                                    <Typography className="w-12">{count}x</Typography>
+                                    <Typography>{`${meals.find((meal) => meal.ID == orderItem.ID_Meal)?.Meal} ${variants.find((variant) => variant.ID == orderItem.ID_Variant)?.MealVariant ?? ''}`}</Typography>
+                                    <div className="flex-1"></div>
+                                    <Typography>OMR {parseFloat(orderItem.Price?.toString()).toFixed(3)}</Typography>
+                                </div>
+                            ))}
+                        </div>
+                        <div id="horizontal-line" style={{ borderTop: '1px solid black', width: '100%', margin: '10px 0' }}></div>
+                        <div className="flex-1">
+                            {selectedPaymentTaxes.map((tax) => (
+                                <div key={tax.ID} className="flex-1 flex items-center">
+                                    <Typography>{tax.TaxName}</Typography>
+                                    <div className="flex-1"></div>
+                                    <Typography>{tax.Percentage ? tax.Percentage + '%' : tax.Value}</Typography>
+                                </div>
+                            ))}
+                        </div>
+                        <div key={selectedPayment?.ID} className="flex-1 flex items-center mt-4">
+                            <Typography>Sum of all taxes</Typography>
+                            <div className="flex-1"></div>
+                            <Typography>OMR {parseFloat(selectedPayment?.Taxes).toFixed(3)}</Typography>
+                        </div>
+
+                        <div id="horizontal-line" style={{ borderTop: '1px solid black', width: '100%', margin: '10px 0' }}></div>
+
+                        {selectedPayment?.Discount &&
+                            <>
+                                <div key={'discount'} className="flex-1 flex items-center">
+                                    <Typography>Discount</Typography>
+                                    <div className="flex-1"></div>
+                                    <Typography>− OMR {parseFloat(selectedPayment?.Discount).toFixed(3)}</Typography>
+                                </div>
+                                <div id="horizontal-line" style={{ borderTop: '1px solid black', width: '100%', margin: '10px 0' }}></div>
+                            </>
+                        }
+
+                        <div key={'Payment_type'} className="flex-1 flex items-center">
+                            <Typography>Payment type</Typography>
+                            <div className="flex-1"></div>
+                            <Typography>{paymentMethods.find((paymentMethod) => paymentMethod.ID == selectedPayment?.ID_PaymentMethod)?.PaymentMethod}</Typography>
+                        </div>
+
+                        <div key={'timeofpay'} className="flex-1 flex items-center">
+                            <Typography>Time of pay</Typography>
+                            <div className="flex-1"></div>
+                            <Typography>{selectedPayment?.TimeOfPay?.toLocaleString()}</Typography>
+                        </div>
+                        <div id="horizontal-line" style={{ borderTop: '1px solid black', width: '100%', margin: '10px 0' }}></div>
+
+
+                        <div key={'final'} className="flex-1 flex items-center">
+                            <Typography variant="h5" component="h5">Final cost</Typography>
+                            <div className="flex-1"></div>
+                            <Typography variant="h5" component="h5">OMR {parseFloat(selectedPayment?.TotalAmount).toFixed(3)}</Typography>
+                        </div>
+
+
                     </Box>
                 </Modal>
             </div>

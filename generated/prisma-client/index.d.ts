@@ -16768,6 +16768,8 @@ export namespace Prisma {
     ID_PaymentMethod: number | null
     Discount: Decimal | null
     ID_Customer: number | null
+    ItemsCost: Decimal | null
+    Taxes: Decimal | null
   }
 
   export type DBT_PaymentsSumAggregateOutputType = {
@@ -16776,6 +16778,8 @@ export namespace Prisma {
     ID_PaymentMethod: bigint | null
     Discount: Decimal | null
     ID_Customer: bigint | null
+    ItemsCost: Decimal | null
+    Taxes: Decimal | null
   }
 
   export type DBT_PaymentsMinAggregateOutputType = {
@@ -16785,6 +16789,9 @@ export namespace Prisma {
     Discount: Decimal | null
     ID_Customer: bigint | null
     Closed: boolean | null
+    ItemsCost: Decimal | null
+    Taxes: Decimal | null
+    TimeOfPay: Date | null
   }
 
   export type DBT_PaymentsMaxAggregateOutputType = {
@@ -16794,6 +16801,9 @@ export namespace Prisma {
     Discount: Decimal | null
     ID_Customer: bigint | null
     Closed: boolean | null
+    ItemsCost: Decimal | null
+    Taxes: Decimal | null
+    TimeOfPay: Date | null
   }
 
   export type DBT_PaymentsCountAggregateOutputType = {
@@ -16803,6 +16813,9 @@ export namespace Prisma {
     Discount: number
     ID_Customer: number
     Closed: number
+    ItemsCost: number
+    Taxes: number
+    TimeOfPay: number
     _all: number
   }
 
@@ -16813,6 +16826,8 @@ export namespace Prisma {
     ID_PaymentMethod?: true
     Discount?: true
     ID_Customer?: true
+    ItemsCost?: true
+    Taxes?: true
   }
 
   export type DBT_PaymentsSumAggregateInputType = {
@@ -16821,6 +16836,8 @@ export namespace Prisma {
     ID_PaymentMethod?: true
     Discount?: true
     ID_Customer?: true
+    ItemsCost?: true
+    Taxes?: true
   }
 
   export type DBT_PaymentsMinAggregateInputType = {
@@ -16830,6 +16847,9 @@ export namespace Prisma {
     Discount?: true
     ID_Customer?: true
     Closed?: true
+    ItemsCost?: true
+    Taxes?: true
+    TimeOfPay?: true
   }
 
   export type DBT_PaymentsMaxAggregateInputType = {
@@ -16839,6 +16859,9 @@ export namespace Prisma {
     Discount?: true
     ID_Customer?: true
     Closed?: true
+    ItemsCost?: true
+    Taxes?: true
+    TimeOfPay?: true
   }
 
   export type DBT_PaymentsCountAggregateInputType = {
@@ -16848,6 +16871,9 @@ export namespace Prisma {
     Discount?: true
     ID_Customer?: true
     Closed?: true
+    ItemsCost?: true
+    Taxes?: true
+    TimeOfPay?: true
     _all?: true
   }
 
@@ -16944,6 +16970,9 @@ export namespace Prisma {
     Discount: Decimal | null
     ID_Customer: bigint | null
     Closed: boolean | null
+    ItemsCost: Decimal | null
+    Taxes: Decimal | null
+    TimeOfPay: Date | null
     _count: DBT_PaymentsCountAggregateOutputType | null
     _avg: DBT_PaymentsAvgAggregateOutputType | null
     _sum: DBT_PaymentsSumAggregateOutputType | null
@@ -16972,6 +17001,9 @@ export namespace Prisma {
     Discount?: boolean
     ID_Customer?: boolean
     Closed?: boolean
+    ItemsCost?: boolean
+    Taxes?: boolean
+    TimeOfPay?: boolean
   }, ExtArgs["result"]["dBT_Payments"]>
 
   export type DBT_PaymentsSelectScalar = {
@@ -16981,6 +17013,9 @@ export namespace Prisma {
     Discount?: boolean
     ID_Customer?: boolean
     Closed?: boolean
+    ItemsCost?: boolean
+    Taxes?: boolean
+    TimeOfPay?: boolean
   }
 
 
@@ -16995,6 +17030,9 @@ export namespace Prisma {
       Discount: Prisma.Decimal | null
       ID_Customer: bigint | null
       Closed: boolean | null
+      ItemsCost: Prisma.Decimal | null
+      Taxes: Prisma.Decimal | null
+      TimeOfPay: Date | null
     }, ExtArgs["result"]["dBT_Payments"]>
     composites: {}
   }
@@ -17395,6 +17433,9 @@ export namespace Prisma {
     readonly Discount: FieldRef<"DBT_Payments", 'Decimal'>
     readonly ID_Customer: FieldRef<"DBT_Payments", 'BigInt'>
     readonly Closed: FieldRef<"DBT_Payments", 'Boolean'>
+    readonly ItemsCost: FieldRef<"DBT_Payments", 'Decimal'>
+    readonly Taxes: FieldRef<"DBT_Payments", 'Decimal'>
+    readonly TimeOfPay: FieldRef<"DBT_Payments", 'DateTime'>
   }
     
 
@@ -18754,7 +18795,10 @@ export namespace Prisma {
     ID_PaymentMethod: 'ID_PaymentMethod',
     Discount: 'Discount',
     ID_Customer: 'ID_Customer',
-    Closed: 'Closed'
+    Closed: 'Closed',
+    ItemsCost: 'ItemsCost',
+    Taxes: 'Taxes',
+    TimeOfPay: 'TimeOfPay'
   };
 
   export type DBT_PaymentsScalarFieldEnum = (typeof DBT_PaymentsScalarFieldEnum)[keyof typeof DBT_PaymentsScalarFieldEnum]
@@ -19793,6 +19837,9 @@ export namespace Prisma {
     Discount?: DecimalNullableFilter<"DBT_Payments"> | Decimal | DecimalJsLike | number | string | null
     ID_Customer?: BigIntNullableFilter<"DBT_Payments"> | bigint | number | null
     Closed?: BoolNullableFilter<"DBT_Payments"> | boolean | null
+    ItemsCost?: DecimalNullableFilter<"DBT_Payments"> | Decimal | DecimalJsLike | number | string | null
+    Taxes?: DecimalNullableFilter<"DBT_Payments"> | Decimal | DecimalJsLike | number | string | null
+    TimeOfPay?: DateTimeNullableFilter<"DBT_Payments"> | Date | string | null
   }
 
   export type DBT_PaymentsOrderByWithRelationInput = {
@@ -19802,6 +19849,9 @@ export namespace Prisma {
     Discount?: SortOrderInput | SortOrder
     ID_Customer?: SortOrderInput | SortOrder
     Closed?: SortOrderInput | SortOrder
+    ItemsCost?: SortOrderInput | SortOrder
+    Taxes?: SortOrderInput | SortOrder
+    TimeOfPay?: SortOrderInput | SortOrder
   }
 
   export type DBT_PaymentsWhereUniqueInput = Prisma.AtLeast<{
@@ -19814,6 +19864,9 @@ export namespace Prisma {
     Discount?: DecimalNullableFilter<"DBT_Payments"> | Decimal | DecimalJsLike | number | string | null
     ID_Customer?: BigIntNullableFilter<"DBT_Payments"> | bigint | number | null
     Closed?: BoolNullableFilter<"DBT_Payments"> | boolean | null
+    ItemsCost?: DecimalNullableFilter<"DBT_Payments"> | Decimal | DecimalJsLike | number | string | null
+    Taxes?: DecimalNullableFilter<"DBT_Payments"> | Decimal | DecimalJsLike | number | string | null
+    TimeOfPay?: DateTimeNullableFilter<"DBT_Payments"> | Date | string | null
   }, "ID">
 
   export type DBT_PaymentsOrderByWithAggregationInput = {
@@ -19823,6 +19876,9 @@ export namespace Prisma {
     Discount?: SortOrderInput | SortOrder
     ID_Customer?: SortOrderInput | SortOrder
     Closed?: SortOrderInput | SortOrder
+    ItemsCost?: SortOrderInput | SortOrder
+    Taxes?: SortOrderInput | SortOrder
+    TimeOfPay?: SortOrderInput | SortOrder
     _count?: DBT_PaymentsCountOrderByAggregateInput
     _avg?: DBT_PaymentsAvgOrderByAggregateInput
     _max?: DBT_PaymentsMaxOrderByAggregateInput
@@ -19840,6 +19896,9 @@ export namespace Prisma {
     Discount?: DecimalNullableWithAggregatesFilter<"DBT_Payments"> | Decimal | DecimalJsLike | number | string | null
     ID_Customer?: BigIntNullableWithAggregatesFilter<"DBT_Payments"> | bigint | number | null
     Closed?: BoolNullableWithAggregatesFilter<"DBT_Payments"> | boolean | null
+    ItemsCost?: DecimalNullableWithAggregatesFilter<"DBT_Payments"> | Decimal | DecimalJsLike | number | string | null
+    Taxes?: DecimalNullableWithAggregatesFilter<"DBT_Payments"> | Decimal | DecimalJsLike | number | string | null
+    TimeOfPay?: DateTimeNullableWithAggregatesFilter<"DBT_Payments"> | Date | string | null
   }
 
   export type DBT_PaymentTaxesWhereInput = {
@@ -20872,6 +20931,9 @@ export namespace Prisma {
     Discount?: Decimal | DecimalJsLike | number | string | null
     ID_Customer?: bigint | number | null
     Closed?: boolean | null
+    ItemsCost?: Decimal | DecimalJsLike | number | string | null
+    Taxes?: Decimal | DecimalJsLike | number | string | null
+    TimeOfPay?: Date | string | null
   }
 
   export type DBT_PaymentsUncheckedCreateInput = {
@@ -20881,6 +20943,9 @@ export namespace Prisma {
     Discount?: Decimal | DecimalJsLike | number | string | null
     ID_Customer?: bigint | number | null
     Closed?: boolean | null
+    ItemsCost?: Decimal | DecimalJsLike | number | string | null
+    Taxes?: Decimal | DecimalJsLike | number | string | null
+    TimeOfPay?: Date | string | null
   }
 
   export type DBT_PaymentsUpdateInput = {
@@ -20890,6 +20955,9 @@ export namespace Prisma {
     Discount?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     ID_Customer?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     Closed?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    ItemsCost?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    Taxes?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    TimeOfPay?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type DBT_PaymentsUncheckedUpdateInput = {
@@ -20899,6 +20967,9 @@ export namespace Prisma {
     Discount?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     ID_Customer?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     Closed?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    ItemsCost?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    Taxes?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    TimeOfPay?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type DBT_PaymentsCreateManyInput = {
@@ -20907,6 +20978,9 @@ export namespace Prisma {
     Discount?: Decimal | DecimalJsLike | number | string | null
     ID_Customer?: bigint | number | null
     Closed?: boolean | null
+    ItemsCost?: Decimal | DecimalJsLike | number | string | null
+    Taxes?: Decimal | DecimalJsLike | number | string | null
+    TimeOfPay?: Date | string | null
   }
 
   export type DBT_PaymentsUpdateManyMutationInput = {
@@ -20916,6 +20990,9 @@ export namespace Prisma {
     Discount?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     ID_Customer?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     Closed?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    ItemsCost?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    Taxes?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    TimeOfPay?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type DBT_PaymentsUncheckedUpdateManyInput = {
@@ -20925,6 +21002,9 @@ export namespace Prisma {
     Discount?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     ID_Customer?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     Closed?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    ItemsCost?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    Taxes?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    TimeOfPay?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type DBT_PaymentTaxesCreateInput = {
@@ -21785,6 +21865,9 @@ export namespace Prisma {
     Discount?: SortOrder
     ID_Customer?: SortOrder
     Closed?: SortOrder
+    ItemsCost?: SortOrder
+    Taxes?: SortOrder
+    TimeOfPay?: SortOrder
   }
 
   export type DBT_PaymentsAvgOrderByAggregateInput = {
@@ -21793,6 +21876,8 @@ export namespace Prisma {
     ID_PaymentMethod?: SortOrder
     Discount?: SortOrder
     ID_Customer?: SortOrder
+    ItemsCost?: SortOrder
+    Taxes?: SortOrder
   }
 
   export type DBT_PaymentsMaxOrderByAggregateInput = {
@@ -21802,6 +21887,9 @@ export namespace Prisma {
     Discount?: SortOrder
     ID_Customer?: SortOrder
     Closed?: SortOrder
+    ItemsCost?: SortOrder
+    Taxes?: SortOrder
+    TimeOfPay?: SortOrder
   }
 
   export type DBT_PaymentsMinOrderByAggregateInput = {
@@ -21811,6 +21899,9 @@ export namespace Prisma {
     Discount?: SortOrder
     ID_Customer?: SortOrder
     Closed?: SortOrder
+    ItemsCost?: SortOrder
+    Taxes?: SortOrder
+    TimeOfPay?: SortOrder
   }
 
   export type DBT_PaymentsSumOrderByAggregateInput = {
@@ -21819,6 +21910,8 @@ export namespace Prisma {
     ID_PaymentMethod?: SortOrder
     Discount?: SortOrder
     ID_Customer?: SortOrder
+    ItemsCost?: SortOrder
+    Taxes?: SortOrder
   }
 
   export type DBT_PaymentTaxesCountOrderByAggregateInput = {
