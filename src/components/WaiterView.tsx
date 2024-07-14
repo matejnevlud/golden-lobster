@@ -7,10 +7,12 @@ import Workspace from "@/components/Workspace";
 import { useEffect, useState } from "react";
 import { DataGrid } from "@mui/x-data-grid";
 import { Box, Button, ButtonGroup, CardHeader, Checkbox, FormControl, FormControlLabel, FormGroup, InputAdornment, InputLabel, MenuItem, Modal, Select, TextField, ToggleButton, ToggleButtonGroup, Typography } from "@mui/material";
-import { changeOrderItemVariant, createNewOrder, createNewOrderItem, DB_bindOrderItemToPayment, DB_bindTaxToPayment, DB_cancelOrder, DB_cancelOrderItem, DB_changeOrderItemVariant, DB_closeOrder, DB_createPayment } from "@/db";
+import { changeOrderItemVariant, createNewOrder, createNewOrderItem, DB_bindOrderItemToPayment, DB_bindTaxToPayment, DB_cancelOrder, DB_cancelOrderItem, DB_changeOrderItemNote, DB_changeOrderItemVariant, DB_changeOrderNote, DB_closeOrder, DB_createPayment } from "@/db";
 import { DBT_Meals } from "../../generated/prisma-client";
 import { DBT_OrderItems } from "@prisma/client";
 
+
+BigInt.prototype.toJSON = function() { return parseInt(this.toString()) }
 export default function WaiterView(props) {
 
     const { languages, layouts, meals, mealGroups, mealsInGroups, variants, menuSetUp } = props;
@@ -26,6 +28,13 @@ export default function WaiterView(props) {
     const [paymentTaxes, setPaymentTaxes] = useState(props.paymentTaxes);
 
 
+    const [isFullscreen, setIsFullscreen] = useState(false);
+
+    const [currentUser, setCurrentUser] = useState(JSON.parse(localStorage.getItem('currentUser') ?? 'null'));
+    const [username, setUsername] = useState('');
+    const [password, setPassword] = useState('');
+
+
     const [currentMealGroupID, setCurrentMealGroupID] = useState<bigint>(BigInt(localStorage.getItem('mealGroup') ?? '1'));
     const [selectedOrderId, setSelectedOrderId] = useState<bigint | null>(null);
 
@@ -34,15 +43,19 @@ export default function WaiterView(props) {
 
     const [openOrderItemActionsModal, setOpenOrderItemActionsModal] = useState(false);
     const [selectedOrderItemId, setSelectedOrderItemId] = useState<bigint | null>(null);
+    const [newOrderItemNote, setNewOrderItemNote] = useState('');
+
+    const [newOrderNote, setNewOrderNote] = useState('');
+    const [showOrderNoteModal, setShowOrderNoteModal] = useState(false);
 
     const [openPayModal, setOpenPayModal] = useState(false);
     const [checkboxes, setCheckboxes] = useState({ });
     const [newPaymentCost, setNewPaymentCost] = useState(0);
+    const [newPaymentDiscount, setNewPaymentDiscount] = useState(0);
+    const [newPaymentSubtotal, setNewPaymentSubtotal] = useState(0);
     const [newPaymentTaxes, setNewPaymentTaxes] = useState(0);
     const [newPaymentTotal, setNewPaymentTotal] = useState(0);
-    const [discountText, setDiscountText] = useState('');
-    const [discount, setDiscount] = useState(0);
-    const [newPaymentTotalAfterDiscount, setNewPaymentTotalAfterDiscount] = useState(0);
+    const [discountPercent, setDiscountPercent] = useState(0);
 
 
     const [orderSum, setOrderSum] = useState(0);
@@ -78,8 +91,7 @@ export default function WaiterView(props) {
         }
 
         setCheckboxes(newCheckboxes);
-        setDiscount(0);
-        setDiscountText('');
+        setDiscountPercent(0);
 
     }, [selectedOrderId, orderItems]);
 
@@ -163,18 +175,25 @@ export default function WaiterView(props) {
         const ts = taxes.filter((tax) => checkboxes[tax.TaxName]);
 
 
-        const cost = ois.reduce((acc, oi) => acc + parseFloat(oi.Price), 0);
-        const tax = ts.reduce((acc, t) => acc + (t.Percentage ? cost * parseFloat(t.Percentage) / 100 : parseFloat(t.Value)), 0);
-        const total = cost + tax;
+        const orderItemsCost = ois.reduce((acc, oi) => acc + parseFloat(oi.Price), 0);
 
-        console.log('cost', cost, 'tax', tax, 'total', total)
+        const totalDiscount = ois.reduce((acc, oi) => acc + (parseFloat(oi.Price) * parseFloat(oi.Discountable) * discountPercent), 0);
 
-        setNewPaymentCost(cost);
+        const orderItemsCostAfterDiscount = orderItemsCost - totalDiscount;
+
+
+        const tax = ts.reduce((acc, t) => acc + (t.Percentage ? orderItemsCostAfterDiscount * parseFloat(t.Percentage) / 100 : parseFloat(t.Value)), 0);
+        const total = orderItemsCostAfterDiscount + tax;
+
+        console.log('orderItemsCost', orderItemsCost, 'totalDiscount', totalDiscount, 'orderItemsCostAfterDiscount', orderItemsCostAfterDiscount, 'tax', tax, 'total', total)
+
+        setNewPaymentCost(orderItemsCost);
+        setNewPaymentDiscount(totalDiscount);
+        setNewPaymentSubtotal(orderItemsCostAfterDiscount);
         setNewPaymentTaxes(tax);
         setNewPaymentTotal(total);
-        setNewPaymentTotalAfterDiscount(total - discount);
 
-    }, [checkboxes, orderItems, discount]);
+    }, [checkboxes, orderItems, discountPercent]);
 
     window.addEventListener('storage', function(event) {
         console.log('storage event', event)
@@ -184,10 +203,27 @@ export default function WaiterView(props) {
 
     });
 
+
+
+    const login = async () => {
+        console.log('login', username, password)
+        const user = users.find((user) => user.Name == username && user.Password == password && user.Active);
+        if (!user) {
+            alert('Invalid username or password');
+            return;
+        }
+        setCurrentUser(user);
+        localStorage.setItem('currentUser', JSON.stringify(user));
+    }
+
+    const logout = () => {
+        setCurrentUser(null);
+        localStorage.removeItem('currentUser');
+    }
     const addMealToOrder = async (mealId: bigint) => {
         console.log('addMealToOrder', mealId)
         if (!selectedOrderId) return;
-        const newOrderItem = await createNewOrderItem(selectedOrderId, mealId);
+        const newOrderItem = await createNewOrderItem(selectedOrderId, mealId, currentUser.ID);
         console.log('newOrderItem', newOrderItem)
         setOrderItems([...orderItems, newOrderItem]);
     }
@@ -242,7 +278,7 @@ export default function WaiterView(props) {
 
     const createOrder = async (tableId: number) => {
         console.log('createOrder', tableId)
-        const newOrder = await createNewOrder(tableId);
+        const newOrder = await createNewOrder(tableId, currentUser.ID);
         console.log('newOrder', newOrder)
 
         setOrders([...orders, newOrder]);
@@ -260,6 +296,8 @@ export default function WaiterView(props) {
             { field: 'Price', headerName: 'Price', flex: 1 },
             { field: 'Canceled', headerName: 'Canceled', renderCell: (params) => params.value ? 'Canceled' : '' },
             { field: 'OrderClosed', headerName: 'Closed', renderCell: (params) => params.value ? 'Closed' : '' },
+
+            { field: 'Status', headerName: 'Status'},
         ]
 
         const rows = orders.map((order) =>  ({
@@ -271,13 +309,13 @@ export default function WaiterView(props) {
             Canceled: order.Canceled,
             Price: order.Price,
             OrderClosed: order.OrderClosed,
+            Status: order.OrderClosed ? 'Closed' : order.Canceled ? 'Canceled' : '',
         })).filter((order) => ordersFilterToggle == 'active' ? !order.OrderClosed && !order.Canceled : ordersFilterToggle == 'closed' ? order.OrderClosed : ordersFilterToggle == 'canceled' ? order.Canceled : true);
 
         return (
             <div style={{ display: 'flex', flexDirection: 'column', height: '100vh' }}>
 
-                <div className="flex items-center me-4">
-                    <CardHeader title="Orders" className=""/>
+                <div className="flex items-center me-4 p-4">
                     <ToggleButtonGroup
                         color="primary"
                         value={ordersFilterToggle}
@@ -286,17 +324,21 @@ export default function WaiterView(props) {
                         aria-label="Platform"
                     >
                         <ToggleButton value="active">Active</ToggleButton>
-                        <ToggleButton value="closed">Closed</ToggleButton>
-                        <ToggleButton value="canceled">Canceled</ToggleButton>
+                        {/*<ToggleButton value="closed">Closed</ToggleButton>
+                        <ToggleButton value="canceled">Canceled</ToggleButton>*/}
                         <ToggleButton value="all">All</ToggleButton>
                     </ToggleButtonGroup>
                     <div className="flex-1"></div>
-                    <Button variant={"contained"} className="p-4" onClick={() => setOpenTableModal(true)}>Create New Order</Button>
+                    <Button className="p-4" variant={isFullscreen ? 'contained' : 'outlined'} onClick={() => setIsFullscreen(!isFullscreen)}>Fullscreen</Button>
+                    <div className="flex-1"></div>
+                    <Button variant={"contained"} color={"error"} className="p-4" onClick={() => logout()}>Logout {currentUser.Name}</Button>
+                    <div className="flex-1"></div>
+                    <Button variant={"contained"} className="p-4" onClick={() => setOpenTableModal(true)}>New Order</Button>
 
                 </div>
                 <DataGrid
                     isRowSelectable={() => false}
-                    style={{flex:1}}
+                    style={{ flex: 1 }}
                     initialState={{
                         sorting: {
                             sortModel: [
@@ -307,6 +349,8 @@ export default function WaiterView(props) {
                         columns: {
                             columnVisibilityModel: {
                                 ID_Table: false,
+                                Canceled: false,
+                                OrderClosed: false,
                             }
                         }
                     }}
@@ -359,7 +403,7 @@ export default function WaiterView(props) {
 
 
         // 1. Create DBT_Payment
-        const newPayment = await DB_createPayment(newPaymentTotalAfterDiscount, discount, paymentMethod.ID, newPaymentCost, newPaymentTaxes);
+        const newPayment = await DB_createPayment(newPaymentTotal, newPaymentDiscount, paymentMethod.ID, newPaymentCost, newPaymentTaxes, currentUser.ID);
         if (!newPayment) return;
 
         // 2. Update DBT_OrderItem with ID_Payment
@@ -381,8 +425,7 @@ export default function WaiterView(props) {
         setPayments([...payments, newPayment]);
         setPaymentTaxes([...paymentTaxes, ...newPts]);
         setCheckboxes({});
-        setDiscount(0);
-        setDiscountText('');
+        setDiscountPercent(0);
         setOpenPayModal(false);
         setSelectedCustomer(null);
 
@@ -417,6 +460,24 @@ export default function WaiterView(props) {
         setOrderItems(orderItems.map((orderItem) => orderItem.ID == orderItemId ? changedOrderItem : orderItem));
 
     }
+    const saveOrderItemNote = async () => {
+        const orderItem = orderItems.find((orderItem) => orderItem.ID == selectedOrderItemId);
+        if (!orderItem) return;
+
+        const changedOrderItem = await DB_changeOrderItemNote(selectedOrderItemId, newOrderItemNote);
+        setOrderItems(orderItems.map((orderItem) => orderItem.ID == selectedOrderItemId ? changedOrderItem : orderItem));
+        setNewOrderItemNote('');
+    }
+
+    const saveOrderNote = async () => {
+        const order = orders.find((order) => order.ID == selectedOrderId);
+        if (!order) return;
+
+        const changedOrder = await DB_changeOrderNote(selectedOrderId, newOrderNote);
+        setOrders(orders.map((order) => order.ID == selectedOrderId ? changedOrder : order));
+        setNewOrderNote('');
+        setShowOrderNoteModal(false);
+    }
     const renderOrderDetail = () => {
         const currentOrderItem = orderItems.find((orderItem) => orderItem.ID == selectedOrderItemId);
 
@@ -429,7 +490,6 @@ export default function WaiterView(props) {
             { field: 'Variant', headerName: 'Variant', flex: 1},
             { field: 'TimeOfOrder', headerName: 'TimeOfOrder', flex: 1},
             { field: 'Price', headerName: 'Price', flex: 1 },
-            { field: 'Canceled', headerName: 'Canceled', renderCell: (params) => params.value ? 'Canceled' : '' },
             { field: 'Status', headerName: 'Status'},
         ]
 
@@ -455,7 +515,7 @@ export default function WaiterView(props) {
                 <div className="flex items-center me-4 ms-4">
 
                     <Button variant={"contained"} className="p-4" onClick={() => setSelectedOrderId(null)}>Back</Button>
-                    <CardHeader title={"Order no. " + selectedOrderId} className="flex-1"/>
+                    <CardHeader title={"Order no. " + selectedOrderId + " - " + tables.find((table) => table.ID == orders.find((order) => order.ID == selectedOrderId)?.ID_Table)?.TableName} className="flex-1"/>
                     {isOrderClosed() && <CardHeader title={"ORDER IS CLOSED"} className="flex-1"/>}
                     {isOrderCanceled() && <CardHeader title={"ORDER IS CANCELED"} className="flex-1"/>}
                     {!isOrderClosedOrCanceled() && <Button variant={"contained"} className="p-4" color={"error"} onClick={() => cancelOrder()}>Cancel Order</Button>}
@@ -472,6 +532,8 @@ export default function WaiterView(props) {
                         },
                         columns: {
                             columnVisibilityModel: {
+                                ID: false,
+                                ID_Order: false,
                                 ID_Meal: false,
                                 ID_Variant: false,
                             }
@@ -513,6 +575,8 @@ export default function WaiterView(props) {
                     <div className="mt-3.5 ms-4 mb-3.5 flex">
 
                         <div className="p-2"></div>
+                        <Button variant={"contained"} className="p-4" color={"primary"} onClick={() => setShowOrderNoteModal(true)}>Note</Button>
+                        <div className="p-2"></div>
                         <Button variant={"contained"} className="p-4" color={"success"} onClick={() => setOpenPayModal(true)}>Pay Order</Button>
                         <div className="p-2"></div>
                         <Button disabled={orderSumToPay > 0} variant={"contained"} className="p-4" color={"success"} onClick={() => closeOrder()}>Close Order</Button>
@@ -552,6 +616,25 @@ export default function WaiterView(props) {
                             {variants.filter((variant) => variant.ID_Meal == orderItems.find((orderItem) => orderItem.ID == selectedOrderItemId)?.ID_Meal).map((variant) => (
                                 <Button key={variant.ID} disabled={currentOrderItem.ID_Variant == variant.ID || !variant.Available} onClick={() => changeOrderItemVariant(selectedOrderItemId, variant.ID)}>{variant.MealVariant}</Button>
                             ))}
+                        </div>
+
+                        <Typography variant="h6" component="h2" className="pt-2 pb-2">
+                            Note
+                        </Typography>
+                        <div className="flex">
+                            <TextField
+                                className={'w-full'}
+                                id="outlined-multiline-static"
+
+                                multiline
+                                rows={4}
+                                value={newOrderItemNote != '' ? newOrderItemNote : currentOrderItem?.Note}
+                                onChange={(e) => setNewOrderItemNote(e.target.value)}
+                            />
+                        </div>
+                        <div className="flex flex-col">
+                            <Button size={'large'} color={'primary'} variant={'outlined'} onClick={() => saveOrderItemNote()} disabled={newOrderItemNote == ''}>Save Note</Button>
+
                         </div>
                     </Box>
                 </Modal>
@@ -624,8 +707,7 @@ export default function WaiterView(props) {
                                 disabled={!selectedCustomer}
                                 onClick={() => {
                                     const customer = customers.find((customer) => customer.ID == selectedCustomer);
-                                    setDiscountText(Math.floor(newPaymentTotal * (parseFloat(customer.Discount) / 100) * 1000) / 1000)
-                                    setDiscount(Math.floor(newPaymentTotal * (parseFloat(customer.Discount) / 100) * 1000) / 1000)
+                                    setDiscountPercent(parseFloat(customer.Discount) / 100)
                                 }}
                             >Apply Customer Discount</Button>
                         </div>
@@ -633,46 +715,32 @@ export default function WaiterView(props) {
                             <TextField
                                 id="outlined-basic"
                                 variant="outlined"
-                                value={discountText}
-                                onChange={(e) => {
-                                    setDiscountText(e.target.value);
-
-                                    if (e.target.value == '') {
-                                        setDiscount(0);
-                                    }
-                                    else if (isNaN(parseFloat(e.target.value))) setDiscount(0);
-                                    else setDiscount(parseFloat(e.target.value));
-                                }}
-                                sx={{ width: '25ch' }}
+                                value={discountPercent * 100}
+                                disabled
+                                sx={{ width: '10ch' }}
                                 InputProps={{
-                                    startAdornment: <InputAdornment position="start">OMR</InputAdornment>,
+                                    endAdornment: <InputAdornment position="start">%</InputAdornment>,
                                 }}
                             />
 
                             <ButtonGroup variant="text" aria-label="Basic button group">
                                 <Button onClick={() => {
-                                    setDiscountText(Math.floor(newPaymentTotal * 0.05 * 1000) / 1000)
-                                    setDiscount(Math.floor(newPaymentTotal * 0.05 * 1000) / 1000)
+                                    setDiscountPercent(0.05)
                                 }}>5 %</Button>
                                 <Button onClick={() => {
-                                    setDiscountText(Math.floor(newPaymentTotal * 0.1 * 1000) / 1000)
-                                    setDiscount(Math.floor(newPaymentTotal * 0.1 * 1000) / 1000)
+                                    setDiscountPercent(0.1)
                                 }}>10 %</Button>
                                 <Button onClick={() => {
-                                    setDiscountText(Math.floor(newPaymentTotal * 0.15 * 1000) / 1000)
-                                    setDiscount(Math.floor(newPaymentTotal * 0.15 * 1000) / 1000)
+                                    setDiscountPercent(0.15)
                                 }}>15 %</Button>
                                 <Button onClick={() => {
-                                    setDiscountText(Math.floor(newPaymentTotal * 0.2 * 1000) / 1000)
-                                    setDiscount(Math.floor(newPaymentTotal * 0.2 * 1000) / 1000)
+                                    setDiscountPercent(0.2)
                                 }}>20 %</Button>
                                 <Button onClick={() => {
-                                    setDiscountText(Math.floor(newPaymentTotal * 0.25 * 1000) / 1000)
-                                    setDiscount(Math.floor(newPaymentTotal * 0.25 * 1000) / 1000)
+                                    setDiscountPercent(0.25)
                                 }}>25 %</Button>
                                 <Button onClick={() => {
-                                    setDiscountText(Math.floor(newPaymentTotal * 0.3 * 1000) / 1000)
-                                    setDiscount(Math.floor(newPaymentTotal * 0.3 * 1000) / 1000)
+                                    setDiscountPercent(0.3)
                                 }}>30 %</Button>
 
                             </ButtonGroup>
@@ -691,17 +759,17 @@ export default function WaiterView(props) {
                             Cost: OMR {newPaymentCost.toFixed(3)}
                         </Typography>
                         <Typography variant="body" className="pt-1 pb-1">
+                            Discount: OMR {newPaymentDiscount.toFixed(3)}
+                        </Typography>
+                        <Typography variant="body" className="pt-1 pb-1">
+                            Subtotal: OMR {newPaymentSubtotal.toFixed(3)}
+                        </Typography>
+                        <Typography variant="body" className="pt-1 pb-1">
                             Taxes: OMR {newPaymentTaxes.toFixed(3)}
-                        </Typography>
-                        <Typography variant="body" className="pt-1 pb-1">
-                            Subtotal: OMR {newPaymentTotal.toFixed(3)}
-                        </Typography>
-                        <Typography variant="body" className="pt-1 pb-1">
-                            Discount: OMR {discount.toFixed(3)}
                         </Typography>
                         <div className="flex justify-items-center me-4">
                             <Typography variant="h4" component="h6" className="pt-2 pb-2">
-                                Total: OMR {newPaymentTotalAfterDiscount.toFixed(3)}
+                                Total: OMR {newPaymentTotal.toFixed(3)}
                             </Typography>
                             <div className="flex-1"></div>
                             <Button disabled={!hasPaymentChecked()} variant={"contained"} className="p-4" color={"success"} onClick={pay}>Pay</Button>
@@ -745,10 +813,19 @@ export default function WaiterView(props) {
                                     <Typography className="w-12">{count}x</Typography>
                                     <Typography>{`${meals.find((meal) => meal.ID == orderItem.ID_Meal)?.Meal} ${variants.find((variant) => variant.ID == orderItem.ID_Variant)?.MealVariant ?? ''}`}</Typography>
                                     <div className="flex-1"></div>
-                                    <Typography>OMR {parseFloat(orderItem.Price?.toString()).toFixed(3)}</Typography>
+                                    <Typography>OMR {(parseFloat(orderItem.Price?.toString()) * count).toFixed(3)}</Typography>
                                 </div>
                             ))}
                         </div>
+
+                        {selectedPayment?.Discount &&
+                            <div key={'discount'} className="flex-1 flex items-center">
+                                <Typography className="ps-12">Discount</Typography>
+                                <div className="flex-1"></div>
+                                <Typography>− OMR {parseFloat(selectedPayment?.Discount).toFixed(3)}</Typography>
+                            </div>
+                        }
+
                         <div id="horizontal-line" style={{ borderTop: '1px solid black', width: '100%', margin: '10px 0' }}></div>
                         <div className="flex-1">
                             {selectedPaymentTaxes.map((tax) => (
@@ -767,17 +844,6 @@ export default function WaiterView(props) {
 
                         <div id="horizontal-line" style={{ borderTop: '1px solid black', width: '100%', margin: '10px 0' }}></div>
 
-                        {selectedPayment?.Discount &&
-                            <>
-                                <div key={'discount'} className="flex-1 flex items-center">
-                                    <Typography>Discount</Typography>
-                                    <div className="flex-1"></div>
-                                    <Typography>− OMR {parseFloat(selectedPayment?.Discount).toFixed(3)}</Typography>
-                                </div>
-                                <div id="horizontal-line" style={{ borderTop: '1px solid black', width: '100%', margin: '10px 0' }}></div>
-                            </>
-                        }
-
                         <div key={'Payment_type'} className="flex-1 flex items-center">
                             <Typography>Payment type</Typography>
                             <div className="flex-1"></div>
@@ -788,6 +854,11 @@ export default function WaiterView(props) {
                             <Typography>Time of pay</Typography>
                             <div className="flex-1"></div>
                             <Typography>{selectedPayment?.TimeOfPay?.toLocaleString()}</Typography>
+                        </div>
+                        <div key={'created'} className="flex-1 flex items-center">
+                            <Typography>Created by</Typography>
+                            <div className="flex-1"></div>
+                            <Typography>{users.find((user) => user.ID == selectedPayment?.ID_User)?.Name}</Typography>
                         </div>
                         <div id="horizontal-line" style={{ borderTop: '1px solid black', width: '100%', margin: '10px 0' }}></div>
 
@@ -801,9 +872,78 @@ export default function WaiterView(props) {
 
                     </Box>
                 </Modal>
+
+
+                <Modal
+                    open={showOrderNoteModal}
+                    onClose={() => setShowOrderNoteModal(false)}
+                    aria-labelledby="modal-modal-title"
+                    aria-describedby="modal-modal-description"
+                >
+                <Box sx={{
+                        position: 'absolute' as 'absolute',
+                        top: '50%',
+                        left: '50%',
+                        transform: 'translate(-50%, -50%)',
+                        width: 400,
+                        bgcolor: 'background.paper',
+                        border: '2px solid #000',
+                        boxShadow: 24,
+                        p: 4,
+                    }}>
+                        <div className="flex flex-col">
+                            <TextField
+                                id="outlined-multiline-static"
+                                label="Order note"
+                                className="mb-4"
+                                multiline
+                                rows={4}
+                                value={newOrderNote != '' ? newOrderNote : orders.find((order) => order.ID == selectedOrderId)?.Note}
+                                onChange={(e) => setNewOrderNote(e.target.value)}
+                            />
+                            <div className="p-2"></div>
+                            <Button variant={"contained"} className="p-4 mt-2" onClick={() => saveOrderNote()}>Save Note</Button>
+                        </div>
+                    </Box>
+                </Modal>
             </div>
         )
     }
+
+    if(!currentUser)
+        return (
+            <>
+                <div style={{ width: "6vh", backgroundColor: 'black', paddingLeft: "10px", paddingRight: "10px" }}>
+                </div>
+                <div style={{ flex: 1, backgroundColor: 'white' }}>
+                    {/*Show login form */}
+                    <div className="flex items-center justify-center h-full">
+                        <div className="flex flex-col">
+                            <TextField
+                                id="outlined-basic"
+                                label="Username"
+                                variant="outlined"
+                                value={username}
+                                onChange={(e) => setUsername(e.target.value)}
+                            />
+                            <div className="p-2"></div>
+                            <TextField
+                                id="outlined-basic"
+                                label="Password"
+                                variant="outlined"
+                                type="password"
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
+                            />
+                            <div className="p-2"></div>
+                            <Button variant={"contained"} color={"primary"} onClick={login}>Login</Button>
+                        </div>
+
+                    </div>
+
+                </div>
+            </>
+        )
 
     return (
         <>
@@ -811,10 +951,19 @@ export default function WaiterView(props) {
                 {renderAddStrip(jsonObj.Head?.Workspace)}
 
             </div>
-            <div style={{ flex: 1, backgroundColor: 'white' }}>
+            <div style={{ flex: 1, backgroundColor: 'white'}}>
                 {!selectedOrderId && renderOrdersList()}
                 {selectedOrderId && renderOrderDetail()}
             </div>
+
+            {isFullscreen && (
+                <div key='full' style={{ flex: 1, backgroundColor: 'white', position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, zIndex: 1000 }}>
+                    {!selectedOrderId && renderOrdersList()}
+                    {selectedOrderId && renderOrderDetail()}
+                </div>
+            )}
+
+
         </>
     )
 }

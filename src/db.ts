@@ -217,11 +217,11 @@ export async function getAllData(): Promise<ALL_DATA> {
 
 
 
-export async function createNewOrder(table: number): Promise<DBT_Orders> {
+export async function createNewOrder(table: number, user_id: bigint | number): Promise<DBT_Orders> {
     const order = await prisma.dBT_Orders.create({
         data: {
             ID_Table: table,
-            //ID_User: 1,
+            ID_User: user_id
             //ID_OrderStatus: 1,
             //OrderDate: new Date(),
         }
@@ -229,7 +229,7 @@ export async function createNewOrder(table: number): Promise<DBT_Orders> {
     return order;
 }
 
-export async function createNewOrderItem(order_id: number, meal_id: number): Promise<DBT_OrderItems> {
+export async function createNewOrderItem(order_id: number, meal_id: number, user_id: bigint | number): Promise<DBT_OrderItems> {
     const meal = await prisma.dBT_Meals.findFirst({ where: { ID: meal_id } });
     // check if meal has any variants, if so, take the first one
     const firstVariant = await prisma.dBT_Variants.findFirst({ where: { ID_Meal: meal_id, Available: true } });
@@ -240,7 +240,8 @@ export async function createNewOrderItem(order_id: number, meal_id: number): Pro
             ID_Meal: meal_id,
             ID_Variant: firstVariant?.ID,
             Price: meal?.Price,
-
+            Discountable: meal?.Dicountable,
+            ID_User: user_id,
         }
     });
     return orderItem;
@@ -251,6 +252,27 @@ export async function DB_changeOrderItemVariant(order_item_id: number, variant_i
         where: { ID: order_item_id },
         data: {
             ID_Variant: variant_id,
+        }
+    });
+    return orderItem;
+}
+
+
+export async function DB_changeOrderNote(order_id: number, note: string): Promise<DBT_Orders> {
+    const order = await prisma.dBT_Orders.update({
+        where: { ID: order_id },
+        data: {
+            Note: note,
+        }
+    });
+    return order;
+}
+
+export async function DB_changeOrderItemNote(order_item_id: number, note: string): Promise<DBT_OrderItems> {
+    const orderItem = await prisma.dBT_OrderItems.update({
+        where: { ID: order_item_id },
+        data: {
+            Note: note,
         }
     });
     return orderItem;
@@ -267,7 +289,7 @@ export async function DB_cancelOrderItem(order_item_id: number | bigint): Promis
 }
 
 
-export async function DB_createPayment(total_amount: number, discount: number, payment_method_id: number, items_cost: number, taxes: number): Promise<DBT_Payments> {
+export async function DB_createPayment(total_amount: number, discount: number, payment_method_id: number, items_cost: number, taxes: number, user_id: bigint | number): Promise<DBT_Payments> {
     const payment = await prisma.dBT_Payments.create({
         data: {
             ID_PaymentMethod: payment_method_id,
@@ -275,6 +297,7 @@ export async function DB_createPayment(total_amount: number, discount: number, p
             ItemsCost: items_cost,
             Taxes: taxes,
             TotalAmount: total_amount,
+            ID_User: user_id,
         }
     });
 

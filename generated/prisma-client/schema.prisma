@@ -60,6 +60,7 @@ model DBT_Meals {
   Picture            Bytes?
   PictureDescription String?  @db.VarChar(Max)
   Recipe             Bytes?
+  Dicountable        Decimal? @default(1, map: "DF_DBT_Meals_Dicountable") @db.Decimal(18, 2)
 }
 
 model DBT_MenuSetUp {
@@ -83,6 +84,8 @@ model DBT_OrderItems {
   Time_Prepared  DateTime? @db.DateTime
   Time_Delivered DateTime? @db.DateTime
   ID_Payment     BigInt?
+  Note           String?   @db.NVarChar(Max)
+  Discountable   Decimal?  @default(1, map: "DF_DBT_OrderItems_Discountable") @db.Decimal(18, 2)
 }
 
 model DBT_Orders {
@@ -94,6 +97,8 @@ model DBT_Orders {
   Canceled    Boolean?  @default(false, map: "DF_DBT_Orders_Canceled")
   Price       Decimal?  @db.Decimal(18, 3)
   OrderClosed Boolean?  @default(false, map: "DF_DBT_Orders_OrderClosed")
+  Note        String?   @db.NVarChar(Max)
+  ID_User     BigInt?
 }
 
 model DBT_PaymentMethods {
@@ -160,9 +165,12 @@ model DBT_Payments {
   Discount         Decimal?  @db.Decimal(18, 3)
   ID_Customer      BigInt?
   Closed           Boolean?
+  Reported         Boolean?  @default(true, map: "DF_DBT_Payments_Reported")
+  Printed          Boolean?  @default(false, map: "DF_DBT_Payments_Printed")
   ItemsCost        Decimal?  @db.Decimal(18, 3)
   Taxes            Decimal?  @db.Decimal(18, 3)
-  TimeOfPay        DateTime? @default(now(), map: "DF__DBT_Payme__TimeO__160F4887") @db.DateTime
+  TimeOfPay        DateTime? @default(now(), map: "DF_DBT_Payments_TimeOfPay") @db.DateTime
+  ID_User          BigInt?
 }
 
 model DBT_PaymentTaxes {

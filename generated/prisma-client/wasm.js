@@ -168,7 +168,8 @@ exports.Prisma.DBT_MealsScalarFieldEnum = {
   IsCombo: 'IsCombo',
   Picture: 'Picture',
   PictureDescription: 'PictureDescription',
-  Recipe: 'Recipe'
+  Recipe: 'Recipe',
+  Dicountable: 'Dicountable'
 };
 
 exports.Prisma.DBT_MenuSetUpScalarFieldEnum = {
@@ -191,7 +192,9 @@ exports.Prisma.DBT_OrderItemsScalarFieldEnum = {
   ID_User: 'ID_User',
   Time_Prepared: 'Time_Prepared',
   Time_Delivered: 'Time_Delivered',
-  ID_Payment: 'ID_Payment'
+  ID_Payment: 'ID_Payment',
+  Note: 'Note',
+  Discountable: 'Discountable'
 };
 
 exports.Prisma.DBT_OrdersScalarFieldEnum = {
@@ -202,7 +205,9 @@ exports.Prisma.DBT_OrdersScalarFieldEnum = {
   DateTime: 'DateTime',
   Canceled: 'Canceled',
   Price: 'Price',
-  OrderClosed: 'OrderClosed'
+  OrderClosed: 'OrderClosed',
+  Note: 'Note',
+  ID_User: 'ID_User'
 };
 
 exports.Prisma.DBT_PaymentMethodsScalarFieldEnum = {
@@ -269,9 +274,12 @@ exports.Prisma.DBT_PaymentsScalarFieldEnum = {
   Discount: 'Discount',
   ID_Customer: 'ID_Customer',
   Closed: 'Closed',
+  Reported: 'Reported',
+  Printed: 'Printed',
   ItemsCost: 'ItemsCost',
   Taxes: 'Taxes',
-  TimeOfPay: 'TimeOfPay'
+  TimeOfPay: 'TimeOfPay',
+  ID_User: 'ID_User'
 };
 
 exports.Prisma.DBT_PaymentTaxesScalarFieldEnum = {

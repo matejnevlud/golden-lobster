@@ -76,8 +76,6 @@ export default function Workspace(props: WorkspaceProps) {
             localStorage.removeItem(key);
         }
     });
-
-
     const renderMealNameText = (o: any, text: any, strike: boolean, meal: DBT_Meals) => {
         const container = parseBasic(o, null);
         const positionStyle = {
@@ -137,6 +135,7 @@ export default function Workspace(props: WorkspaceProps) {
 
     const renderSingleMeal = (o: any, idx: number, meal: DBT_Meals, variants: DBT_Variants[]) => {
 
+
         return (
             <div key={idx} style={{
                 marginTop: idx == 0 ? vh(o?.FoodComponent?.FirstTopSpace, null) : 0,
@@ -144,7 +143,7 @@ export default function Workspace(props: WorkspaceProps) {
                 position: 'relative'
             }}>
                 <SizeableAcko
-                    key={`mg_${mealGroup.ID}_m_${meal.ID}_idx_${idx}`}
+                    key={`mg_${mealGroup.ID}_m_${meal.ID}_idx_${idx}_lang_${localStorage.getItem('language')}`}
                     onClick={() => setSelectedMealId(meal.ID)}
                     style={{ cursor: 'pointer' }}
                     className={"mealName"}
