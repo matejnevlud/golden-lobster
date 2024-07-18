@@ -325,6 +325,17 @@ export async function DB_bindTaxToPayment(tax_id: number | bigint, payment_id: n
 }
 
 
+export async function DB_printPayment(payment_id: number | bigint): Promise<DBT_Payments> {
+    const payment = await prisma.dBT_Payments.update({
+        where: { ID: payment_id },
+        data: {
+            Printed: true,
+        }
+    });
+    return payment;
+
+}
+
 export async function DB_closeOrder(order_id: number | bigint): Promise<DBT_Orders> {
 
     // select all payment ids from all orderitems where order_id = order_id

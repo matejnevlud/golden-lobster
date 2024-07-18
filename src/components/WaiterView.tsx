@@ -4,12 +4,13 @@ import AddToOrderStrip from "@/components/AddToOrderStrip";
 import { XMLParser } from "fast-xml-parser";
 import { parseBasic } from "@/utils/xmlParser";
 import Workspace from "@/components/Workspace";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { DataGrid } from "@mui/x-data-grid";
 import { Box, Button, ButtonGroup, CardHeader, Checkbox, FormControl, FormControlLabel, FormGroup, InputAdornment, InputLabel, MenuItem, Modal, Select, TextField, ToggleButton, ToggleButtonGroup, Typography } from "@mui/material";
-import { changeOrderItemVariant, createNewOrder, createNewOrderItem, DB_bindOrderItemToPayment, DB_bindTaxToPayment, DB_cancelOrder, DB_cancelOrderItem, DB_changeOrderItemNote, DB_changeOrderItemVariant, DB_changeOrderNote, DB_closeOrder, DB_createPayment } from "@/db";
+import { changeOrderItemVariant, createNewOrder, createNewOrderItem, DB_bindOrderItemToPayment, DB_bindTaxToPayment, DB_cancelOrder, DB_cancelOrderItem, DB_changeOrderItemNote, DB_changeOrderItemVariant, DB_changeOrderNote, DB_closeOrder, DB_createPayment, DB_printPayment } from "@/db";
 import { DBT_Meals } from "../../generated/prisma-client";
 import { DBT_OrderItems } from "@prisma/client";
+import { useReactToPrint } from "react-to-print";
 
 
 BigInt.prototype.toJSON = function() { return parseInt(this.toString()) }
@@ -68,6 +69,24 @@ export default function WaiterView(props) {
     const [selectedPaymentItems, setSelectedPaymentItems] = useState([]);
     const [selectedCustomer, setSelectedCustomer] = useState(null);
 
+
+
+    // Print bills
+    const contentToPrint = useRef(null);
+    const handlePrintHook = useReactToPrint({
+        documentTitle: "Print This Document",
+        onBeforePrint: () => console.log("before printing..."),
+        onAfterPrint: () => console.log("after printing..."),
+        removeAfterPrint: true,
+    });
+
+    const handlePrint = async () => {
+        handlePrintHook(null, () => contentToPrint.current)
+
+        const updatedPayment = await DB_printPayment(selectedPaymentId);
+        if (!updatedPayment) return;
+        setPayments(payments.map((payment) => payment.ID == selectedPaymentId ? updatedPayment : payment));
+    }
     useEffect(() => {
         if (!selectedOrderId) return;
 
@@ -476,7 +495,7 @@ export default function WaiterView(props) {
         const changedOrder = await DB_changeOrderNote(selectedOrderId, newOrderNote);
         setOrders(orders.map((order) => order.ID == selectedOrderId ? changedOrder : order));
         setNewOrderNote('');
-        setShowOrderNoteModal(false);
+        //setShowOrderNoteModal(false);
     }
     const renderOrderDetail = () => {
         const currentOrderItem = orderItems.find((orderItem) => orderItem.ID == selectedOrderItemId);
@@ -489,7 +508,11 @@ export default function WaiterView(props) {
             { field: 'ID_Variant', headerName: 'ID_Variant', flex: 1},
             { field: 'Variant', headerName: 'Variant', flex: 1},
             { field: 'TimeOfOrder', headerName: 'TimeOfOrder', flex: 1},
-            { field: 'Price', headerName: 'Price', flex: 1 },
+            { field: 'Time_Prepared', headerName: 'Time_Prepared', flex: 1},
+            { field: 'Time_Delivered', headerName: 'Time_Delivered', flex: 1},
+            { field: 'Note', headerName: 'Note', flex: 1},
+
+            { field: 'Price', headerName: 'Price' },
             { field: 'Status', headerName: 'Status'},
         ]
 
@@ -505,6 +528,9 @@ export default function WaiterView(props) {
             Canceled: orderItem.Canceled,
             ID_Payment: orderItem.ID_Payment,
 
+            Time_Prepared: orderItem.Time_Prepared?.toLocaleString(),
+            Time_Delivered: orderItem.Time_Delivered?.toLocaleString(),
+            Note: orderItem.Note,
 
             Status: orderItem.ID_Payment ? 'Paid' : orderItem.Canceled ? 'Canceled' : '',
         }));
@@ -625,15 +651,14 @@ export default function WaiterView(props) {
                             <TextField
                                 className={'w-full'}
                                 id="outlined-multiline-static"
-
                                 multiline
                                 rows={4}
                                 value={newOrderItemNote != '' ? newOrderItemNote : currentOrderItem?.Note}
                                 onChange={(e) => setNewOrderItemNote(e.target.value)}
                             />
                         </div>
-                        <div className="flex flex-col">
-                            <Button size={'large'} color={'primary'} variant={'outlined'} onClick={() => saveOrderItemNote()} disabled={newOrderItemNote == ''}>Save Note</Button>
+                        <div className="flex flex-col mt-2">
+                            <Button size={'large'} color={'primary'} variant={'contained'} onClick={() => saveOrderItemNote()} disabled={newOrderItemNote == ''}>Save Note</Button>
 
                         </div>
                     </Box>
@@ -784,93 +809,101 @@ export default function WaiterView(props) {
                     onClose={() => setSelectedPaymentId(null)}
                     aria-labelledby="modal-modal-title"
                     aria-describedby="modal-modal-description"
+                    BackdropProps={{ style: { backgroundColor: 'rgba(0, 0, 0, 1)' } }}
                 >
-                    <Box sx={{
-                        position: 'absolute' as 'absolute',
-                        top: '50%',
-                        left: '50%',
-                        transform: 'translate(-50%, -50%)',
-                        width: 600,
-                        bgcolor: 'background.paper',
-                        border: '2px solid #000',
-                        boxShadow: 24,
-                        p: 4,
-                        overflow: 'scroll',
-                        display: 'flex',
-                        flexDirection: 'column',
-                        maxHeight: '95vh',
-                    }}>
-                        <div key={'title'} className="flex-1 flex items-center mb-4">
-                            <Typography variant="h5" component="h5">Payment no. {selectedPaymentId?.toString()}</Typography>
-                        </div>
+                    <>
+                        <Box sx={{
+                            position: 'absolute' as 'absolute',
+                            top: '50%',
+                            left: '50%',
+                            transform: 'translate(-50%, -50%)',
+                            width: 600,
+                            bgcolor: 'background.paper',
+                            border: '2px solid #000',
+                            boxShadow: 24,
+                            p: 4,
+                            overflow: 'scroll',
+                            display: 'flex',
+                            flexDirection: 'column',
+                            maxHeight: '95vh',
+                        }}>
+                            <>
+                                <div ref={contentToPrint}>
+                                    <div key={'title'} className="flex-1 flex items-center mb-4">
+                                        <Typography variant="h5" component="h5">Payment no. {selectedPaymentId?.toString()}</Typography>
+                                    </div>
 
 
-                        <div className="flex-1">
+                                    <div className="flex-1">
 
-                            {selectedPaymentItems
-                            .map(({ key, count, orderItem }) => (
-                                <div key={orderItem.ID} className="flex-1 flex items-center">
-                                    <Typography className="w-12">{count}x</Typography>
-                                    <Typography>{`${meals.find((meal) => meal.ID == orderItem.ID_Meal)?.Meal} ${variants.find((variant) => variant.ID == orderItem.ID_Variant)?.MealVariant ?? ''}`}</Typography>
-                                    <div className="flex-1"></div>
-                                    <Typography>OMR {(parseFloat(orderItem.Price?.toString()) * count).toFixed(3)}</Typography>
+                                        {selectedPaymentItems
+                                        .map(({ key, count, orderItem }) => (
+                                            <div key={orderItem.ID} className="flex-1 flex items-center">
+                                                <Typography className="w-12">{count}x</Typography>
+                                                <Typography>{`${meals.find((meal) => meal.ID == orderItem.ID_Meal)?.Meal} ${variants.find((variant) => variant.ID == orderItem.ID_Variant)?.MealVariant ?? ''}`}</Typography>
+                                                <div className="flex-1"></div>
+                                                <Typography>OMR {(parseFloat(orderItem.Price?.toString()) * count).toFixed(3)}</Typography>
+                                            </div>
+                                        ))}
+                                    </div>
+
+                                    {selectedPayment?.Discount &&
+                                        <div key={'discount'} className="flex-1 flex items-center">
+                                            <Typography className="ps-12">Discount</Typography>
+                                            <div className="flex-1"></div>
+                                            <Typography>− OMR {parseFloat(selectedPayment?.Discount).toFixed(3)}</Typography>
+                                        </div>
+                                    }
+
+                                    <div id="horizontal-line" style={{ borderTop: '1px solid black', width: '100%', margin: '10px 0' }}></div>
+                                    <div className="flex-1">
+                                        {selectedPaymentTaxes.map((tax) => (
+                                            <div key={tax.ID} className="flex-1 flex items-center">
+                                                <Typography>{tax.TaxName}</Typography>
+                                                <div className="flex-1"></div>
+                                                <Typography>{tax.Percentage ? tax.Percentage + '%' : tax.Value}</Typography>
+                                            </div>
+                                        ))}
+                                    </div>
+                                    <div key={selectedPayment?.ID} className="flex-1 flex items-center mt-4">
+                                        <Typography>Sum of all taxes</Typography>
+                                        <div className="flex-1"></div>
+                                        <Typography>OMR {parseFloat(selectedPayment?.Taxes).toFixed(3)}</Typography>
+                                    </div>
+
+                                    <div id="horizontal-line" style={{ borderTop: '1px solid black', width: '100%', margin: '10px 0' }}></div>
+
+                                    <div key={'Payment_type'} className="flex-1 flex items-center">
+                                        <Typography>Payment type</Typography>
+                                        <div className="flex-1"></div>
+                                        <Typography>{paymentMethods.find((paymentMethod) => paymentMethod.ID == selectedPayment?.ID_PaymentMethod)?.PaymentMethod}</Typography>
+                                    </div>
+
+                                    <div key={'timeofpay'} className="flex-1 flex items-center">
+                                        <Typography>Time of pay</Typography>
+                                        <div className="flex-1"></div>
+                                        <Typography>{selectedPayment?.TimeOfPay?.toLocaleString()}</Typography>
+                                    </div>
+                                    <div key={'created'} className="flex-1 flex items-center">
+                                        <Typography>Created by</Typography>
+                                        <div className="flex-1"></div>
+                                        <Typography>{users.find((user) => user.ID == selectedPayment?.ID_User)?.Name}</Typography>
+                                    </div>
+                                    <div id="horizontal-line" style={{ borderTop: '1px solid black', width: '100%', margin: '10px 0' }}></div>
+
+
+                                    <div key={'final'} className="flex-1 flex items-center">
+                                        <Typography variant="h5" component="h5">Final cost</Typography>
+                                        <div className="flex-1"></div>
+                                        <Typography variant="h5" component="h5">OMR {parseFloat(selectedPayment?.TotalAmount).toFixed(3)}</Typography>
+                                    </div>
                                 </div>
-                            ))}
-                        </div>
 
-                        {selectedPayment?.Discount &&
-                            <div key={'discount'} className="flex-1 flex items-center">
-                                <Typography className="ps-12">Discount</Typography>
-                                <div className="flex-1"></div>
-                                <Typography>− OMR {parseFloat(selectedPayment?.Discount).toFixed(3)}</Typography>
-                            </div>
-                        }
-
-                        <div id="horizontal-line" style={{ borderTop: '1px solid black', width: '100%', margin: '10px 0' }}></div>
-                        <div className="flex-1">
-                            {selectedPaymentTaxes.map((tax) => (
-                                <div key={tax.ID} className="flex-1 flex items-center">
-                                    <Typography>{tax.TaxName}</Typography>
-                                    <div className="flex-1"></div>
-                                    <Typography>{tax.Percentage ? tax.Percentage + '%' : tax.Value}</Typography>
-                                </div>
-                            ))}
-                        </div>
-                        <div key={selectedPayment?.ID} className="flex-1 flex items-center mt-4">
-                            <Typography>Sum of all taxes</Typography>
-                            <div className="flex-1"></div>
-                            <Typography>OMR {parseFloat(selectedPayment?.Taxes).toFixed(3)}</Typography>
-                        </div>
-
-                        <div id="horizontal-line" style={{ borderTop: '1px solid black', width: '100%', margin: '10px 0' }}></div>
-
-                        <div key={'Payment_type'} className="flex-1 flex items-center">
-                            <Typography>Payment type</Typography>
-                            <div className="flex-1"></div>
-                            <Typography>{paymentMethods.find((paymentMethod) => paymentMethod.ID == selectedPayment?.ID_PaymentMethod)?.PaymentMethod}</Typography>
-                        </div>
-
-                        <div key={'timeofpay'} className="flex-1 flex items-center">
-                            <Typography>Time of pay</Typography>
-                            <div className="flex-1"></div>
-                            <Typography>{selectedPayment?.TimeOfPay?.toLocaleString()}</Typography>
-                        </div>
-                        <div key={'created'} className="flex-1 flex items-center">
-                            <Typography>Created by</Typography>
-                            <div className="flex-1"></div>
-                            <Typography>{users.find((user) => user.ID == selectedPayment?.ID_User)?.Name}</Typography>
-                        </div>
-                        <div id="horizontal-line" style={{ borderTop: '1px solid black', width: '100%', margin: '10px 0' }}></div>
-
-
-                        <div key={'final'} className="flex-1 flex items-center">
-                            <Typography variant="h5" component="h5">Final cost</Typography>
-                            <div className="flex-1"></div>
-                            <Typography variant="h5" component="h5">OMR {parseFloat(selectedPayment?.TotalAmount).toFixed(3)}</Typography>
-                        </div>
-
-
-                    </Box>
+                                <div className="mt-4 min-w-full"></div>
+                                <Button variant={"contained"} className="p-4 mt-4 min-w-full" onClick={() => handlePrint()}>Print {selectedPayment?.Printed && " (Already printed)"}</Button>
+                            </>
+                        </Box>
+                    </>
                 </Modal>
 
 
@@ -902,7 +935,7 @@ export default function WaiterView(props) {
                                 onChange={(e) => setNewOrderNote(e.target.value)}
                             />
                             <div className="p-2"></div>
-                            <Button variant={"contained"} className="p-4 mt-2" onClick={() => saveOrderNote()}>Save Note</Button>
+                            <Button variant={"contained"} disabled={newOrderNote == ''} className="p-4 mt-2" onClick={() => saveOrderNote()}>Save Note</Button>
                         </div>
                     </Box>
                 </Modal>
