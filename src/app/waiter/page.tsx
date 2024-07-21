@@ -1,7 +1,5 @@
 import { getAllData, getWaiterData } from "@/db";
-import InteractiveMenu from "@/components/InteractiveMenu";
 import WaiterView from "@/components/WaiterView";
-import AddToOrderStrip from "@/components/AddToOrderStrip";
 import { Inter } from "next/font/google";
 
 const inter = Inter({ subsets: ["latin"] });
@@ -18,7 +16,7 @@ export default async function Menu() {
     return (
         <html lang="en">
             <head>
-                <meta name="viewport" content="width=device-width, initial-scale=0.7, maximum-scale=0.7, user-scalable=no"/>
+                <meta name="viewport" content="width=device-width, initial-scale=0.6, maximum-scale=0.6, user-scalable=no"/>
             </head>
             <body className={inter.className}>
             <div className="min-h-screen min-w-full flex flex-row">

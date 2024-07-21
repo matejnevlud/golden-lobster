@@ -10,6 +10,19 @@ export function base64DataUri(base64?: string): string {
 }
 
 
+export function convertDate(date?: Date): string {
+    if (!date) return '';
+
+    const mm = date.getMonth() + 1; // getMonth() is zero-based
+    const dd = date.getDate();
+
+    const hh = date.getHours();
+    const min = date.getMinutes();
+
+    return [dd, mm].map(n => n.toString().padStart(2, '0')).join('.') + '. ' + [hh, min].map(n => n.toString().padStart(2, '0')).join(':');
+}
+
+
 export function numberToRGBAString(number: number) {
     if (!number) return "";
 

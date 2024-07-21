@@ -1,23 +1,50 @@
 'use client';
 
-import AddToOrderStrip from "@/components/AddToOrderStrip";
 import { XMLParser } from "fast-xml-parser";
 import { parseBasic } from "@/utils/xmlParser";
-import Workspace from "@/components/Workspace";
-import { useEffect, useRef, useState } from "react";
-import { DataGrid } from "@mui/x-data-grid";
-import { Box, Button, ButtonGroup, CardHeader, Checkbox, FormControl, FormControlLabel, FormGroup, InputAdornment, InputLabel, MenuItem, Modal, Select, TextField, ToggleButton, ToggleButtonGroup, Typography } from "@mui/material";
-import { changeOrderItemVariant, createNewOrder, createNewOrderItem, DB_bindOrderItemToPayment, DB_bindTaxToPayment, DB_cancelOrder, DB_cancelOrderItem, DB_changeOrderItemNote, DB_changeOrderItemVariant, DB_changeOrderNote, DB_closeOrder, DB_createPayment, DB_printPayment } from "@/db";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { DataGrid, GridRenderCellParams } from "@mui/x-data-grid";
+import { Box, Button, ButtonGroup, CardHeader, Checkbox, FormControl, FormControlLabel, FormGroup, InputAdornment, InputLabel, LinearProgress, MenuItem, Modal, Select, TextField, ToggleButton, ToggleButtonGroup, Typography } from "@mui/material";
+import {
+    changeOrderItemVariant,
+    createNewOrder,
+    createNewOrderItem,
+    DB_bindOrderItemToPayment,
+    DB_bindTaxToPayment,
+    DB_cancelOrder,
+    DB_cancelOrderItem,
+    DB_changeOrderItemNote,
+    DB_changeOrderItemVariant,
+    DB_changeOrderNote,
+    DB_closeOrder,
+    DB_createPayment, DB_editPayment,
+    DB_printPayment, DB_removePayment, DB_reopenOrder, DB_unbindAllTaxesFromPayment, DB_unbindOrderItemsFromPayment,
+    getAllData,
+    getWaiterData,
+} from "@/db";
 import { DBT_Meals } from "../../generated/prisma-client";
 import { DBT_OrderItems } from "@prisma/client";
 import { useReactToPrint } from "react-to-print";
+import { convertDate } from "@/utils/utils";
+
 
 
 BigInt.prototype.toJSON = function() { return parseInt(this.toString()) }
 export default function WaiterView(props) {
 
-    const { languages, layouts, meals, mealGroups, mealsInGroups, variants, menuSetUp } = props;
-    const { customers, paymentMethods, tables, users, taxes } = props;
+    // rewrite all props to useState
+    const [layouts, setLayouts] = useState(props.layouts);
+    const [meals, setMeals] = useState(props.meals);
+    const [mealGroups, setMealGroups] = useState(props.mealGroups);
+    const [mealsInGroups, setMealsInGroups] = useState(props.mealsInGroups);
+    const [variants, setVariants] = useState(props.variants);
+
+    const [customers, setCustomers] = useState(props.customers);
+    const [paymentMethods, setPaymentMethods] = useState(props.paymentMethods);
+    const [tables, setTables] = useState(props.tables);
+    const [users, setUsers] = useState(props.users);
+    const [taxes, setTaxes] = useState(props.taxes);
+
     const headLayout = layouts.find((layout) => layout.Type === "Head" && layout.Active);
     const parser = new XMLParser({ ignoreAttributes : false });
     let jsonObj = parser.parse(headLayout?.Xml ?? "");
@@ -49,15 +76,19 @@ export default function WaiterView(props) {
     const [newOrderNote, setNewOrderNote] = useState('');
     const [showOrderNoteModal, setShowOrderNoteModal] = useState(false);
 
+
     const [openPayModal, setOpenPayModal] = useState(false);
+    const [openEditPayModal, setOpenEditPayModal] = useState(false);
     const [checkboxes, setCheckboxes] = useState({ });
     const [newPaymentCost, setNewPaymentCost] = useState(0);
     const [newPaymentDiscount, setNewPaymentDiscount] = useState(0);
     const [newPaymentSubtotal, setNewPaymentSubtotal] = useState(0);
     const [newPaymentTaxes, setNewPaymentTaxes] = useState(0);
     const [newPaymentTotal, setNewPaymentTotal] = useState(0);
+    const [newPaymentRealPayment, setNewPaymentRealPayment] = useState(null);
     const [discountPercent, setDiscountPercent] = useState(0);
 
+    const [openBillModal, setOpenBillModal] = useState(false);
 
     const [orderSum, setOrderSum] = useState(0);
     const [orderSumToPay, setOrderSumToPay] = useState(0);
@@ -77,25 +108,68 @@ export default function WaiterView(props) {
         documentTitle: "Print This Document",
         onBeforePrint: () => console.log("before printing..."),
         onAfterPrint: () => console.log("after printing..."),
-        removeAfterPrint: true,
+        removeAfterPrint: false,
+        suppressErrors: false,
     });
 
     const handlePrint = async () => {
-        handlePrintHook(null, () => contentToPrint.current)
+        //handlePrintHook(null, () => contentToPrint.current)
+        window.print('print')
 
         const updatedPayment = await DB_printPayment(selectedPaymentId);
         if (!updatedPayment) return;
         setPayments(payments.map((payment) => payment.ID == selectedPaymentId ? updatedPayment : payment));
     }
+
+
+    const [isRefreshing, setIsRefreshing] = useState(false);
+    const refreshData = async () => {
+        setIsRefreshing(true);
+
+
+        const { languages, layouts, meals, mealGroups, mealsInGroups, variants, menuSetUp, translatedData } = await getAllData();
+        const { customers, orders, orderItems, paymentMethods, tables, users, taxes, payments, paymentTaxes } = await getWaiterData()
+
+        setLayouts(layouts)
+        setMeals(meals)
+        setMealGroups(mealGroups)
+        setMealsInGroups(mealsInGroups)
+        setVariants(variants)
+        setCustomers(customers)
+        setPaymentMethods(paymentMethods)
+        setTables(tables)
+        setUsers(users)
+        setTaxes(taxes)
+
+        setOrders(orders)
+        setOrderItems(orderItems)
+        setPayments(payments)
+        setPaymentTaxes(paymentTaxes)
+
+
+        await new Promise((resolve) => setTimeout(resolve, 1000));
+
+        setIsRefreshing(false);
+    }
+
+    useEffect(() => {
+        if (!selectedOrderId) refreshData();
+    }, [selectedOrderId]);
     useEffect(() => {
         if (!selectedOrderId) return;
 
-        var newCheckboxes = {};
-
-
-
         setOrderSum(orderItems.filter((orderItem) => orderItem.ID_Order == selectedOrderId && !orderItem.Canceled).reduce((acc, oi) => acc + parseFloat(oi.Price ?? '0'), 0));
         setOrderSumToPay(orderItems.filter((orderItem) => orderItem.ID_Order == selectedOrderId && !orderItem.Canceled && !orderItem.ID_Payment).reduce((acc, oi) => acc + parseFloat(oi.Price ?? '0'), 0));
+
+
+    }, [selectedOrderId, orderItems]);
+
+
+    useEffect(() => {
+        if (!openPayModal) return;
+
+
+        var newCheckboxes = {};
         const ois = orderItems.filter((orderItem) => orderItem.ID_Order == selectedOrderId && !orderItem.Canceled && !orderItem.ID_Payment);
         for (const orderItem of ois) {
             newCheckboxes[orderItem.ID.toString()] = true;
@@ -111,9 +185,8 @@ export default function WaiterView(props) {
 
         setCheckboxes(newCheckboxes);
         setDiscountPercent(0);
-
-    }, [selectedOrderId, orderItems]);
-
+        setNewPaymentRealPayment(null);
+    }, [openPayModal]);
 
     useEffect(() => {
 
@@ -181,7 +254,16 @@ export default function WaiterView(props) {
     }
 
     // find all orderItems from the selected order, get distinct ID_Payment from them, and then find all payments with those IDs
-    const orderPayments = orderItems.filter((orderItem) => orderItem.ID_Order == selectedOrderId).map((orderItem) => orderItem.ID_Payment).filter((id, index, self) => self.indexOf(id) === index).map((id) => payments.find((payment) => payment.ID == id)).filter((payment) => payment != null) as any[];
+    const orderPayments = useMemo(() => {
+        return orderItems.filter((orderItem) => orderItem.ID_Order == selectedOrderId).map((orderItem) => orderItem.ID_Payment).filter((id, index, self) => self.indexOf(id) === index).map((id) => payments.find((payment) => payment.ID == id)).filter((payment) => payment != null) as any[];
+    }, [orderItems, selectedOrderId]);
+
+
+    // use memo to create variable "hasAllPaymentsRealPayment" which is true if all payments have RealPayment set where orderID is selectedOrderId
+    const hasAllPaymentsRealPayment = useMemo(() => {
+        return orderPayments.every((payment) => payment.RealPayment > 0);
+    }, [orderPayments]);
+
 
     useEffect(() => {
         if (!selectedOrderId) return;
@@ -306,17 +388,42 @@ export default function WaiterView(props) {
         setSelectedOrderId(newOrder.ID);
     }
 
+
+    const orderInitialState = useMemo(() => {
+        const defaultState = {
+            sorting: {
+                sortModel: [
+                    { field: 'OrderClosed', sort: 'asc' },
+                    { field: 'DateTime', sort: 'desc' },
+                ],
+            },
+            columns: {
+                columnVisibilityModel: {
+                    id: false,
+                    ID_Table: false,
+                    Canceled: false,
+                    OrderClosed: false,
+                }
+            }
+        };
+
+        const stateJSON = localStorage.getItem("orderState");
+        if (!stateJSON) return defaultState;
+
+        try {
+            return JSON.parse(stateJSON);
+        } catch {
+            return defaultState;
+        }
+    } , [])
     const renderOrdersList = () => {
         const cols = [
-            { field: 'id', headerName: 'ID', width: 40 },
-            { field: 'ID_Table', headerName: 'Table', width: 60 },
-            { field: 'Table', headerName: 'Table', flex: 1 },
-            { field: 'DateTime', headerName: 'Created At', flex: 1},
-            { field: 'Price', headerName: 'Price', flex: 1 },
-            { field: 'Canceled', headerName: 'Canceled', renderCell: (params) => params.value ? 'Canceled' : '' },
-            { field: 'OrderClosed', headerName: 'Closed', renderCell: (params) => params.value ? 'Closed' : '' },
-
-            { field: 'Status', headerName: 'Status'},
+            { field: 'id', headerName: 'ID' },
+            { field: 'ID_Table', headerName: 'ID_Table'},
+            { field: 'Table', headerName: 'Table', minWidth: 220 },
+            { field: 'DateTime', headerName: 'Created At', minWidth: 220 },
+            { field: 'Price', headerName: 'Price', minWidth: 220 },
+            { field: 'Status', headerName: 'Status', minWidth: 220 },
         ]
 
         const rows = orders.map((order) =>  ({
@@ -324,7 +431,7 @@ export default function WaiterView(props) {
             ID_Table: parseInt(order.ID_Table),
             Table: tables.find((table) => table.ID == order.ID_Table)?.TableName,
             ID_Customer: parseInt(order.ID_Customer),
-            DateTime: order.DateTime?.toLocaleString(),
+            DateTime: convertDate(order.DateTime),
             Canceled: order.Canceled,
             Price: order.Price,
             OrderClosed: order.OrderClosed,
@@ -347,6 +454,10 @@ export default function WaiterView(props) {
                         <ToggleButton value="canceled">Canceled</ToggleButton>*/}
                         <ToggleButton value="all">All</ToggleButton>
                     </ToggleButtonGroup>
+
+
+                    <div className="flex-1"></div>
+                    <Button className="p-4" variant={'outlined'} onClick={() => refreshData()}>Refresh</Button>
                     <div className="flex-1"></div>
                     <Button className="p-4" variant={isFullscreen ? 'contained' : 'outlined'} onClick={() => setIsFullscreen(!isFullscreen)}>Fullscreen</Button>
                     <div className="flex-1"></div>
@@ -355,24 +466,12 @@ export default function WaiterView(props) {
                     <Button variant={"contained"} className="p-4" onClick={() => setOpenTableModal(true)}>New Order</Button>
 
                 </div>
+                {isRefreshing && <LinearProgress />}
                 <DataGrid
                     isRowSelectable={() => false}
-                    style={{ flex: 1 }}
-                    initialState={{
-                        sorting: {
-                            sortModel: [
-                                { field: 'OrderClosed', sort: 'asc' },
-                                { field: 'DateTime', sort: 'desc' },
-                            ],
-                        },
-                        columns: {
-                            columnVisibilityModel: {
-                                ID_Table: false,
-                                Canceled: false,
-                                OrderClosed: false,
-                            }
-                        }
-                    }}
+                    sx={{ overflowX: 'scroll' }}
+                    initialState={orderInitialState}
+                    onStateChange={(state) => localStorage.setItem("orderState", JSON.stringify(state))}
                     rows={rows} columns={cols} onRowClick={({ id, row }) => {setSelectedOrderId(id)}}
                     getRowClassName={(params) => params.row.Canceled ? 'bg-red-200' : params.row.OrderClosed ? 'bg-gray-200' : '' }
                 />
@@ -409,7 +508,99 @@ export default function WaiterView(props) {
 
 
 
-    const pay = async () => {
+    const openEditPaymentModal = (paymentID, ois = orderItems, pmnts = payments, pmtxs = paymentTaxes ) => {
+        setSelectedPaymentId(paymentID)
+
+        const editedPayment = pmnts.find((payment) => payment.ID == paymentID);
+        const editedPaymentTaxes = pmtxs.filter((paymentTax) => paymentTax.ID_Payments == paymentID);
+
+        var newCheckboxes = {};
+        const oisl = ois.filter((orderItem) => orderItem.ID_Order == selectedOrderId && !orderItem.Canceled && orderItem.ID_Payment == paymentID);
+        for (const orderItem of oisl) {
+            newCheckboxes[orderItem.ID.toString()] = true;
+        }
+
+        for (const paymentMethod of paymentMethods) {
+            newCheckboxes[paymentMethod.PaymentMethod] = editedPayment.ID_PaymentMethod == paymentMethod.ID;
+        }
+
+        for (const tax of taxes) {
+            newCheckboxes[tax.TaxName] = editedPaymentTaxes.some((paymentTax) => paymentTax.ID_Tax == tax.ID);
+        }
+
+        setCheckboxes(newCheckboxes);
+        setDiscountPercent(editedPayment.DiscountPercent);
+        setNewPaymentRealPayment(editedPayment.RealPayment);
+
+
+
+        setOpenEditPayModal(true)
+
+
+    }
+
+
+    const deleteBill = async () => {
+        await DB_unbindOrderItemsFromPayment(selectedPaymentId);
+        await DB_unbindAllTaxesFromPayment(selectedPaymentId);
+        await DB_removePayment(selectedPaymentId);
+
+        await refreshData();
+
+        setOpenEditPayModal(false);
+    }
+    const saveEditPayment = async () => {
+        console.log('saveeditpayment')
+        const ois = orderItems.filter((orderItem) => orderItem.ID_Order == selectedOrderId && checkboxes[orderItem.ID.toString()] && !orderItem.Canceled);
+        const ts = taxes.filter((tax) => checkboxes[tax.TaxName]);
+        const paymentMethod = paymentMethods.find((paymentMethod) => checkboxes[paymentMethod.PaymentMethod]);
+
+        console.log('ois', ois, 'ts', ts, 'paymentMethod', paymentMethod)
+
+        if (!paymentMethod) return;
+
+        let parsedRealPayment = null;
+        try {
+            parsedRealPayment = parseFloat(newPaymentRealPayment);
+        } catch {
+            alert('Invalid real payment, skipping.');
+        }
+
+        // 1. Edit DBT_Payment
+        const editedPayment = await DB_editPayment(selectedPaymentId,newPaymentTotal, newPaymentDiscount, discountPercent, paymentMethod.ID, newPaymentCost, newPaymentTaxes, currentUser.ID, parsedRealPayment);
+        if (!editedPayment) return;
+
+        // Unbind all orderItems from the payment
+        await DB_unbindOrderItemsFromPayment(selectedPaymentId);
+
+        // 2. Update DBT_OrderItem with ID_Payment
+        const updatedOrderItems: DBT_OrderItems[] = [];
+        for (const oi of ois) {
+            const updatedOrderItem = await DB_bindOrderItemToPayment(oi.ID, editedPayment.ID);
+            updatedOrderItems.push(updatedOrderItem);
+        }
+
+        // Unbind all taxes
+        await DB_unbindAllTaxesFromPayment(selectedPaymentId);
+
+        // 3. Create multiple DBT_PaymentTax
+        const newPts = [];
+        for (const t of ts) {
+            const newpt = await DB_bindTaxToPayment(t.ID, editedPayment.ID);
+            newPts.push(newpt);
+        }
+
+        // Revalidate the orderItems and payments
+        const newWaiterData = await getWaiterData();
+        setOrderItems(newWaiterData.orderItems);
+        setPayments(newWaiterData.payments);
+        setPaymentTaxes(newWaiterData.paymentTaxes);
+
+    }
+
+
+
+    const createPaymentNew = async () => {
         console.log('pay')
         const ois = orderItems.filter((orderItem) => orderItem.ID_Order == selectedOrderId && checkboxes[orderItem.ID.toString()] && !orderItem.Canceled);
         const ts = taxes.filter((tax) => checkboxes[tax.TaxName]);
@@ -420,9 +611,16 @@ export default function WaiterView(props) {
         if (!paymentMethod) return;
         if (!ois.length) return;
 
+        let parsedRealPayment = null;
+        try {
+            parsedRealPayment = parseFloat(newPaymentRealPayment);
+        } catch {
+            alert('Invalid real payment, skipping.');
+        }
+
 
         // 1. Create DBT_Payment
-        const newPayment = await DB_createPayment(newPaymentTotal, newPaymentDiscount, paymentMethod.ID, newPaymentCost, newPaymentTaxes, currentUser.ID);
+        const newPayment = await DB_createPayment(newPaymentTotal, newPaymentDiscount, discountPercent, paymentMethod.ID, newPaymentCost, newPaymentTaxes, currentUser.ID, parsedRealPayment);
         if (!newPayment) return;
 
         // 2. Update DBT_OrderItem with ID_Payment
@@ -440,13 +638,18 @@ export default function WaiterView(props) {
         }
 
         // Revalidate the orderItems and payments
-        setOrderItems(orderItems.map((orderItem: DBT_OrderItems) => updatedOrderItems.find((oi) => oi.ID == orderItem.ID) ?? orderItem));
-        setPayments([...payments, newPayment]);
-        setPaymentTaxes([...paymentTaxes, ...newPts]);
-        setCheckboxes({});
-        setDiscountPercent(0);
+        const newOrderItems = orderItems.map((orderItem: DBT_OrderItems) => updatedOrderItems.find((oi) => oi.ID == orderItem.ID) ?? orderItem);
+        setOrderItems(newOrderItems);
+        const newPayments = [...payments, newPayment];
+        setPayments(newPayments);
+        const newPaymentTaxesArray = [...paymentTaxes, ...newPts];
+        setPaymentTaxes(newPaymentTaxesArray);
+        //setCheckboxes({});
+        //setDiscountPercent(0);
         setOpenPayModal(false);
         setSelectedCustomer(null);
+
+        openEditPaymentModal(newPayment.ID, newOrderItems, newPayments, newPaymentTaxesArray);
 
 
     }
@@ -465,6 +668,13 @@ export default function WaiterView(props) {
         setOrders(orders.map((order) => order.ID == selectedOrderId ? updatedOrder : order));
         setOrderItems(orderItems.map((orderItem) => updatedOrderItems.find((oi) => oi.ID == orderItem.ID) ?? orderItem));
         setSelectedOrderId(null);
+    }
+
+    const reopenOrder = async () => {
+        const { updatedOrder, updatedOrderItems } = await DB_reopenOrder(selectedOrderId);
+        if (!updatedOrder) return;
+        setOrders(orders.map((order) => order.ID == selectedOrderId ? updatedOrder : order));
+        setOrderItems(orderItems.map((orderItem) => updatedOrderItems.find((oi) => oi.ID == orderItem.ID) ?? orderItem));
     }
     const cancelOrderItem = async (orderItemId: number) => {
         const orderItem = orderItems.find((orderItem) => orderItem.ID == orderItemId);
@@ -497,23 +707,237 @@ export default function WaiterView(props) {
         setNewOrderNote('');
         //setShowOrderNoteModal(false);
     }
+
+
+    const renderEditPayModal = () => {
+
+
+        return (
+            <Modal
+                open={openEditPayModal}
+                onClose={() => setOpenEditPayModal(false)}
+                aria-labelledby="modal-modal-title"
+                aria-describedby="modal-modal-description"
+            >
+                <Box sx={styles.boxContainer}>
+                    <Typography variant="h6" component="h2" className="pt-2 pb-2">
+                        Items to pay
+                    </Typography>
+                    <div className="flex-1">
+                        <FormGroup>
+                            {orderItems.filter((orderItem) => orderItem.ID_Order == selectedOrderId && !orderItem.Canceled).map((orderItem) => (
+                                <FormControlLabel key={orderItem.ID}
+                                                  control={<Checkbox checked={checkboxes[orderItem.ID.toString()]}
+                                                                     onChange={onCheckboxChange}
+                                                                     name={orderItem.ID.toString()}
+                                                                     disabled={orderItem.ID_Payment && orderItem.ID_Payment != selectedPaymentId}
+                                                  />}
+                                                  label={`${meals.find((meal) => meal.ID == orderItem.ID_Meal)?.Meal} ${variants.find((variant) => variant.ID == orderItem.ID_Variant)?.MealVariant ?? ''}   -   OMR ${orderItem.Price}`}/>
+                            ))}
+                        </FormGroup>
+                    </div>
+                    <Typography variant="h6" component="h2" className="pt-2 pb-2">
+                        Taxes
+                    </Typography>
+                    <div className="flex-1">
+                        {taxes.map((tax) => (
+                            <FormControlLabel key={tax.ID} control={<Checkbox name={tax.TaxName} checked={checkboxes[tax.TaxName]} onChange={onCheckboxChange}/>} label={`${tax.TaxName} - ${tax.Percentage ? tax.Percentage + '%' : tax.Value}`}/>
+                        ))}
+                    </div>
+                    <Typography variant="h6" component="h2" className="pt-2 pb-2">
+                        Discount
+                    </Typography>
+                    <div className="flex-1 flex items-center mb-2">
+                        <FormControl fullWidth>
+                            <InputLabel id="demo-simple-select-label">Customer</InputLabel>
+                            <Select
+                                labelId="demo-simple-select-label"
+                                id="demo-simple-select"
+                                value={selectedCustomer}
+                                label="Customer"
+                                onChange={(e) => setSelectedCustomer(e.target.value)}
+                            >
+                                {customers.map((customer) => (
+                                    <MenuItem
+                                        key={customer.ID}
+                                        value={customer.ID}
+                                    >{`${customer.Name} ${customer.Surname} - ${customer.Discount}%`}</MenuItem>
+                                ))}
+                            </Select>
+                        </FormControl>
+                        <Button
+                            disabled={!selectedCustomer}
+                            onClick={() => {
+                                const customer = customers.find((customer) => customer.ID == selectedCustomer);
+                                setDiscountPercent(parseFloat(customer.Discount) / 100)
+                            }}
+                        >Apply Customer Discount</Button>
+                    </div>
+                    <div className="flex-1 flex items-center">
+                        <TextField
+                            id="outlined-basic"
+                            variant="outlined"
+                            value={discountPercent * 100}
+                            disabled
+                            sx={{ width: '10ch' }}
+                            InputProps={{
+                                endAdornment: <InputAdornment position="start">%</InputAdornment>,
+                            }}
+                        />
+
+                        <ButtonGroup variant="text" aria-label="Basic button group">
+                            <Button onClick={() => {
+                                setDiscountPercent(0)
+                            }}>0 %</Button>
+                            <Button onClick={() => {
+                                setDiscountPercent(0.05)
+                            }}>5 %</Button>
+                            <Button onClick={() => {
+                                setDiscountPercent(0.1)
+                            }}>10 %</Button>
+                            <Button onClick={() => {
+                                setDiscountPercent(0.15)
+                            }}>15 %</Button>
+                            <Button onClick={() => {
+                                setDiscountPercent(0.2)
+                            }}>20 %</Button>
+                            <Button onClick={() => {
+                                setDiscountPercent(0.25)
+                            }}>25 %</Button>
+                            <Button onClick={() => {
+                                setDiscountPercent(0.3)
+                            }}>30 %</Button>
+
+                        </ButtonGroup>
+                    </div>
+                    <Typography variant="h6" component="h2" className="pt-2 pb-2">
+                        Payment type
+                    </Typography>
+                    <div className="flex">
+                        {paymentMethods.map((paymentMethod) => (
+                            <FormControlLabel key={paymentMethod.ID} control={<Checkbox name={paymentMethod.PaymentMethod} checked={checkboxes[paymentMethod.PaymentMethod]} onChange={onCheckboxChange}/>} label={`${paymentMethod.PaymentMethod}`}/>
+                        ))}
+                    </div>
+
+                    <div id="horizontal-line" style={{ borderTop: '1px solid black', width: '100%', margin: '10px 0' }}></div>
+                    <div className="flex">
+                        <div className="flex-1 flex flex-col">
+                            <Typography variant="body" className="pt-1 pb-1">
+                                Cost: OMR {newPaymentCost.toFixed(3)}
+                            </Typography>
+                            <Typography variant="body" className="pt-1 pb-1">
+                                Discount: OMR {newPaymentDiscount.toFixed(3)}
+                            </Typography>
+                            <Typography variant="body" className="pt-1 pb-1">
+                                Subtotal: OMR {newPaymentSubtotal.toFixed(3)}
+                            </Typography>
+                            <Typography variant="body" className="pt-1 pb-1">
+                                Taxes: OMR {newPaymentTaxes.toFixed(3)}
+                            </Typography>
+                        </div>
+                        <div className="flex-1 flex flex-col">
+                            <Typography variant="h4" component="h6" className="pt-2 pb-2">
+                                Total: OMR {newPaymentTotal.toFixed(3)}
+                            </Typography>
+
+                            <TextField
+                                id="outlined-basic"
+                                variant="outlined"
+                                placeholder={"Real Amount"}
+                                value={newPaymentRealPayment}
+                                onChange={(e) => setNewPaymentRealPayment(e.target.value)}
+
+                                InputProps={{
+                                    startAdornment: <InputAdornment position="start">OMR</InputAdornment>,
+                                }}
+                            />
+
+                        </div>
+                    </div>
+                    <div className="flex justify-items-center mt-4">
+                        <Button  variant={"contained"} color={"error"} className="p-4" onClick={() => {
+                            deleteBill(selectedPaymentId);
+                        }}>Delete</Button>
+                        <div className="flex-1"></div>
+                        <Button disabled={!hasPaymentChecked()} variant={"contained"} className="p-4" onClick={() => {
+                            setOpenBillModal(true);
+                        }}>Show bill</Button>
+                        <div className="w-4"></div>
+                        <Button disabled={!hasPaymentChecked()} variant={"contained"} className="p-4" color={"success"} onClick={saveEditPayment}>Save</Button>
+                    </div>
+                </Box>
+            </Modal>
+    )
+    }
+    const orderDetailInitialState = useMemo(() => {
+        const defaultState = {
+            sorting: {
+                sortModel: [
+                    { field: 'Canceled', sort: 'asc' },
+                    { field: 'TimeOfOrder', sort: 'desc' },
+                ],
+            },
+            columns: {
+                columnVisibilityModel: {
+                    id: false,
+                    ID_Order: false,
+                    ID_Meal: false,
+                    Variant: false,
+                    ID_Variant: false,
+                    TimeOfOrder: false,
+                    Time_Prepared: false,
+                    Time_Delivered: false,
+                }
+            }
+        };
+
+        const stateJSON = localStorage.getItem("orderDetailState");
+        if (!stateJSON) return defaultState;
+
+        try {
+            return JSON.parse(stateJSON);
+        } catch {
+            return defaultState;
+        }
+    }, [])
     const renderOrderDetail = () => {
         const currentOrderItem = orderItems.find((orderItem) => orderItem.ID == selectedOrderItemId);
 
         const orderItemCols = [
             { field: 'id', headerName: 'ID', width: 40 },
-            { field: 'ID_Order', headerName: 'ID_Order', width: 60 },
-            { field: 'ID_Meal', headerName: 'ID_Meal', flex: 1 },
-            { field: 'Meal', headerName: 'Meal', flex: 1},
-            { field: 'ID_Variant', headerName: 'ID_Variant', flex: 1},
-            { field: 'Variant', headerName: 'Variant', flex: 1},
-            { field: 'TimeOfOrder', headerName: 'TimeOfOrder', flex: 1},
-            { field: 'Time_Prepared', headerName: 'Time_Prepared', flex: 1},
-            { field: 'Time_Delivered', headerName: 'Time_Delivered', flex: 1},
-            { field: 'Note', headerName: 'Note', flex: 1},
+            { field: 'ID_Order', headerName: 'ID_Order' },
+            { field: 'ID_Meal', headerName: 'ID_Meal' },
+            { field: 'Meal', headerName: 'Meal', width: 230,
+                renderCell: (params) => (
+                    <div>
+                        <b>{params.row.Meal}</b>
+                        <br/>
+                        <span>{params.row.Variant}</span>
+                    </div>
+                ),
+            },
+            { field: 'ID_Variant', headerName: 'ID_Variant' },
+            { field: 'Variant', headerName: 'Variant', width: 180 },
 
-            { field: 'Price', headerName: 'Price' },
-            { field: 'Status', headerName: 'Status'},
+
+            { field: 'Time', headerName: 'Time', width: 200,
+                renderCell: (params) => (
+                    <div>
+                        <span>Ordered: {params.row.TimeOfOrder}</span>
+                        <br/>
+                        <span>Prepared: {params.row.Time_Prepared}</span>
+                        <br/>
+                        <span>Delivered: {params.row.Time_Delivered}</span>
+                    </div>
+                ),
+            },
+            { field: 'TimeOfOrder', headerName: 'Ordered', width: 130 },
+            { field: 'Time_Prepared', headerName: 'Prep', width: 130 },
+            { field: 'Time_Delivered', headerName: 'Deliver', width: 130 },
+            { field: 'Note', headerName: 'Note',flex: 1 },
+
+            { field: 'Price', headerName: 'Price', width: 80 },
+            { field: 'Status', headerName: 'Status' , width: 80},
         ]
 
         const rows = orderItems.filter((orderItem) => orderItem.ID_Order == selectedOrderId).map((orderItem) =>  ({
@@ -523,13 +947,14 @@ export default function WaiterView(props) {
             Meal: meals.find((meal) => meal.ID == orderItem.ID_Meal)?.Meal,
             ID_Variant: parseInt(orderItem.ID_Variant),
             Variant: variants.find((variant) => variant.ID == orderItem.ID_Variant)?.MealVariant,
-            TimeOfOrder: orderItem.TimeOfOrder?.toLocaleString(),
+            TimeOfOrder: convertDate(orderItem.TimeOfOrder),
             Price: orderItem.Price,
             Canceled: orderItem.Canceled,
             ID_Payment: orderItem.ID_Payment,
 
-            Time_Prepared: orderItem.Time_Prepared?.toLocaleString(),
-            Time_Delivered: orderItem.Time_Delivered?.toLocaleString(),
+            Time_Prepared: convertDate(orderItem.Time_Prepared),
+            Time_Delivered: convertDate(orderItem.Time_Delivered),
+
             Note: orderItem.Note,
 
             Status: orderItem.ID_Payment ? 'Paid' : orderItem.Canceled ? 'Canceled' : '',
@@ -544,26 +969,22 @@ export default function WaiterView(props) {
                     <CardHeader title={"Order no. " + selectedOrderId + " - " + tables.find((table) => table.ID == orders.find((order) => order.ID == selectedOrderId)?.ID_Table)?.TableName} className="flex-1"/>
                     {isOrderClosed() && <CardHeader title={"ORDER IS CLOSED"} className="flex-1"/>}
                     {isOrderCanceled() && <CardHeader title={"ORDER IS CANCELED"} className="flex-1"/>}
+                    {isOrderClosedOrCanceled() && <Button variant={"contained"} className="p-4" color={"success"} onClick={() => reopenOrder()}>Open Order</Button>}
+
                     {!isOrderClosedOrCanceled() && <Button variant={"contained"} className="p-4" color={"error"} onClick={() => cancelOrder()}>Cancel Order</Button>}
                 </div>
                 <DataGrid
                     isRowSelectable={() => false}
+                    getRowHeight={() => 'auto'} getEstimatedRowHeight={() => 72}
+                    sx={{
+                        '&.MuiDataGrid-root--densityCompact .MuiDataGrid-cell': { py: '8px' },
+                        '&.MuiDataGrid-root--densityStandard .MuiDataGrid-cell': { py: '15px' },
+                        '&.MuiDataGrid-root--densityComfortable .MuiDataGrid-cell': { py: '22px' },
+                    }}
                     style={{ flex: 1, overflow: 'scroll' }}
-                    initialState={{
-                        sorting: {
-                            sortModel: [
-                                { field: 'Canceled', sort: 'asc' },
-                                { field: 'DateTime', sort: 'desc' },
-                            ],
-                        },
-                        columns: {
-                            columnVisibilityModel: {
-                                ID: false,
-                                ID_Order: false,
-                                ID_Meal: false,
-                                ID_Variant: false,
-                            }
-                        }
+                    initialState={orderDetailInitialState}
+                    onStateChange={(state) => {
+                        localStorage.setItem("orderDetailState", JSON.stringify(state));
                     }}
                     rows={rows} columns={orderItemCols} onRowClick={({ id, row }) => {
                         if (isOrderClosedOrCanceled()) return;
@@ -581,7 +1002,7 @@ export default function WaiterView(props) {
                     <ButtonGroup variant="text" aria-label="Basic button group">
                         {!orderPayments.length && <Button>No bills</Button>}
                         {orderPayments.map((payment) => (
-                            <Button key={payment?.ID?.toString()} onClick={() => setSelectedPaymentId(payment?.ID)}>Bill no. {payment?.ID?.toString()}</Button>
+                            <Button key={payment?.ID?.toString()} onClick={() => openEditPaymentModal(payment?.ID)}>Bill no. {payment?.ID?.toString()} {payment?.RealPayment > 0 ? '✅' : '❌'}</Button>
                         ))}
                     </ButtonGroup>
 
@@ -603,9 +1024,9 @@ export default function WaiterView(props) {
                         <div className="p-2"></div>
                         <Button variant={"contained"} className="p-4" color={"primary"} onClick={() => setShowOrderNoteModal(true)}>Note</Button>
                         <div className="p-2"></div>
-                        <Button variant={"contained"} className="p-4" color={"success"} onClick={() => setOpenPayModal(true)}>Pay Order</Button>
+                        <Button variant={"contained"} className="p-4" color={"success"} onClick={() => setOpenPayModal(true)}>Create Bill</Button>
                         <div className="p-2"></div>
-                        <Button disabled={orderSumToPay > 0} variant={"contained"} className="p-4" color={"success"} onClick={() => closeOrder()}>Close Order</Button>
+                        <Button disabled={orderSumToPay > 0 || !hasAllPaymentsRealPayment} variant={"contained"} className="p-4" color={"success"} onClick={() => closeOrder()}>Close Order</Button>
 
                     </div>
                 </div>
@@ -670,31 +1091,19 @@ export default function WaiterView(props) {
                     aria-labelledby="modal-modal-title"
                     aria-describedby="modal-modal-description"
                 >
-                    <Box sx={{
-                        position: 'absolute' as 'absolute',
-                        top: '50%',
-                        left: '50%',
-                        transform: 'translate(-50%, -50%)',
-                        width: 800,
-                        bgcolor: 'background.paper',
-                        border: '2px solid #000',
-                        boxShadow: 24,
-                        p: 4,
-                        overflow: 'scroll',
-                        display: 'flex',
-                        flexDirection: 'column',
-                        maxHeight: '95vh',
-                    }}>
+                    <Box sx={styles.boxContainer}>
                         <Typography variant="h6" component="h2" className="pt-2 pb-2">
                             Items to pay
                         </Typography>
                         <div className="flex-1">
                             <FormGroup>
-                                {orderItems.filter((orderItem) => orderItem.ID_Order == selectedOrderId && !orderItem.Canceled && !orderItem.ID_Payment).map((orderItem) => (
+                                {orderItems.filter((orderItem) => orderItem.ID_Order == selectedOrderId && !orderItem.Canceled).map((orderItem) => (
                                     <FormControlLabel key={orderItem.ID}
                                                       control={<Checkbox checked={checkboxes[orderItem.ID.toString()]}
                                                                          onChange={onCheckboxChange}
-                                                                         name={orderItem.ID.toString()}/>}
+                                                                         name={orderItem.ID.toString()}
+                                                                         disabled={orderItem.ID_Payment}
+                                                      />}
                                                       label={`${meals.find((meal) => meal.ID == orderItem.ID_Meal)?.Meal} ${variants.find((variant) => variant.ID == orderItem.ID_Variant)?.MealVariant ?? ''}   -   OMR ${orderItem.Price}`}/>
                                 ))}
                             </FormGroup>
@@ -750,6 +1159,9 @@ export default function WaiterView(props) {
 
                             <ButtonGroup variant="text" aria-label="Basic button group">
                                 <Button onClick={() => {
+                                    setDiscountPercent(0)
+                                }}>0 %</Button>
+                                <Button onClick={() => {
                                     setDiscountPercent(0.05)
                                 }}>5 %</Button>
                                 <Button onClick={() => {
@@ -780,53 +1192,82 @@ export default function WaiterView(props) {
                         </div>
 
                         <div id="horizontal-line" style={{ borderTop: '1px solid black', width: '100%', margin: '10px 0' }}></div>
-                        <Typography variant="body" className="pt-1 pb-1">
-                            Cost: OMR {newPaymentCost.toFixed(3)}
-                        </Typography>
-                        <Typography variant="body" className="pt-1 pb-1">
-                            Discount: OMR {newPaymentDiscount.toFixed(3)}
-                        </Typography>
-                        <Typography variant="body" className="pt-1 pb-1">
-                            Subtotal: OMR {newPaymentSubtotal.toFixed(3)}
-                        </Typography>
-                        <Typography variant="body" className="pt-1 pb-1">
-                            Taxes: OMR {newPaymentTaxes.toFixed(3)}
-                        </Typography>
+                        <div className="flex">
+                            <div className="flex-1 flex flex-col">
+                                <Typography variant="body" className="pt-1 pb-1">
+                                    Cost: OMR {newPaymentCost.toFixed(3)}
+                                </Typography>
+                                <Typography variant="body" className="pt-1 pb-1">
+                                    Discount: OMR {newPaymentDiscount.toFixed(3)}
+                                </Typography>
+                                <Typography variant="body" className="pt-1 pb-1">
+                                    Subtotal: OMR {newPaymentSubtotal.toFixed(3)}
+                                </Typography>
+                                <Typography variant="body" className="pt-1 pb-1">
+                                    Taxes: OMR {newPaymentTaxes.toFixed(3)}
+                                </Typography>
+                            </div>
+                            <div className="flex-1 flex flex-col">
+                                <Typography variant="h4" component="h6" className="pt-2 pb-2">
+                                    Total: OMR {newPaymentTotal.toFixed(3)}
+                                </Typography>
+
+                                <TextField
+                                    id="outlined-basic"
+                                    variant="outlined"
+                                    placeholder={"Real Amount"}
+                                    value={newPaymentRealPayment}
+                                    onChange={(e) => setNewPaymentRealPayment(e.target.value)}
+
+                                    InputProps={{
+                                        startAdornment: <InputAdornment position="start">OMR</InputAdornment>,
+                                    }}
+                                />
+
+                            </div>
+                        </div>
+
+
                         <div className="flex justify-items-center me-4">
-                            <Typography variant="h4" component="h6" className="pt-2 pb-2">
-                                Total: OMR {newPaymentTotal.toFixed(3)}
-                            </Typography>
                             <div className="flex-1"></div>
-                            <Button disabled={!hasPaymentChecked()} variant={"contained"} className="p-4" color={"success"} onClick={pay}>Pay</Button>
+                            <Button disabled={!hasPaymentChecked()} variant={"contained"} className="p-4" color={"success"} onClick={createPaymentNew}>Create Bill</Button>
                         </div>
                     </Box>
                 </Modal>
 
+                {renderEditPayModal()}
 
 
                 <Modal
-                    open={selectedPaymentId != null}
-                    onClose={() => setSelectedPaymentId(null)}
+                    open={openBillModal}
+                    onClose={() => setOpenBillModal(false)}
                     aria-labelledby="modal-modal-title"
                     aria-describedby="modal-modal-description"
                     BackdropProps={{ style: { backgroundColor: 'rgba(0, 0, 0, 1)' } }}
                 >
                     <>
-                        <Box sx={{
-                            position: 'absolute' as 'absolute',
-                            top: '50%',
-                            left: '50%',
-                            transform: 'translate(-50%, -50%)',
-                            width: 600,
-                            bgcolor: 'background.paper',
-                            border: '2px solid #000',
-                            boxShadow: 24,
-                            p: 4,
-                            overflow: 'scroll',
-                            display: 'flex',
-                            flexDirection: 'column',
-                            maxHeight: '95vh',
-                        }}>
+
+                        <style>
+                            {`@media print {
+                                .contentToPrint{ top: 0; left: 0; transform: none; width: 100%; height: 100%; padding: 20px; overflow: visible; display: flex; flex: 1; background-color: white; }
+                                .printButton{ display: none; }
+                                    
+                            }`}
+                        </style>
+                        <Box className="contentToPrint"
+                             sx={{
+                                 position: 'absolute' as 'absolute',
+                                 top: '50%',
+                                 left: '50%',
+                                 transform: 'translate(-50%, -50%)',
+                                 width: 600,
+                                 bgcolor: 'white',
+                                 p: 4,
+                                 overflow: 'scroll',
+                                 display: 'flex',
+                                 flexDirection: 'column',
+                                 maxHeight: '100%',
+                             }}>
                             <>
                                 <div ref={contentToPrint}>
                                     <div key={'title'} className="flex-1 flex items-center mb-4">
@@ -847,7 +1288,7 @@ export default function WaiterView(props) {
                                         ))}
                                     </div>
 
-                                    {selectedPayment?.Discount &&
+                                    {selectedPayment?.Discount > 0 &&
                                         <div key={'discount'} className="flex-1 flex items-center">
                                             <Typography className="ps-12">Discount</Typography>
                                             <div className="flex-1"></div>
@@ -900,9 +1341,81 @@ export default function WaiterView(props) {
                                 </div>
 
                                 <div className="mt-4 min-w-full"></div>
-                                <Button variant={"contained"} className="p-4 mt-4 min-w-full" onClick={() => handlePrint()}>Print {selectedPayment?.Printed && " (Already printed)"}</Button>
+                                <Button variant={"contained"} className="p-4 mt-4 min-w-full printButton" onClick={() => handlePrint()}>Print {selectedPayment?.Printed && " (Already printed)"}</Button>
                             </>
                         </Box>
+
+
+                        <div className="printContent" style={{ zIndex: -2222, position: 'absolute', top: 0, left: 0, width: '100vw', height: '100vh', backgroundColor: 'white', padding: 40 }}>
+                            <div key={'title'} className="flex-1 flex items-center mb-4">
+                                <Typography variant="h5" component="h5">Payment no. {selectedPaymentId?.toString()}</Typography>
+                            </div>
+
+
+                            <div className="flex-1">
+
+                                {selectedPaymentItems
+                                .map(({ key, count, orderItem }) => (
+                                    <div key={orderItem.ID} className="flex-1 flex items-center">
+                                        <Typography className="w-12">{count}x</Typography>
+                                        <Typography>{`${meals.find((meal) => meal.ID == orderItem.ID_Meal)?.Meal} ${variants.find((variant) => variant.ID == orderItem.ID_Variant)?.MealVariant ?? ''}`}</Typography>
+                                        <div className="flex-1"></div>
+                                        <Typography>OMR {(parseFloat(orderItem.Price?.toString()) * count).toFixed(3)}</Typography>
+                                    </div>
+                                ))}
+                            </div>
+
+                            {selectedPayment?.Discount &&
+                                <div key={'discount'} className="flex-1 flex items-center">
+                                    <Typography className="ps-12">Discount</Typography>
+                                    <div className="flex-1"></div>
+                                    <Typography>− OMR {parseFloat(selectedPayment?.Discount).toFixed(3)}</Typography>
+                                </div>
+                            }
+
+                            <div id="horizontal-line" style={{ borderTop: '1px solid black', width: '100%', margin: '10px 0' }}></div>
+                            <div className="flex-1">
+                                {selectedPaymentTaxes.map((tax) => (
+                                    <div key={tax.ID} className="flex-1 flex items-center">
+                                        <Typography>{tax.TaxName}</Typography>
+                                        <div className="flex-1"></div>
+                                        <Typography>{tax.Percentage ? tax.Percentage + '%' : tax.Value}</Typography>
+                                    </div>
+                                ))}
+                            </div>
+                            <div key={selectedPayment?.ID} className="flex-1 flex items-center mt-4">
+                                <Typography>Sum of all taxes</Typography>
+                                <div className="flex-1"></div>
+                                <Typography>OMR {parseFloat(selectedPayment?.Taxes).toFixed(3)}</Typography>
+                            </div>
+
+                            <div id="horizontal-line" style={{ borderTop: '1px solid black', width: '100%', margin: '10px 0' }}></div>
+
+                            <div key={'Payment_type'} className="flex-1 flex items-center">
+                                <Typography>Payment type</Typography>
+                                <div className="flex-1"></div>
+                                <Typography>{paymentMethods.find((paymentMethod) => paymentMethod.ID == selectedPayment?.ID_PaymentMethod)?.PaymentMethod}</Typography>
+                            </div>
+
+                            <div key={'timeofpay'} className="flex-1 flex items-center">
+                                <Typography>Time of pay</Typography>
+                                <div className="flex-1"></div>
+                                <Typography>{selectedPayment?.TimeOfPay?.toLocaleString()}</Typography>
+                            </div>
+                            <div key={'created'} className="flex-1 flex items-center">
+                                <Typography>Created by</Typography>
+                                <div className="flex-1"></div>
+                                <Typography>{users.find((user) => user.ID == selectedPayment?.ID_User)?.Name}</Typography>
+                            </div>
+                            <div id="horizontal-line" style={{ borderTop: '1px solid black', width: '100%', margin: '10px 0' }}></div>
+
+
+                            <div key={'final'} className="flex-1 flex items-center">
+                                <Typography variant="h5" component="h5">Final cost</Typography>
+                                <div className="flex-1"></div>
+                                <Typography variant="h5" component="h5">OMR {parseFloat(selectedPayment?.TotalAmount).toFixed(3)}</Typography>
+                            </div>
+                        </div>
                     </>
                 </Modal>
 
@@ -913,7 +1426,7 @@ export default function WaiterView(props) {
                     aria-labelledby="modal-modal-title"
                     aria-describedby="modal-modal-description"
                 >
-                <Box sx={{
+                    <Box sx={{
                         position: 'absolute' as 'absolute',
                         top: '50%',
                         left: '50%',
@@ -943,7 +1456,7 @@ export default function WaiterView(props) {
         )
     }
 
-    if(!currentUser)
+    if (!currentUser)
         return (
             <>
                 <div style={{ width: "6vh", backgroundColor: 'black', paddingLeft: "10px", paddingRight: "10px" }}>
@@ -978,25 +1491,43 @@ export default function WaiterView(props) {
             </>
         )
 
-    return (
-        <>
-            <div style={{ width: "6vh", backgroundColor: 'black', paddingLeft: "10px", paddingRight: "10px" }}>
+    return [
+            <div key="addbar" style={{ width: "6vh", backgroundColor: 'black', paddingLeft: "10px", paddingRight: "10px" }}>
                 {renderAddStrip(jsonObj.Head?.Workspace)}
 
-            </div>
-            <div style={{ flex: 1, backgroundColor: 'white'}}>
-                {!selectedOrderId && renderOrdersList()}
-                {selectedOrderId && renderOrderDetail()}
-            </div>
-
-            {isFullscreen && (
-                <div key='full' style={{ flex: 1, backgroundColor: 'white', position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, zIndex: 1000 }}>
+            </div>,
+            <div key="orderlistdetail" style={{  backgroundColor: 'white', width: "calc(100vw - 62.5vh - 6vh"}}>
+                <div style={{width: '100%'}}>
                     {!selectedOrderId && renderOrdersList()}
                     {selectedOrderId && renderOrderDetail()}
                 </div>
-            )}
+            </div>,
+
+            isFullscreen && (
+                <div key='full' style={{ flex: 0, backgroundColor: 'white', position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, zIndex: 1000 }}>
+                    {!selectedOrderId && renderOrdersList()}
+                    {selectedOrderId && renderOrderDetail()}
+                </div>
+            )
+
+        ]
+}
 
 
-        </>
-    )
+const styles = {
+    boxContainer: {
+        position: 'absolute' as 'absolute',
+        top: '50%',
+        left: '50%',
+        transform: 'translate(-50%, -50%)',
+        width: 800,
+        bgcolor: 'background.paper',
+        border: '2px solid #000',
+        boxShadow: 24,
+        p: 4,
+        overflow: 'scroll',
+        display: 'flex',
+        flexDirection: 'column',
+        maxHeight: '95vh',
+    }
 }

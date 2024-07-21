@@ -24,6 +24,7 @@ function convertUint8ArraysToBase64(obj: any): any {
 }
 
 
+
 export async function getLanguages() {
     var result = await prisma.dBT_Languages.findMany({ where: { Active: true } });
     result = convertUint8ArraysToBase64(result);
@@ -289,22 +290,48 @@ export async function DB_cancelOrderItem(order_item_id: number | bigint): Promis
 }
 
 
-export async function DB_createPayment(total_amount: number, discount: number, payment_method_id: number, items_cost: number, taxes: number, user_id: bigint | number): Promise<DBT_Payments> {
+export async function DB_createPayment(total_amount: number, discount: number, discountPercent: number, payment_method_id: number, items_cost: number, taxes: number, user_id: bigint | number, realPayment: number | null): Promise<DBT_Payments> {
     const payment = await prisma.dBT_Payments.create({
         data: {
             ID_PaymentMethod: payment_method_id,
             Discount: discount,
+            DiscountPercent: discountPercent,
             ItemsCost: items_cost,
             Taxes: taxes,
             TotalAmount: total_amount,
             ID_User: user_id,
+            RealPayment: realPayment
         }
     });
 
     return payment;
 }
 
-export async function DB_bindOrderItemToPayment(order_item_id: number | bigint, payment_id: number | bigint): Promise<DBT_OrderItems> {
+export async function DB_removePayment(payment_id:number) {
+    const payment = await prisma.dBT_Payments.delete({ where: { ID: payment_id } });
+    return payment;
+}
+
+
+export async function DB_editPayment(payment_id:number, total_amount: number, discount: number, discountPercent: number, payment_method_id: number, items_cost: number, taxes: number, user_id: bigint | number, realPayment: number | null): Promise<DBT_Payments> {
+    const payment = await prisma.dBT_Payments.update({
+        where: { ID: payment_id },
+        data: {
+            ID_PaymentMethod: payment_method_id,
+            Discount: discount,
+            DiscountPercent: discountPercent,
+            ItemsCost: items_cost,
+            Taxes: taxes,
+            TotalAmount: total_amount,
+            ID_User: user_id,
+            RealPayment: realPayment
+        }
+    });
+
+    return payment;
+}
+
+export async function DB_bindOrderItemToPayment(order_item_id: number | bigint, payment_id: number | bigint | null): Promise<DBT_OrderItems> {
     const orderItem = await prisma.dBT_OrderItems.update({
         where: { ID: order_item_id },
         data: {
@@ -312,6 +339,12 @@ export async function DB_bindOrderItemToPayment(order_item_id: number | bigint, 
         }
     });
     return orderItem;
+}
+
+export async function DB_unbindOrderItemsFromPayment(payment_id: number | bigint): Promise<DBT_OrderItems> {
+    const orderItems = await prisma.dBT_OrderItems.updateMany({ where: { ID_Payment: payment_id }, data: { ID_Payment: null } });
+    return;
+
 }
 
 export async function DB_bindTaxToPayment(tax_id: number | bigint, payment_id: number | bigint): Promise<DBT_PaymentTaxes> {
@@ -322,6 +355,15 @@ export async function DB_bindTaxToPayment(tax_id: number | bigint, payment_id: n
         }
     });
     return paymentTax;
+}
+
+export async function DB_unbindAllTaxesFromPayment(payment_id: number | bigint): Promise<DBT_PaymentTaxes[]> {
+    const paymentTaxes = await prisma.dBT_PaymentTaxes.deleteMany({ where: { ID_Payments: payment_id } });
+
+    const newPaymentTaxes = await prisma.dBT_PaymentTaxes.findMany({ take: 10000, orderBy: { ID: 'desc' } });
+
+    return newPaymentTaxes;
+
 }
 
 
@@ -367,6 +409,27 @@ export async function DB_cancelOrder(order_id: number | bigint): Promise<{ updat
         where: { ID: order_id },
         data: {
             Canceled: true,
+        }
+    });
+
+    // cancel all order items
+    const orderItems = await prisma.dBT_OrderItems.findMany({ where: { ID_Order: String(order_id) } });
+    const updatedOrderItems = [];
+    for (const orderItem of orderItems) {
+        const updatedOI = await DB_cancelOrderItem(orderItem.ID);
+        updatedOrderItems.push(updatedOI);
+    }
+
+    return { updatedOrder, updatedOrderItems };
+}
+
+
+export async function DB_reopenOrder(order_id: number | bigint): Promise<{ updatedOrder: DBT_Orders, updatedOrderItems: DBT_OrderItems[] }> {
+    const updatedOrder = await prisma.dBT_Orders.update({
+        where: { ID: order_id },
+        data: {
+            Canceled: false,
+            OrderClosed: false,
         }
     });
 

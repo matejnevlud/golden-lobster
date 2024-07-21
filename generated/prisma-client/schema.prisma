@@ -59,8 +59,8 @@ model DBT_Meals {
   IsCombo            Boolean  @default(false, map: "DF_DBT_Meals_IsCombo")
   Picture            Bytes?
   PictureDescription String?  @db.VarChar(Max)
-  Recipe             Bytes?
   Dicountable        Decimal? @default(1, map: "DF_DBT_Meals_Dicountable") @db.Decimal(18, 2)
+  Recipe             Bytes?
 }
 
 model DBT_MenuSetUp {
@@ -79,13 +79,13 @@ model DBT_OrderItems {
   ID_Meal        BigInt?
   ID_Variant     BigInt?
   Price          Decimal?  @db.Decimal(18, 3)
-  TimeOfOrder    DateTime? @default(now(), map: "DF_DBT_OrderItems_TimeOfOrder") @db.DateTime
+  TimeOfOrder    DateTime? @default(now(), map: "DF__DBT_Order__TimeO__4D94879B") @db.DateTime
   ID_User        BigInt?
   Time_Prepared  DateTime? @db.DateTime
   Time_Delivered DateTime? @db.DateTime
+  Discountable   Decimal?  @default(1, map: "DF_DBT_OrderItems_Discountable") @db.Decimal(18, 2)
   ID_Payment     BigInt?
   Note           String?   @db.NVarChar(Max)
-  Discountable   Decimal?  @default(1, map: "DF_DBT_OrderItems_Discountable") @db.Decimal(18, 2)
 }
 
 model DBT_Orders {
@@ -93,12 +93,12 @@ model DBT_Orders {
   ID_Table    BigInt?
   OrderName   String?   @db.VarChar(Max)
   ID_Customer BigInt?
-  DateTime    DateTime? @default(now(), map: "DF_DBT_Orders_DateTime") @db.DateTime
+  DateTime    DateTime? @default(now(), map: "DF__DBT_Order__DateT__5070F446") @db.DateTime
   Canceled    Boolean?  @default(false, map: "DF_DBT_Orders_Canceled")
   Price       Decimal?  @db.Decimal(18, 3)
   OrderClosed Boolean?  @default(false, map: "DF_DBT_Orders_OrderClosed")
-  Note        String?   @db.NVarChar(Max)
   ID_User     BigInt?
+  Note        String?   @db.NVarChar(Max)
 }
 
 model DBT_PaymentMethods {
@@ -171,6 +171,8 @@ model DBT_Payments {
   Taxes            Decimal?  @db.Decimal(18, 3)
   TimeOfPay        DateTime? @default(now(), map: "DF_DBT_Payments_TimeOfPay") @db.DateTime
   ID_User          BigInt?
+  DiscountPercent  Decimal   @default(0, map: "DF__DBT_Payme__Disco__03F0984C") @db.Decimal(18, 3)
+  RealPayment      Decimal?  @default(dbgenerated(), map: "DF__DBT_Payme__RealP__05D8E0BE") @db.Decimal(18, 3)
 }
 
 model DBT_PaymentTaxes {
