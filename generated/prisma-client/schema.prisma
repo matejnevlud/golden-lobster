@@ -74,7 +74,7 @@ model DBT_MenuSetUp {
 
 model DBT_OrderItems {
   ID             BigInt    @id(map: "PK_DBT_OrderItems") @default(autoincrement())
-  ID_Order       String?   @db.NChar(10)
+  ID_Order       BigInt?
   Canceled       Boolean?  @default(false, map: "DF_DBT_OrderItems_Canceled")
   ID_Meal        BigInt?
   ID_Variant     BigInt?

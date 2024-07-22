@@ -7789,6 +7789,7 @@ export namespace Prisma {
 
   export type DBT_OrderItemsAvgAggregateOutputType = {
     ID: number | null
+    ID_Order: number | null
     ID_Meal: number | null
     ID_Variant: number | null
     Price: Decimal | null
@@ -7799,6 +7800,7 @@ export namespace Prisma {
 
   export type DBT_OrderItemsSumAggregateOutputType = {
     ID: bigint | null
+    ID_Order: bigint | null
     ID_Meal: bigint | null
     ID_Variant: bigint | null
     Price: Decimal | null
@@ -7809,7 +7811,7 @@ export namespace Prisma {
 
   export type DBT_OrderItemsMinAggregateOutputType = {
     ID: bigint | null
-    ID_Order: string | null
+    ID_Order: bigint | null
     Canceled: boolean | null
     ID_Meal: bigint | null
     ID_Variant: bigint | null
@@ -7825,7 +7827,7 @@ export namespace Prisma {
 
   export type DBT_OrderItemsMaxAggregateOutputType = {
     ID: bigint | null
-    ID_Order: string | null
+    ID_Order: bigint | null
     Canceled: boolean | null
     ID_Meal: bigint | null
     ID_Variant: bigint | null
@@ -7859,6 +7861,7 @@ export namespace Prisma {
 
   export type DBT_OrderItemsAvgAggregateInputType = {
     ID?: true
+    ID_Order?: true
     ID_Meal?: true
     ID_Variant?: true
     Price?: true
@@ -7869,6 +7872,7 @@ export namespace Prisma {
 
   export type DBT_OrderItemsSumAggregateInputType = {
     ID?: true
+    ID_Order?: true
     ID_Meal?: true
     ID_Variant?: true
     Price?: true
@@ -8014,7 +8018,7 @@ export namespace Prisma {
 
   export type DBT_OrderItemsGroupByOutputType = {
     ID: bigint
-    ID_Order: string | null
+    ID_Order: bigint | null
     Canceled: boolean | null
     ID_Meal: bigint | null
     ID_Variant: bigint | null
@@ -8086,7 +8090,7 @@ export namespace Prisma {
     objects: {}
     scalars: $Extensions.GetPayloadResult<{
       ID: bigint
-      ID_Order: string | null
+      ID_Order: bigint | null
       Canceled: boolean | null
       ID_Meal: bigint | null
       ID_Variant: bigint | null
@@ -8493,7 +8497,7 @@ export namespace Prisma {
    */ 
   interface DBT_OrderItemsFieldRefs {
     readonly ID: FieldRef<"DBT_OrderItems", 'BigInt'>
-    readonly ID_Order: FieldRef<"DBT_OrderItems", 'String'>
+    readonly ID_Order: FieldRef<"DBT_OrderItems", 'BigInt'>
     readonly Canceled: FieldRef<"DBT_OrderItems", 'Boolean'>
     readonly ID_Meal: FieldRef<"DBT_OrderItems", 'BigInt'>
     readonly ID_Variant: FieldRef<"DBT_OrderItems", 'BigInt'>
@@ -19431,7 +19435,7 @@ export namespace Prisma {
     OR?: DBT_OrderItemsWhereInput[]
     NOT?: DBT_OrderItemsWhereInput | DBT_OrderItemsWhereInput[]
     ID?: BigIntFilter<"DBT_OrderItems"> | bigint | number
-    ID_Order?: StringNullableFilter<"DBT_OrderItems"> | string | null
+    ID_Order?: BigIntNullableFilter<"DBT_OrderItems"> | bigint | number | null
     Canceled?: BoolNullableFilter<"DBT_OrderItems"> | boolean | null
     ID_Meal?: BigIntNullableFilter<"DBT_OrderItems"> | bigint | number | null
     ID_Variant?: BigIntNullableFilter<"DBT_OrderItems"> | bigint | number | null
@@ -19466,7 +19470,7 @@ export namespace Prisma {
     AND?: DBT_OrderItemsWhereInput | DBT_OrderItemsWhereInput[]
     OR?: DBT_OrderItemsWhereInput[]
     NOT?: DBT_OrderItemsWhereInput | DBT_OrderItemsWhereInput[]
-    ID_Order?: StringNullableFilter<"DBT_OrderItems"> | string | null
+    ID_Order?: BigIntNullableFilter<"DBT_OrderItems"> | bigint | number | null
     Canceled?: BoolNullableFilter<"DBT_OrderItems"> | boolean | null
     ID_Meal?: BigIntNullableFilter<"DBT_OrderItems"> | bigint | number | null
     ID_Variant?: BigIntNullableFilter<"DBT_OrderItems"> | bigint | number | null
@@ -19506,7 +19510,7 @@ export namespace Prisma {
     OR?: DBT_OrderItemsScalarWhereWithAggregatesInput[]
     NOT?: DBT_OrderItemsScalarWhereWithAggregatesInput | DBT_OrderItemsScalarWhereWithAggregatesInput[]
     ID?: BigIntWithAggregatesFilter<"DBT_OrderItems"> | bigint | number
-    ID_Order?: StringNullableWithAggregatesFilter<"DBT_OrderItems"> | string | null
+    ID_Order?: BigIntNullableWithAggregatesFilter<"DBT_OrderItems"> | bigint | number | null
     Canceled?: BoolNullableWithAggregatesFilter<"DBT_OrderItems"> | boolean | null
     ID_Meal?: BigIntNullableWithAggregatesFilter<"DBT_OrderItems"> | bigint | number | null
     ID_Variant?: BigIntNullableWithAggregatesFilter<"DBT_OrderItems"> | bigint | number | null
@@ -20562,7 +20566,7 @@ export namespace Prisma {
 
   export type DBT_OrderItemsCreateInput = {
     ID?: bigint | number
-    ID_Order?: string | null
+    ID_Order?: bigint | number | null
     Canceled?: boolean | null
     ID_Meal?: bigint | number | null
     ID_Variant?: bigint | number | null
@@ -20578,7 +20582,7 @@ export namespace Prisma {
 
   export type DBT_OrderItemsUncheckedCreateInput = {
     ID?: bigint | number
-    ID_Order?: string | null
+    ID_Order?: bigint | number | null
     Canceled?: boolean | null
     ID_Meal?: bigint | number | null
     ID_Variant?: bigint | number | null
@@ -20594,7 +20598,7 @@ export namespace Prisma {
 
   export type DBT_OrderItemsUpdateInput = {
     ID?: BigIntFieldUpdateOperationsInput | bigint | number
-    ID_Order?: NullableStringFieldUpdateOperationsInput | string | null
+    ID_Order?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     Canceled?: NullableBoolFieldUpdateOperationsInput | boolean | null
     ID_Meal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     ID_Variant?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
@@ -20610,7 +20614,7 @@ export namespace Prisma {
 
   export type DBT_OrderItemsUncheckedUpdateInput = {
     ID?: BigIntFieldUpdateOperationsInput | bigint | number
-    ID_Order?: NullableStringFieldUpdateOperationsInput | string | null
+    ID_Order?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     Canceled?: NullableBoolFieldUpdateOperationsInput | boolean | null
     ID_Meal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     ID_Variant?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
@@ -20625,7 +20629,7 @@ export namespace Prisma {
   }
 
   export type DBT_OrderItemsCreateManyInput = {
-    ID_Order?: string | null
+    ID_Order?: bigint | number | null
     Canceled?: boolean | null
     ID_Meal?: bigint | number | null
     ID_Variant?: bigint | number | null
@@ -20641,7 +20645,7 @@ export namespace Prisma {
 
   export type DBT_OrderItemsUpdateManyMutationInput = {
     ID?: BigIntFieldUpdateOperationsInput | bigint | number
-    ID_Order?: NullableStringFieldUpdateOperationsInput | string | null
+    ID_Order?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     Canceled?: NullableBoolFieldUpdateOperationsInput | boolean | null
     ID_Meal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     ID_Variant?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
@@ -20657,7 +20661,7 @@ export namespace Prisma {
 
   export type DBT_OrderItemsUncheckedUpdateManyInput = {
     ID?: BigIntFieldUpdateOperationsInput | bigint | number
-    ID_Order?: NullableStringFieldUpdateOperationsInput | string | null
+    ID_Order?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     Canceled?: NullableBoolFieldUpdateOperationsInput | boolean | null
     ID_Meal?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     ID_Variant?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
@@ -21771,6 +21775,7 @@ export namespace Prisma {
 
   export type DBT_OrderItemsAvgOrderByAggregateInput = {
     ID?: SortOrder
+    ID_Order?: SortOrder
     ID_Meal?: SortOrder
     ID_Variant?: SortOrder
     Price?: SortOrder
@@ -21813,6 +21818,7 @@ export namespace Prisma {
 
   export type DBT_OrderItemsSumOrderByAggregateInput = {
     ID?: SortOrder
+    ID_Order?: SortOrder
     ID_Meal?: SortOrder
     ID_Variant?: SortOrder
     Price?: SortOrder

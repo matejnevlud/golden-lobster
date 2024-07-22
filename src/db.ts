@@ -433,11 +433,16 @@ export async function DB_reopenOrder(order_id: number | bigint): Promise<{ updat
         }
     });
 
-    // cancel all order items
+    // uncancel all order items
     const orderItems = await prisma.dBT_OrderItems.findMany({ where: { ID_Order: String(order_id) } });
     const updatedOrderItems = [];
     for (const orderItem of orderItems) {
-        const updatedOI = await DB_cancelOrderItem(orderItem.ID);
+        const updatedOI = await prisma.dBT_OrderItems.update({
+            where: { ID: orderItem.ID },
+            data: {
+                Canceled: false,
+            }
+        });
         updatedOrderItems.push(updatedOI);
     }
 

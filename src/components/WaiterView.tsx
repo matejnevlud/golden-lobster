@@ -29,6 +29,10 @@ import { convertDate } from "@/utils/utils";
 
 
 
+const getSavedColumnWidth = (table: string, field: string) => {
+    return localStorage.getItem(`${table}_${field}`) != null ? parseInt(localStorage.getItem(`${table}_${field}`)) : undefined;
+}
+
 BigInt.prototype.toJSON = function() { return parseInt(this.toString()) }
 export default function WaiterView(props) {
 
@@ -418,12 +422,12 @@ export default function WaiterView(props) {
     } , [])
     const renderOrdersList = () => {
         const cols = [
-            { field: 'id', headerName: 'ID' },
-            { field: 'ID_Table', headerName: 'ID_Table'},
-            { field: 'Table', headerName: 'Table', minWidth: 220 },
-            { field: 'DateTime', headerName: 'Created At', minWidth: 220 },
-            { field: 'Price', headerName: 'Price', minWidth: 220 },
-            { field: 'Status', headerName: 'Status', minWidth: 220 },
+            { field: 'id', headerName: 'ID', width: getSavedColumnWidth('order', 'id') },
+            { field: 'ID_Table', headerName: 'ID_Table', width: getSavedColumnWidth('order', 'ID_Table') },
+            { field: 'Table', headerName: 'Table', width: getSavedColumnWidth('order', 'Table') },
+            { field: 'DateTime', headerName: 'Created At', width: getSavedColumnWidth('order', 'DateTime') },
+            { field: 'Price', headerName: 'Price', width: getSavedColumnWidth('order', 'Price') },
+            { field: 'Status', headerName: 'Status', width: getSavedColumnWidth('order', 'Status') },
         ]
 
         const rows = orders.map((order) =>  ({
@@ -471,7 +475,12 @@ export default function WaiterView(props) {
                     isRowSelectable={() => false}
                     sx={{ overflowX: 'scroll' }}
                     initialState={orderInitialState}
-                    onStateChange={(state) => localStorage.setItem("orderState", JSON.stringify(state))}
+                    onColumnWidthChange={(params) => {
+                        localStorage.setItem(`order_${params.colDef.field}`, params.width.toString())
+                    }}
+                    onStateChange={(state) => {
+                        localStorage.setItem("orderState", JSON.stringify(state))
+                    }}
                     rows={rows} columns={cols} onRowClick={({ id, row }) => {setSelectedOrderId(id)}}
                     getRowClassName={(params) => params.row.Canceled ? 'bg-red-200' : params.row.OrderClosed ? 'bg-gray-200' : '' }
                 />
@@ -514,10 +523,21 @@ export default function WaiterView(props) {
         const editedPayment = pmnts.find((payment) => payment.ID == paymentID);
         const editedPaymentTaxes = pmtxs.filter((paymentTax) => paymentTax.ID_Payments == paymentID);
 
-        var newCheckboxes = {};
+        let newCheckboxes = {};
+
+
         const oisl = ois.filter((orderItem) => orderItem.ID_Order == selectedOrderId && !orderItem.Canceled && orderItem.ID_Payment == paymentID);
+        console.log('ois', ois)
+        console.log('oisl', oisl)
+        console.log('selectedOrderId', selectedOrderId)
+        console.log('paymentID', paymentID)
+
         for (const orderItem of oisl) {
+            console.log('orderItem', orderItem)
+            console.log('orderItem.ID', orderItem.ID)
+            console.log('orderItem.ID.toString()', orderItem.ID.toString())
             newCheckboxes[orderItem.ID.toString()] = true;
+            console.log('newCheckboxes', newCheckboxes)
         }
 
         for (const paymentMethod of paymentMethods) {
@@ -528,6 +548,8 @@ export default function WaiterView(props) {
             newCheckboxes[tax.TaxName] = editedPaymentTaxes.some((paymentTax) => paymentTax.ID_Tax == tax.ID);
         }
 
+
+        console.log('openEditPayment', newCheckboxes)
         setCheckboxes(newCheckboxes);
         setDiscountPercent(editedPayment.DiscountPercent);
         setNewPaymentRealPayment(editedPayment.RealPayment);
@@ -873,8 +895,7 @@ export default function WaiterView(props) {
         const defaultState = {
             sorting: {
                 sortModel: [
-                    { field: 'Canceled', sort: 'asc' },
-                    { field: 'TimeOfOrder', sort: 'desc' },
+                    { field: 'Time', sort: 'desc' },
                 ],
             },
             columns: {
@@ -904,10 +925,10 @@ export default function WaiterView(props) {
         const currentOrderItem = orderItems.find((orderItem) => orderItem.ID == selectedOrderItemId);
 
         const orderItemCols = [
-            { field: 'id', headerName: 'ID', width: 40 },
-            { field: 'ID_Order', headerName: 'ID_Order' },
-            { field: 'ID_Meal', headerName: 'ID_Meal' },
-            { field: 'Meal', headerName: 'Meal', width: 230,
+            { field: 'id', headerName: 'ID', width: getSavedColumnWidth('orderdetail', 'id') },
+            { field: 'ID_Order', headerName: 'ID_Order', width: getSavedColumnWidth('orderdetail', 'ID_Order') },
+            { field: 'ID_Meal', headerName: 'ID_Meal', width: getSavedColumnWidth('orderdetail', 'ID_Meal') },
+            { field: 'Meal', headerName: 'Meal', width: getSavedColumnWidth('orderdetail', 'Meal'),
                 renderCell: (params) => (
                     <div>
                         <b>{params.row.Meal}</b>
@@ -916,11 +937,12 @@ export default function WaiterView(props) {
                     </div>
                 ),
             },
-            { field: 'ID_Variant', headerName: 'ID_Variant' },
-            { field: 'Variant', headerName: 'Variant', width: 180 },
+            { field: 'ID_Variant', headerName: 'ID_Variant', width: getSavedColumnWidth('orderdetail', 'ID_Variant') },
+            { field: 'Variant', headerName: 'Variant', width: getSavedColumnWidth('orderdetail', 'Variant') },
 
 
-            { field: 'Time', headerName: 'Time', width: 200,
+            { field: 'Time', headerName: 'Time', width: getSavedColumnWidth('orderdetail', 'Time'),
+                valueGetter: (value, row) => row.TimeOfOrder,
                 renderCell: (params) => (
                     <div>
                         <span>Ordered: {params.row.TimeOfOrder}</span>
@@ -931,13 +953,13 @@ export default function WaiterView(props) {
                     </div>
                 ),
             },
-            { field: 'TimeOfOrder', headerName: 'Ordered', width: 130 },
-            { field: 'Time_Prepared', headerName: 'Prep', width: 130 },
-            { field: 'Time_Delivered', headerName: 'Deliver', width: 130 },
-            { field: 'Note', headerName: 'Note',flex: 1 },
+            { field: 'TimeOfOrder', headerName: 'Ordered', width: getSavedColumnWidth('orderdetail', 'TimeOfOrder') },
+            { field: 'Time_Prepared', headerName: 'Prep', width: getSavedColumnWidth('orderdetail', 'Time_Prepared') },
+            { field: 'Time_Delivered', headerName: 'Deliver', width: getSavedColumnWidth('orderdetail', 'Time_Delivered') },
+            { field: 'Note', headerName: 'Note', width: getSavedColumnWidth('orderdetail', 'Note') },
 
-            { field: 'Price', headerName: 'Price', width: 80 },
-            { field: 'Status', headerName: 'Status' , width: 80},
+            { field: 'Price', headerName: 'Price', width: getSavedColumnWidth('orderdetail', 'Price') },
+            { field: 'Status', headerName: 'Status' , width: getSavedColumnWidth('orderdetail', 'Status') },
         ]
 
         const rows = orderItems.filter((orderItem) => orderItem.ID_Order == selectedOrderId).map((orderItem) =>  ({
@@ -983,6 +1005,9 @@ export default function WaiterView(props) {
                     }}
                     style={{ flex: 1, overflow: 'scroll' }}
                     initialState={orderDetailInitialState}
+                    onColumnWidthChange={(params) => {
+                        localStorage.setItem(`orderdetail_${params.colDef.field}`, params.width.toString())
+                    }}
                     onStateChange={(state) => {
                         localStorage.setItem("orderDetailState", JSON.stringify(state));
                     }}
