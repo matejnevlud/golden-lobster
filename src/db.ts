@@ -1,5 +1,24 @@
 'use server';
-import { DBT_Layouts, DBT_MealGroups, DBT_Meals, DBT_Variants, PrismaClient, DBT_Languages, DBT_MealsInGroups, DBT_MenuSetUp, DBT_Orders, DBT_OrderItems, DBT_PaymentMethods, DBT_Customer, DBT_Tables, DBT_Users, DBT_Taxes, DBT_Payments, DBT_PaymentTaxes } from '../generated/prisma-client'
+import {
+    DBT_Layouts,
+    DBT_MealGroups,
+    DBT_Meals,
+    DBT_Variants,
+    PrismaClient,
+    DBT_Languages,
+    DBT_MealsInGroups,
+    DBT_MenuSetUp,
+    DBT_Orders,
+    DBT_OrderItems,
+    DBT_PaymentMethods,
+    DBT_Customer,
+    DBT_Tables,
+    DBT_Users,
+    DBT_Taxes,
+    DBT_Payments,
+    DBT_PaymentTaxes,
+    DBT_CustomerPayments, DBT_CustomerPaymentPayments
+} from '../generated/prisma-client'
 
 
 
@@ -163,7 +182,11 @@ export async function getWaiterData(): Promise<WAITER_DATA> {
     const payments = await prisma.dBT_Payments.findMany({ take: 10000, orderBy: { ID: 'desc' } });
     const paymentTaxes = await prisma.dBT_PaymentTaxes.findMany({ take: 10000, orderBy: { ID: 'desc' } });
 
-    return { customers, orders, orderItems, paymentMethods, tables, users, taxes, payments, paymentTaxes };
+    const customerPayments = await prisma.dBT_CustomerPayments.findMany({ take: 10000, orderBy: { ID: 'desc' } });
+    const customerPaymentPayments = await prisma.dBT_CustomerPaymentPayments.findMany({ take: 10000, orderBy: { ID: 'desc' } });
+
+
+    return { customers, orders, orderItems, paymentMethods, tables, users, taxes, payments, paymentTaxes, customerPayments, customerPaymentPayments };
 }
 
 
@@ -279,6 +302,28 @@ export async function DB_changeOrderItemNote(order_item_id: number, note: string
     return orderItem;
 }
 
+
+export async function DB_prepareOrderItem(order_item_id: number): Promise<DBT_OrderItems> {
+    const orderItem = await prisma.dBT_OrderItems.update({
+        where: { ID: order_item_id },
+        data: {
+            Time_Prepared: new Date(),
+        }
+    });
+    return orderItem;
+}
+
+export async function DB_deliverOrderItem(order_item_id: number): Promise<DBT_OrderItems> {
+    const orderItem = await prisma.dBT_OrderItems.update({
+        where: { ID: order_item_id },
+        data: {
+            Time_Delivered: new Date(),
+        }
+    });
+    return orderItem;
+}
+
+
 export async function DB_cancelOrderItem(order_item_id: number | bigint): Promise<DBT_OrderItems> {
     const orderItem = await prisma.dBT_OrderItems.update({
         where: { ID: order_item_id },
@@ -290,7 +335,7 @@ export async function DB_cancelOrderItem(order_item_id: number | bigint): Promis
 }
 
 
-export async function DB_createPayment(total_amount: number, discount: number, discountPercent: number, payment_method_id: number, items_cost: number, taxes: number, user_id: bigint | number, realPayment: number | null): Promise<DBT_Payments> {
+export async function DB_createPayment(total_amount: number, discount: number, discountPercent: number, payment_method_id: number, items_cost: number, taxes: number, user_id: bigint | number, realPayment: number | null, customer: number | null): Promise<DBT_Payments> {
     const payment = await prisma.dBT_Payments.create({
         data: {
             ID_PaymentMethod: payment_method_id,
@@ -300,7 +345,8 @@ export async function DB_createPayment(total_amount: number, discount: number, d
             Taxes: taxes,
             TotalAmount: total_amount,
             ID_User: user_id,
-            RealPayment: realPayment
+            RealPayment: realPayment,
+            ID_Customer: customer
         }
     });
 
@@ -313,7 +359,7 @@ export async function DB_removePayment(payment_id:number) {
 }
 
 
-export async function DB_editPayment(payment_id:number, total_amount: number, discount: number, discountPercent: number, payment_method_id: number, items_cost: number, taxes: number, user_id: bigint | number, realPayment: number | null): Promise<DBT_Payments> {
+export async function DB_editPayment(payment_id:number, total_amount: number, discount: number, discountPercent: number, payment_method_id: number, items_cost: number, taxes: number, user_id: bigint | number, realPayment: number | null, customer: number | null): Promise<DBT_Payments> {
     const payment = await prisma.dBT_Payments.update({
         where: { ID: payment_id },
         data: {
@@ -324,7 +370,8 @@ export async function DB_editPayment(payment_id:number, total_amount: number, di
             Taxes: taxes,
             TotalAmount: total_amount,
             ID_User: user_id,
-            RealPayment: realPayment
+            RealPayment: realPayment,
+            ID_Customer: customer
         }
     });
 
@@ -449,3 +496,23 @@ export async function DB_reopenOrder(order_id: number | bigint): Promise<{ updat
     return { updatedOrder, updatedOrderItems };
 }
 
+export async function DB_createCustomerPayment(customer_id: number | bigint, realAmount: number | bigint): Promise<DBT_CustomerPayments> {
+    const customerPayment = await prisma.dBT_CustomerPayments.create({
+        data: {
+            ID_Customer: customer_id,
+            Payment: realAmount,
+            Date: new Date()
+        }
+    });
+    return customerPayment;
+}
+
+export async function DB_bindPaymentToCustomerPayment(payment_id: number | bigint, customer_payment_id: number | bigint): Promise<DBT_CustomerPaymentPayments> {
+    const customerPaymentPayment = await prisma.dBT_CustomerPaymentPayments.create({
+        data: {
+            ID_CutomerPayment: customer_payment_id,
+            ID_Payments: payment_id
+        }
+    });
+    return customerPaymentPayment;
+}

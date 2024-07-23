@@ -168,8 +168,8 @@ exports.Prisma.DBT_MealsScalarFieldEnum = {
   IsCombo: 'IsCombo',
   Picture: 'Picture',
   PictureDescription: 'PictureDescription',
-  Dicountable: 'Dicountable',
-  Recipe: 'Recipe'
+  Recipe: 'Recipe',
+  Dicountable: 'Dicountable'
 };
 
 exports.Prisma.DBT_MenuSetUpScalarFieldEnum = {
@@ -192,9 +192,9 @@ exports.Prisma.DBT_OrderItemsScalarFieldEnum = {
   ID_User: 'ID_User',
   Time_Prepared: 'Time_Prepared',
   Time_Delivered: 'Time_Delivered',
-  Discountable: 'Discountable',
   ID_Payment: 'ID_Payment',
-  Note: 'Note'
+  Note: 'Note',
+  Discountable: 'Discountable'
 };
 
 exports.Prisma.DBT_OrdersScalarFieldEnum = {
@@ -206,8 +206,8 @@ exports.Prisma.DBT_OrdersScalarFieldEnum = {
   Canceled: 'Canceled',
   Price: 'Price',
   OrderClosed: 'OrderClosed',
-  ID_User: 'ID_User',
-  Note: 'Note'
+  Note: 'Note',
+  ID_User: 'ID_User'
 };
 
 exports.Prisma.DBT_PaymentMethodsScalarFieldEnum = {
@@ -219,7 +219,8 @@ exports.Prisma.DBT_PaymentMethodsScalarFieldEnum = {
 exports.Prisma.DBT_TablesScalarFieldEnum = {
   ID: 'ID',
   Active: 'Active',
-  TableName: 'TableName'
+  TableName: 'TableName',
+  Col: 'Col'
 };
 
 exports.Prisma.DBT_TaxesScalarFieldEnum = {
@@ -243,7 +244,8 @@ exports.Prisma.DBT_UsersScalarFieldEnum = {
   ID: 'ID',
   Active: 'Active',
   Name: 'Name',
-  Password: 'Password'
+  Password: 'Password',
+  Role: 'Role'
 };
 
 exports.Prisma.DBT_MealsInGroupsScalarFieldEnum = {
@@ -280,14 +282,35 @@ exports.Prisma.DBT_PaymentsScalarFieldEnum = {
   Taxes: 'Taxes',
   TimeOfPay: 'TimeOfPay',
   ID_User: 'ID_User',
-  DiscountPercent: 'DiscountPercent',
-  RealPayment: 'RealPayment'
+  Vaucher: 'Vaucher',
+  RealPayment: 'RealPayment',
+  DiscountPercent: 'DiscountPercent'
 };
 
 exports.Prisma.DBT_PaymentTaxesScalarFieldEnum = {
   ID: 'ID',
   ID_Payments: 'ID_Payments',
   ID_Tax: 'ID_Tax'
+};
+
+exports.Prisma.DBT_CashWithdrawalsScalarFieldEnum = {
+  ID: 'ID',
+  CashWithdrawal: 'CashWithdrawal',
+  DateTime: 'DateTime'
+};
+
+exports.Prisma.DBT_CustomerPaymentPaymentsScalarFieldEnum = {
+  ID: 'ID',
+  ID_CutomerPayment: 'ID_CutomerPayment',
+  ID_Payments: 'ID_Payments'
+};
+
+exports.Prisma.DBT_CustomerPaymentsScalarFieldEnum = {
+  ID: 'ID',
+  ID_Customer: 'ID_Customer',
+  Payment: 'Payment',
+  Date: 'Date',
+  Active: 'Active'
 };
 
 exports.Prisma.SortOrder = {
@@ -319,7 +342,10 @@ exports.Prisma.ModelName = {
   DBT_Variants: 'DBT_Variants',
   DBT_PaymentDetail: 'DBT_PaymentDetail',
   DBT_Payments: 'DBT_Payments',
-  DBT_PaymentTaxes: 'DBT_PaymentTaxes'
+  DBT_PaymentTaxes: 'DBT_PaymentTaxes',
+  DBT_CashWithdrawals: 'DBT_CashWithdrawals',
+  DBT_CustomerPaymentPayments: 'DBT_CustomerPaymentPayments',
+  DBT_CustomerPayments: 'DBT_CustomerPayments'
 };
 
 /**

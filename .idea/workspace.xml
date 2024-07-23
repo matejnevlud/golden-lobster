@@ -7,10 +7,12 @@
     <list default="true" id="42a16207-629e-4e0c-9512-37544dcc1cdf" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/generated/prisma-client/edge.js" beforeDir="false" afterPath="$PROJECT_DIR$/generated/prisma-client/edge.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/generated/prisma-client/index-browser.js" beforeDir="false" afterPath="$PROJECT_DIR$/generated/prisma-client/index-browser.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/generated/prisma-client/index.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/generated/prisma-client/index.d.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/generated/prisma-client/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/generated/prisma-client/index.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/generated/prisma-client/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/generated/prisma-client/package.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/generated/prisma-client/schema.prisma" beforeDir="false" afterPath="$PROJECT_DIR$/generated/prisma-client/schema.prisma" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/generated/prisma-client/wasm.js" beforeDir="false" afterPath="$PROJECT_DIR$/generated/prisma-client/wasm.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/prisma/schema.prisma" beforeDir="false" afterPath="$PROJECT_DIR$/prisma/schema.prisma" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/WaiterView.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/WaiterView.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/db.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/db.ts" afterDir="false" />
@@ -145,7 +147,7 @@
       <breakpoints>
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/src/db.ts</url>
-          <line>33</line>
+          <line>52</line>
           <option name="timeStamp" value="1" />
         </line-breakpoint>
       </breakpoints>
