@@ -4,7 +4,7 @@ import { XMLParser } from "fast-xml-parser";
 import { parseBasic } from "@/utils/xmlParser";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { DataGrid, GridRenderCellParams } from "@mui/x-data-grid";
-import { Box, Button, ButtonGroup, CardHeader, Checkbox, CircularProgress, FormControl, FormControlLabel, FormGroup, IconButton, InputAdornment, InputLabel, LinearProgress, MenuItem, Modal, Select, TextField, ToggleButton, ToggleButtonGroup, Typography } from "@mui/material";
+import { Alert, Box, Button, ButtonGroup, CardHeader, Checkbox, CircularProgress, FormControl, FormControlLabel, FormGroup, IconButton, InputAdornment, InputLabel, LinearProgress, MenuItem, Modal, Select, TextField, ToggleButton, ToggleButtonGroup, Typography } from "@mui/material";
 import {
     changeOrderItemVariant,
     createNewOrder,
@@ -30,7 +30,8 @@ import RestaurantIcon from '@mui/icons-material/Restaurant';
 import TableBarIcon from '@mui/icons-material/TableBar';
 import RefreshIcon from '@mui/icons-material/Refresh';
 import OpenInFullIcon from '@mui/icons-material/OpenInFull';
-
+import { useIdleTimer } from 'react-idle-timer/legacy'
+import { Snackbar } from "@mui/base";
 
 const getSavedColumnWidth = (table: string, field: string) => {
     return localStorage.getItem(`${table}_${field}`) != null ? parseInt(localStorage.getItem(`${table}_${field}`)) : undefined;
@@ -38,6 +39,12 @@ const getSavedColumnWidth = (table: string, field: string) => {
 
 BigInt.prototype.toJSON = function() { return parseInt(this.toString()) }
 export default function WaiterView(props) {
+
+    const { getRemainingTime } = useIdleTimer({
+        onIdle: () => logout(),
+        timeout: 10_800_000,
+        throttle: 500
+    })
 
     // rewrite all props to useState
     const [layouts, setLayouts] = useState(props.layouts);
@@ -397,6 +404,7 @@ export default function WaiterView(props) {
         const mealsFilter = mealsInGroup.map((mig) => ({...(meals.find((m) => m.ID == mig.ID_Meal)), order: mig.Order })).filter((m) => m != null);
         const mealsOrdered = mealsFilter.sort((a, b) => a.order - b.order)  as DBT_Meals[];
 
+        if (isOrderClosedOrCanceled() || !selectedOrderId) return;
 
         return (
             <div style={{ position: 'relative'}} key='w'>
@@ -452,10 +460,15 @@ export default function WaiterView(props) {
         const cols = [
             { field: 'id', headerName: 'ID', width: getSavedColumnWidth('order', 'id') },
             { field: 'ID_Table', headerName: 'ID_Table', width: getSavedColumnWidth('order', 'ID_Table') },
-            { field: 'Table', headerName: 'Table', width: getSavedColumnWidth('order', 'Table') },
-            { field: 'DateTime', headerName: 'Created At', width: getSavedColumnWidth('order', 'DateTime') },
-            { field: 'Price', headerName: 'Price', width: getSavedColumnWidth('order', 'Price') },
-            { field: 'Status', headerName: 'Status', width: getSavedColumnWidth('order', 'Status') },
+            { field: 'Table', headerName: 'Table', width: getSavedColumnWidth('order', 'Table'), type: 'singleSelect', valueOptions: tables.map((table) => table.TableName) },
+            { field: 'DateTime',
+                headerName: 'Created At',
+                width: getSavedColumnWidth('order', 'DateTime'),
+                type: 'dateTime',
+                valueFormatter: convertDate,
+            },
+            { field: 'Price', headerName: 'Price', width: getSavedColumnWidth('order', 'Price'), type: 'number' },
+            { field: 'Status', headerName: 'Status', width: getSavedColumnWidth('order', 'Status'), type: 'singleSelect', valueOptions: ['Active', 'Closed', 'Canceled'] },
         ]
 
         const rows = orders.map((order) =>  ({
@@ -463,18 +476,18 @@ export default function WaiterView(props) {
             ID_Table: parseInt(order.ID_Table),
             Table: tables.find((table) => table.ID == order.ID_Table)?.TableName,
             ID_Customer: parseInt(order.ID_Customer),
-            DateTime: convertDate(order.DateTime),
+            DateTime: order.DateTime,
             Canceled: order.Canceled,
             Price: order.Price,
             OrderClosed: order.OrderClosed,
-            Status: order.OrderClosed ? 'Closed' : order.Canceled ? 'Canceled' : '',
+            Status: order.OrderClosed ? 'Closed' : order.Canceled ? 'Canceled' : 'Active',
         })).filter((order) => ordersFilterToggle == 'active' ? !order.OrderClosed && !order.Canceled : ordersFilterToggle == 'closed' ? order.OrderClosed : ordersFilterToggle == 'canceled' ? order.Canceled : true);
 
         return (
             <div style={{ display: 'flex', flexDirection: 'column', height: '100vh' }}>
 
                 <div className="flex items-center me-4 p-4">
-                    <ToggleButtonGroup
+                    {/*<ToggleButtonGroup
                         color="primary"
                         value={ordersFilterToggle}
                         exclusive
@@ -482,10 +495,27 @@ export default function WaiterView(props) {
                         aria-label="Platform"
                     >
                         <ToggleButton value="active">Active</ToggleButton>
-                        {/*<ToggleButton value="closed">Closed</ToggleButton>
-                        <ToggleButton value="canceled">Canceled</ToggleButton>*/}
+                        <ToggleButton value="closed">Closed</ToggleButton>
+                        <ToggleButton value="canceled">Canceled</ToggleButton>
                         <ToggleButton value="all">All</ToggleButton>
-                    </ToggleButtonGroup>
+                    </ToggleButtonGroup>*/}
+
+                    <FormControl >
+                        <InputLabel id="demo-simple-select-label">State</InputLabel>
+                        <Select
+                            labelId="demo-simple-select-label"
+                            id="demo-simple-select"
+                            value={ordersFilterToggle}
+                            label="State"
+                            onChange={(e) => setOrdersFilterToggle(e.target.value)}
+                        >
+                            <MenuItem value="active">Active</MenuItem>
+                            <MenuItem value="closed">Closed</MenuItem>
+                            <MenuItem value="canceled">Canceled</MenuItem>
+                            <MenuItem value="all">All</MenuItem>
+                        </Select>
+                    </FormControl>
+
 
 
                     <div className="flex-1"></div>
@@ -608,6 +638,51 @@ export default function WaiterView(props) {
 
     }
 
+    const openBillModalEasy = (paymentID, ois = orderItems, pmnts = payments, pmtxs = paymentTaxes) => {
+        setSelectedPaymentId(paymentID)
+
+        const editedPayment = pmnts.find((payment) => payment.ID == paymentID);
+        const editedPaymentTaxes = pmtxs.filter((paymentTax) => paymentTax.ID_Payments == paymentID);
+
+        let newCheckboxes = {};
+
+
+        const oisl = ois.filter((orderItem) => orderItem.ID_Order == selectedOrderId && !orderItem.Canceled && orderItem.ID_Payment == paymentID);
+        console.log('ois', ois)
+        console.log('oisl', oisl)
+        console.log('selectedOrderId', selectedOrderId)
+        console.log('paymentID', paymentID)
+
+        for (const orderItem of oisl) {
+            console.log('orderItem', orderItem)
+            console.log('orderItem.ID', orderItem.ID)
+            console.log('orderItem.ID.toString()', orderItem.ID.toString())
+            newCheckboxes[orderItem.ID.toString()] = true;
+            console.log('newCheckboxes', newCheckboxes)
+        }
+
+        for (const paymentMethod of paymentMethods) {
+            newCheckboxes[paymentMethod.PaymentMethod] = editedPayment.ID_PaymentMethod == paymentMethod.ID;
+        }
+
+        for (const tax of taxes) {
+            newCheckboxes[tax.TaxName] = editedPaymentTaxes.some((paymentTax) => paymentTax.ID_Tax == tax.ID);
+        }
+
+
+        console.log('openEditPayment', newCheckboxes)
+        setCheckboxes(newCheckboxes);
+        setDiscountPercent(editedPayment.DiscountPercent);
+        setNewPaymentRealPayment(editedPayment.RealPayment);
+        setSelectedCustomer(editedPayment.ID_Customer);
+
+
+
+        setOpenBillModal(true)
+
+
+    }
+
     const openCumulatedBillModal = (paymentID , ois = orderItems, pmnts = payments, pmtxs = paymentTaxes ) => {
         setSelectedPaymentId(paymentID)
 
@@ -664,6 +739,11 @@ export default function WaiterView(props) {
 
 
     const [savingPayment, setSavingPayment] = useState(false);
+    const [savedPaymentSuccess, setSavedPaymentSuccess] = useState(false);
+    useEffect(() => {
+        if (!savedPaymentSuccess) return;
+        setTimeout(() => setSavedPaymentSuccess(false), 5000);
+    }, [savedPaymentSuccess]);
     const saveEditPayment = async () => {
         setSavingPayment(true);
 
@@ -712,6 +792,7 @@ export default function WaiterView(props) {
             setOrderItems(newWaiterData.orderItems);
             setPayments(newWaiterData.payments);
             setPaymentTaxes(newWaiterData.paymentTaxes);
+            setSavedPaymentSuccess(true);
 
         } catch (e) {
 
@@ -983,7 +1064,16 @@ export default function WaiterView(props) {
                         }}>Delete</Button>
 
                         </Box>
-                        <div className="flex-1"></div>
+                        <div className="flex-1 ms-4 me-4">
+                            {savedPaymentSuccess && (
+                                <Alert
+                                    severity="success"
+                                    sx={{ width: '100%' }}
+                                >
+                                    Payment saved
+                                </Alert>
+                            )}
+                        </div>
                         <Box sx={{ m: 1, position: 'relative' }}>
                             <Button disabled={!hasPaymentChecked()} variant={"contained"} className="p-4" onClick={() => {
                                 setOpenBillModal(true);
@@ -1015,6 +1105,7 @@ export default function WaiterView(props) {
                             )}
                         </Box>
                     </div>
+
                 </Box>
             </Modal>
     )
@@ -1057,12 +1148,16 @@ export default function WaiterView(props) {
                 renderCell: (params) => (
                     <IconButton size="large" aria-label="kitchen" disabled={!!params.row.Time_Prepared} color={'error'} onClick={async (e) => {
                         e.stopPropagation();
+                        if (isOrderClosedOrCanceled()) return;
+
                         const oi = await DB_prepareOrderItem(params.row.id);
                         setOrderItems(orderItems.map((orderItem) => orderItem.ID == oi.ID ? oi : orderItem));
                     }}>
                         <RestaurantIcon />
                     </IconButton>
-                )
+                ),
+                type: 'boolean',
+                valueGetter: (value, row) => !!row.Time_Prepared,
             },
 
             { field: 'id', headerName: 'ID', width: getSavedColumnWidth('orderdetail', 'id') },
@@ -1081,36 +1176,46 @@ export default function WaiterView(props) {
             { field: 'Variant', headerName: 'Variant', width: getSavedColumnWidth('orderdetail', 'Variant') },
 
 
-            { field: 'Time', headerName: 'Time', width: getSavedColumnWidth('orderdetail', 'Time'),
+            { field: 'Time',
+                headerName: 'Time',
+                width: getSavedColumnWidth('orderdetail', 'Time'),
                 valueGetter: (value, row) => row.TimeOfOrder,
+                type: 'dateTime',
                 renderCell: (params) => (
                     <div>
-                        <span>Ordered: {params.row.TimeOfOrder}</span>
+                        <span>Ordered: {convertDate(params.row.TimeOfOrder)}</span>
                         <br/>
-                        <span>Prepared: {params.row.Time_Prepared}</span>
+                        <span>Prepared: {convertDate(params.row.Time_Prepared)}</span>
                         <br/>
-                        <span>Delivered: {params.row.Time_Delivered}</span>
+                        <span>Delivered: {convertDate(params.row.Time_Delivered)}</span>
                     </div>
                 ),
+
+                valueFormatter: convertDate,
             },
-            { field: 'TimeOfOrder', headerName: 'Ordered', width: getSavedColumnWidth('orderdetail', 'TimeOfOrder') },
-            { field: 'Time_Prepared', headerName: 'Prep', width: getSavedColumnWidth('orderdetail', 'Time_Prepared') },
-            { field: 'Time_Delivered', headerName: 'Deliver', width: getSavedColumnWidth('orderdetail', 'Time_Delivered') },
+            { field: 'TimeOfOrder', headerName: 'Ordered', width: getSavedColumnWidth('orderdetail', 'TimeOfOrder'), type: 'dateTime', valueFormatter: convertDate },
+            { field: 'Time_Prepared', headerName: 'Prep', width: getSavedColumnWidth('orderdetail', 'Time_Prepared'), type: 'dateTime', valueFormatter: convertDate },
+            { field: 'Time_Delivered', headerName: 'Deliver', width: getSavedColumnWidth('orderdetail', 'Time_Delivered'), type: 'dateTime', valueFormatter: convertDate },
             { field: 'Note', headerName: 'Note', width: getSavedColumnWidth('orderdetail', 'Note') },
 
-            { field: 'Price', headerName: 'Price', width: getSavedColumnWidth('orderdetail', 'Price') },
-            { field: 'Status', headerName: 'Status' , width: getSavedColumnWidth('orderdetail', 'Status') },
+            { field: 'Price', headerName: 'Price', width: getSavedColumnWidth('orderdetail', 'Price'), type: 'number' },
+            { field: 'Status', headerName: 'Status' , width: getSavedColumnWidth('orderdetail', 'Status'), valueOptions: ['Paid', 'Canceled'], type: 'singleSelect' },
 
             { field: 'Button_waiter', headerName: 'Waiter', width: getSavedColumnWidth('orderdetail', 'Button_waiter'),
                 renderCell: (params) => (
                     <IconButton size="large" aria-label="waiter" disabled={!!params.row.Time_Delivered} color={'error'} onClick={async (e) => {
                         e.stopPropagation();
+                        if (isOrderClosedOrCanceled()) return;
+
                         const oi = await DB_deliverOrderItem(params.row.id);
                         setOrderItems(orderItems.map((orderItem) => orderItem.ID == oi.ID ? oi : orderItem));
                     }}>
                         <TableBarIcon />
                     </IconButton>
-                )
+                ),
+                type: 'boolean',
+                valueGetter: (value, row) => !!row.Time_Delivered,
+
             },
         ]
 
@@ -1121,13 +1226,13 @@ export default function WaiterView(props) {
             Meal: meals.find((meal) => meal.ID == orderItem.ID_Meal)?.Meal,
             ID_Variant: parseInt(orderItem.ID_Variant),
             Variant: variants.find((variant) => variant.ID == orderItem.ID_Variant)?.MealVariant,
-            TimeOfOrder: convertDate(orderItem.TimeOfOrder),
+            TimeOfOrder: orderItem.TimeOfOrder,
             Price: orderItem.Price,
             Canceled: orderItem.Canceled,
             ID_Payment: orderItem.ID_Payment,
 
-            Time_Prepared: convertDate(orderItem.Time_Prepared),
-            Time_Delivered: convertDate(orderItem.Time_Delivered),
+            Time_Prepared: orderItem.Time_Prepared,
+            Time_Delivered: orderItem.Time_Delivered,
 
             Note: orderItem.Note,
 
@@ -1179,7 +1284,7 @@ export default function WaiterView(props) {
                     <ButtonGroup variant="text" aria-label="Basic button group">
                         {!orderPayments.length && <Button>No bills</Button>}
                         {orderPayments.map((payment) => (
-                            <Button key={payment?.ID?.toString()} onClick={() => openEditPaymentModal(payment?.ID)}>Bill no. {payment?.ID?.toString()} {payment?.RealPayment > 0 ? '✅' : '❌'}</Button>
+                            <Button key={payment?.ID?.toString()} onClick={() => !isOrderClosedOrCanceled() ? openEditPaymentModal(payment?.ID) : openBillModalEasy(payment?.ID)}>Bill no. {payment?.ID?.toString()} {payment?.RealPayment > 0 ? '✅' : '❌'}</Button>
                         ))}
                     </ButtonGroup>
 
@@ -1660,7 +1765,7 @@ export default function WaiterView(props) {
         try {
             setSavingPayment(true);
 
-            const newCustomerPayment = await DB_createCustomerPayment(selectedCustomer, realAmount)
+            const newCustomerPayment = await DB_createCustomerPayment(selectedCustomer, realAmount, currentUser.ID);
 
             const newCustomerPaymentsPayments = [];
             for (const paymentID of paymentIDsToMarkAsPaid) {
@@ -1682,6 +1787,8 @@ export default function WaiterView(props) {
 
         console.log('createNewCumulatedPayment', paymentIDsToMarkAsPaid, realAmount);
     }
+
+    const [cumulatedBillsSum, setCumulatedBillsSum] = useState(0);
     const renderCumulatedBills = () => {
 
         //const selectedCustomer = customers.find((customer) => customer.ID == selectedCustomer);
@@ -1699,9 +1806,13 @@ export default function WaiterView(props) {
 
         const cols = [
             { field: 'id', headerName: 'ID', width: getSavedColumnWidth('cumulatedbills', 'ID') },
-            { field: 'TimeOfPay', headerName: 'Time', width: getSavedColumnWidth('cumulatedbills', 'TimeOfPay') },
-            { field: 'TotalAmount', headerName: 'Total', width: getSavedColumnWidth('cumulatedbills', 'TotalAmount') },
-            { field: 'isPaid', headerName: 'Paid', width: getSavedColumnWidth('cumulatedbills', 'isPaid') },
+            { field: 'TimeOfPay', headerName: 'Time', width: getSavedColumnWidth('cumulatedbills', 'TimeOfPay'), type: 'dateTime', valueFormatter: convertDate },
+            { field: 'TotalAmount', headerName: 'Total', width: getSavedColumnWidth('cumulatedbills', 'TotalAmount'), type: 'number' },
+            { field: 'isPaid', headerName: 'Paid', width: getSavedColumnWidth('cumulatedbills', 'isPaid'), type: 'boolean',
+                renderCell: (params) => (
+                    <div>{params.row.isPaid ? '✅' : '❌'}</div>
+                ),
+            },
             /*{ field: 'RealPayment', headerName: 'Real Payment', width: getSavedColumnWidth('cumulatedbills', 'RealPayment') },
             { field: 'Discount', headerName: 'Discount', width: getSavedColumnWidth('cumulatedbills', 'Discount') },
             { field: 'Taxes', headerName: 'Taxes', width: getSavedColumnWidth('cumulatedbills', 'Taxes') },
@@ -1712,9 +1823,9 @@ export default function WaiterView(props) {
 
         const rows = customerPaymentsLocal.map((payment) => ({
             id: payment.ID,
-            TimeOfPay: convertDate(payment.TimeOfPay),
+            TimeOfPay: payment.TimeOfPay,
             TotalAmount: payment.TotalAmount,
-            isPaid: payment.isPaid ? '✅' : '❌',
+            isPaid: payment.isPaid,
         }))
 
 
@@ -1777,7 +1888,28 @@ export default function WaiterView(props) {
                     }}
                     onStateChange={(state) => {
                         localStorage.setItem("comulatedbillsState", JSON.stringify(state));
+
+                        // using visible rows to calculate sum
+                        const visibleRowsLookup = state.filter.filteredRowsLookup
+                        console.log('visibleRowsLookup', visibleRowsLookup)
+                        if (!visibleRowsLookup) return;
+
+                        const visibleItems = [];
+                        for (const [id, value] of Object.entries(visibleRowsLookup)) {
+                            if (value === true) {
+                                visibleItems.push(parseInt(id));
+                            }
+                        }
+                        console.log('visibleItems', visibleItems)
+                        const paymentsFiltered = customerPaymentsLocal.filter((row) => visibleItems.includes(row.ID));
+
+                        console.log('paymentsFiltered', paymentsFiltered)
+
+                        const sum = paymentsFiltered.reduce((acc, payment) => acc + parseFloat(payment.TotalAmount), 0);
+                        setCumulatedBillsSum(sum);
+
                     }}
+
                     rows={rows}
                     columns={cols}
                     onRowClick={({ id, row }) => {
@@ -1790,6 +1922,12 @@ export default function WaiterView(props) {
                     }}
                     getRowClassName={(params) => params.row.Status == 'Canceled' ? 'bg-red-200' : params.row.Status == 'Paid' ? 'bg-green-200' : '' }
                 />
+
+                <div className="flex items-center me-4">
+                    <div className="mt-3.5 ms-4 mb-3.5">
+                        Sum : OMR {cumulatedBillsSum.toFixed(3)}
+                    </div>
+                </div>
 
                 <Modal
                     open={openNewCumulatedPaymentModal}

@@ -496,12 +496,13 @@ export async function DB_reopenOrder(order_id: number | bigint): Promise<{ updat
     return { updatedOrder, updatedOrderItems };
 }
 
-export async function DB_createCustomerPayment(customer_id: number | bigint, realAmount: number | bigint): Promise<DBT_CustomerPayments> {
+export async function DB_createCustomerPayment(customer_id: number | bigint, realAmount: number | bigint, id_user: number | bigint): Promise<DBT_CustomerPayments> {
     const customerPayment = await prisma.dBT_CustomerPayments.create({
         data: {
             ID_Customer: customer_id,
             Payment: realAmount,
-            Date: new Date()
+            Date: new Date(),
+            ID_User: id_user
         }
     });
     return customerPayment;
