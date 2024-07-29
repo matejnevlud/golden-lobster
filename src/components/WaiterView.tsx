@@ -3,7 +3,7 @@
 import { XMLParser } from "fast-xml-parser";
 import { parseBasic } from "@/utils/xmlParser";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { DataGrid, GridRenderCellParams } from "@mui/x-data-grid";
+import { DataGrid, getGridDateOperators, GridFilterOperator, GridRenderCellParams } from "@mui/x-data-grid";
 import { Alert, Box, Button, ButtonGroup, CardHeader, Checkbox, CircularProgress, FormControl, FormControlLabel, FormGroup, IconButton, InputAdornment, InputLabel, LinearProgress, MenuItem, Modal, Select, TextField, ToggleButton, ToggleButtonGroup, Typography } from "@mui/material";
 import {
     changeOrderItemVariant,
@@ -32,12 +32,13 @@ import RefreshIcon from '@mui/icons-material/Refresh';
 import OpenInFullIcon from '@mui/icons-material/OpenInFull';
 import { useIdleTimer } from 'react-idle-timer/legacy'
 import { Snackbar } from "@mui/base";
+import { GridFilterInputDate } from "@mui/x-data-grid/components/panel/filterPanel/GridFilterInputDate";
 
 const getSavedColumnWidth = (table: string, field: string) => {
     return localStorage.getItem(`${table}_${field}`) != null ? parseInt(localStorage.getItem(`${table}_${field}`)) : undefined;
 }
 
-BigInt.prototype.toJSON = function() { return parseInt(this.toString()) }
+BigInt.prototype.toJSON = function () { return parseInt(this.toString()) }
 export default function WaiterView(props) {
 
     const { getRemainingTime } = useIdleTimer({
@@ -60,7 +61,7 @@ export default function WaiterView(props) {
     const [taxes, setTaxes] = useState(props.taxes);
 
     const headLayout = layouts.find((layout) => layout.Type === "Head" && layout.Active);
-    const parser = new XMLParser({ ignoreAttributes : false });
+    const parser = new XMLParser({ ignoreAttributes: false });
     let jsonObj = parser.parse(headLayout?.Xml ?? "");
 
     const [ordersFilterToggle, setOrdersFilterToggle] = useState('active');
@@ -95,7 +96,7 @@ export default function WaiterView(props) {
 
     const [openPayModal, setOpenPayModal] = useState(false);
     const [openEditPayModal, setOpenEditPayModal] = useState(false);
-    const [checkboxes, setCheckboxes] = useState({ });
+    const [checkboxes, setCheckboxes] = useState({});
     const [newPaymentCost, setNewPaymentCost] = useState(0);
     const [newPaymentDiscount, setNewPaymentDiscount] = useState(0);
     const [newPaymentSubtotal, setNewPaymentSubtotal] = useState(0);
@@ -216,22 +217,22 @@ export default function WaiterView(props) {
 
         setSelectedPaymentItems(
             orderItems
-            .filter((orderItem) => orderItem.ID_Payment == selectedPaymentId)
-            // use reduce to group by meal and variant in array of objects {key, count, orderItem)
-            .reduce((acc, orderItem) => {
-                console.log('orderItem', orderItem)
-                const key = `${orderItem.ID_Meal}_${orderItem.ID_Variant}`;
-                // try to find the key in the accumulator
-                const found = acc.find((item) => item.key === key);
-                if (found) {
-                    acc[acc.indexOf(found)] = { ...found, count: found.count + 1 }
-                } else {
-                    // if not found, create a new object and push it to the accumulator
-                    acc.push({ key, count: 1, orderItem });
-                }
+                .filter((orderItem) => orderItem.ID_Payment == selectedPaymentId)
+                // use reduce to group by meal and variant in array of objects {key, count, orderItem)
+                .reduce((acc, orderItem) => {
+                    console.log('orderItem', orderItem)
+                    const key = `${orderItem.ID_Meal}_${orderItem.ID_Variant}`;
+                    // try to find the key in the accumulator
+                    const found = acc.find((item) => item.key === key);
+                    if (found) {
+                        acc[acc.indexOf(found)] = { ...found, count: found.count + 1 }
+                    } else {
+                        // if not found, create a new object and push it to the accumulator
+                        acc.push({ key, count: 1, orderItem });
+                    }
 
-                return acc;
-            }, [])
+                    return acc;
+                }, [])
         );
         setSelectedPayment(payment);
 
@@ -243,7 +244,7 @@ export default function WaiterView(props) {
     const onCheckboxChange = (e) => {
         // set all payment methods to false and then set the clicked one to true
         if (paymentMethods.some((paymentMethod) => paymentMethod.PaymentMethod == e.target.name)) {
-            const newCheckboxes = {...checkboxes};
+            const newCheckboxes = { ...checkboxes };
             for (const paymentMethod of paymentMethods) {
                 newCheckboxes[paymentMethod.PaymentMethod] = false;
             }
@@ -270,15 +271,15 @@ export default function WaiterView(props) {
 
         console.log('selectedPaymentMethod', selectedPaymentMethod)
 
-        if(!selectedPaymentMethod) return false;
+        if (!selectedPaymentMethod) return false;
 
-        if(selectedPaymentMethod.ID == 3) {
+        if (selectedPaymentMethod.ID == 3) {
             return selectedCustomer != null;
         }
 
 
         return true;
-        return Object.keys(checkboxes).some((key) => paymentMethods.some((paymentMethod) => paymentMethod.PaymentMethod == key) && checkboxes[key]) ;
+        return Object.keys(checkboxes).some((key) => paymentMethods.some((paymentMethod) => paymentMethod.PaymentMethod == key) && checkboxes[key]);
     }
 
 
@@ -335,7 +336,7 @@ export default function WaiterView(props) {
 
     }, [checkboxes, orderItems, discountPercent]);
 
-    window.addEventListener('storage', function(event) {
+    window.addEventListener('storage', function (event) {
         console.log('storage event', event)
         if (event.key === 'mealGroup') {
             setCurrentMealGroupID(BigInt(event.newValue));
@@ -401,13 +402,13 @@ export default function WaiterView(props) {
 
         const mealGroup = mealGroups.find((mg) => (mg.ID == currentMealGroupID));
         const mealsInGroup = mealsInGroups.filter((mig) => (mig.ID_Group == currentMealGroupID)) ?? [];
-        const mealsFilter = mealsInGroup.map((mig) => ({...(meals.find((m) => m.ID == mig.ID_Meal)), order: mig.Order })).filter((m) => m != null);
-        const mealsOrdered = mealsFilter.sort((a, b) => a.order - b.order)  as DBT_Meals[];
+        const mealsFilter = mealsInGroup.map((mig) => ({ ...(meals.find((m) => m.ID == mig.ID_Meal)), order: mig.Order })).filter((m) => m != null);
+        const mealsOrdered = mealsFilter.sort((a, b) => a.order - b.order) as DBT_Meals[];
 
         if (isOrderClosedOrCanceled() || !selectedOrderId) return;
 
         return (
-            <div style={{ position: 'relative'}} key='w'>
+            <div style={{ position: 'relative' }} key='w'>
                 {mealsOrdered.map((meal, idx) => {
                     return renderAddToOrderButton(meal, idx)
                 })}
@@ -429,6 +430,7 @@ export default function WaiterView(props) {
     }
 
 
+    const [ordersSum, setOrdersSum] = useState(0);
     const orderInitialState = useMemo(() => {
         const defaultState = {
             sorting: {
@@ -455,23 +457,42 @@ export default function WaiterView(props) {
         } catch {
             return defaultState;
         }
-    } , [])
+    }, [])
+
+    const todayFilterOperator: GridFilterOperator<any, Date, any>[] = [
+        {
+            label: 'Today',
+            value: 'today',
+            getApplyFilterFn: (filterItem) => {
+
+                return (value) => {
+                    const today = new Date();
+                    console.log(value.toDateString(), today.toDateString())
+                    return value.toDateString() === today.toDateString();
+                };
+            },
+            getValueAsString: (value: number) => `${value}`,
+        },
+        ...getGridDateOperators()
+    ];
     const renderOrdersList = () => {
         const cols = [
             { field: 'id', headerName: 'ID', width: getSavedColumnWidth('order', 'id') },
             { field: 'ID_Table', headerName: 'ID_Table', width: getSavedColumnWidth('order', 'ID_Table') },
             { field: 'Table', headerName: 'Table', width: getSavedColumnWidth('order', 'Table'), type: 'singleSelect', valueOptions: tables.map((table) => table.TableName) },
-            { field: 'DateTime',
+            {
+                field: 'DateTime',
                 headerName: 'Created At',
                 width: getSavedColumnWidth('order', 'DateTime'),
-                type: 'dateTime',
+                type: 'date',
                 valueFormatter: convertDate,
+                filterOperators: todayFilterOperator,
             },
             { field: 'Price', headerName: 'Price', width: getSavedColumnWidth('order', 'Price'), type: 'number' },
             { field: 'Status', headerName: 'Status', width: getSavedColumnWidth('order', 'Status'), type: 'singleSelect', valueOptions: ['Active', 'Closed', 'Canceled'] },
         ]
 
-        const rows = orders.map((order) =>  ({
+        const rows = orders.map((order) => ({
             id: parseInt(order.ID),
             ID_Table: parseInt(order.ID_Table),
             Table: tables.find((table) => table.ID == order.ID_Table)?.TableName,
@@ -500,7 +521,7 @@ export default function WaiterView(props) {
                         <ToggleButton value="all">All</ToggleButton>
                     </ToggleButtonGroup>*/}
 
-                    <FormControl >
+                    <FormControl>
                         <InputLabel id="demo-simple-select-label">State</InputLabel>
                         <Select
                             labelId="demo-simple-select-label"
@@ -517,11 +538,10 @@ export default function WaiterView(props) {
                     </FormControl>
 
 
-
                     <div className="flex-1"></div>
                     <IconButton className="p-4" size="large" aria-label="refresh" onClick={() => refreshData()}><RefreshIcon/></IconButton>
 
-                    <IconButton className="p-4" size="large"  onClick={() => setIsFullscreen(!isFullscreen)}><OpenInFullIcon /></IconButton>
+                    <IconButton className="p-4" size="large" onClick={() => setIsFullscreen(!isFullscreen)}><OpenInFullIcon/></IconButton>
                     <div className="flex-1"></div>
                     <Button variant={"contained"} color={"error"} className="p-4" onClick={() => logout()}>Logout {currentUser.Name}</Button>
                     <div className="flex-1"></div>
@@ -530,7 +550,7 @@ export default function WaiterView(props) {
                     <Button variant={"contained"} className="p-4" onClick={() => setOpenTableModal(true)}>New Order</Button>
 
                 </div>
-                {isRefreshing && <LinearProgress />}
+                {isRefreshing && <LinearProgress/>}
                 <DataGrid
                     isRowSelectable={() => false}
                     sx={{ overflowX: 'scroll' }}
@@ -540,10 +560,38 @@ export default function WaiterView(props) {
                     }}
                     onStateChange={(state) => {
                         localStorage.setItem("orderState", JSON.stringify(state))
+
+                        // using visible rows to calculate sum
+                        const visibleRowsLookup = state.filter.filteredRowsLookup
+                        console.log('visibleRowsLookup', visibleRowsLookup)
+                        if (!visibleRowsLookup) return;
+
+                        const visibleItems = [];
+                        for (const [id, value] of Object.entries(visibleRowsLookup)) {
+                            if (value === true) {
+                                visibleItems.push(parseInt(id));
+                            }
+                        }
+                        console.log('visibleItems', visibleItems)
+                        const ordersFiltered = orders.filter((row) => visibleItems.includes(row.ID));
+
+                        console.log('ordersFiltered', ordersFiltered)
+
+                        const sum = ordersFiltered.reduce((acc, order) => acc + parseFloat(order.Price ?? 0), 0);
+                        setOrdersSum(sum);
+
+
                     }}
-                    rows={rows} columns={cols} onRowClick={({ id, row }) => {setSelectedOrderId(id)}}
-                    getRowClassName={(params) => params.row.Canceled ? 'bg-red-200' : params.row.OrderClosed ? 'bg-gray-200' : '' }
+                    rows={rows} columns={cols} onRowClick={({ id, row }) => {
+                    setSelectedOrderId(id)
+                }}
+                    getRowClassName={(params) => params.row.Canceled ? 'bg-red-200' : params.row.OrderClosed ? 'bg-gray-200' : ''}
                 />
+                <div className="flex items-center me-4">
+                    <div className="mt-3.5 ms-4 mb-3.5">
+                        Sum : OMR {ordersSum.toFixed(3)}
+                    </div>
+                </div>
                 <Modal
                     open={openTableModal}
                     onClose={() => setOpenTableModal(false)}
@@ -683,7 +731,7 @@ export default function WaiterView(props) {
 
     }
 
-    const openCumulatedBillModal = (paymentID , ois = orderItems, pmnts = payments, pmtxs = paymentTaxes ) => {
+    const openCumulatedBillModal = (paymentID, ois = orderItems, pmnts = payments, pmtxs = paymentTaxes) => {
         setSelectedPaymentId(paymentID)
 
         const editedPayment = pmnts.find((payment) => payment.ID == paymentID);
@@ -930,12 +978,12 @@ export default function WaiterView(props) {
                         <FormGroup>
                             {orderItems.filter((orderItem) => orderItem.ID_Order == selectedOrderId && !orderItem.Canceled).map((orderItem) => (
                                 <FormControlLabel key={orderItem.ID}
-                                                  control={<Checkbox checked={checkboxes[orderItem.ID.toString()]}
-                                                                     onChange={onCheckboxChange}
-                                                                     name={orderItem.ID.toString()}
-                                                                     disabled={orderItem.ID_Payment && orderItem.ID_Payment != selectedPaymentId}
-                                                  />}
-                                                  label={`${meals.find((meal) => meal.ID == orderItem.ID_Meal)?.Meal} ${variants.find((variant) => variant.ID == orderItem.ID_Variant)?.MealVariant ?? ''}   -   OMR ${orderItem.Price}`}/>
+                                    control={<Checkbox checked={checkboxes[orderItem.ID.toString()]}
+                                        onChange={onCheckboxChange}
+                                        name={orderItem.ID.toString()}
+                                        disabled={orderItem.ID_Payment && orderItem.ID_Payment != selectedPaymentId}
+                                    />}
+                                    label={`${meals.find((meal) => meal.ID == orderItem.ID_Meal)?.Meal} ${variants.find((variant) => variant.ID == orderItem.ID_Variant)?.MealVariant ?? ''}   -   OMR ${orderItem.Price}`} />
                             ))}
                         </FormGroup>
                     </div>
@@ -944,7 +992,7 @@ export default function WaiterView(props) {
                     </Typography>
                     <div className="flex-1">
                         {taxes.map((tax) => (
-                            <FormControlLabel key={tax.ID} control={<Checkbox name={tax.TaxName} checked={checkboxes[tax.TaxName]} onChange={onCheckboxChange}/>} label={`${tax.TaxName} - ${tax.Percentage ? tax.Percentage + '%' : tax.Value}`}/>
+                            <FormControlLabel key={tax.ID} control={<Checkbox name={tax.TaxName} checked={checkboxes[tax.TaxName]} onChange={onCheckboxChange} />} label={`${tax.TaxName} - ${tax.Percentage ? tax.Percentage + '%' : tax.Value}`} />
                         ))}
                     </div>
                     <Typography variant="h6" component="h2" className="pt-2 pb-2">
@@ -1018,7 +1066,7 @@ export default function WaiterView(props) {
                     </Typography>
                     <div className="flex">
                         {paymentMethods.map((paymentMethod) => (
-                            <FormControlLabel key={paymentMethod.ID} control={<Checkbox name={paymentMethod.PaymentMethod} checked={checkboxes[paymentMethod.PaymentMethod]} onChange={onCheckboxChange}/>} label={`${paymentMethod.PaymentMethod}`}/>
+                            <FormControlLabel key={paymentMethod.ID} control={<Checkbox name={paymentMethod.PaymentMethod} checked={checkboxes[paymentMethod.PaymentMethod]} onChange={onCheckboxChange} />} label={`${paymentMethod.PaymentMethod}`} />
                         ))}
                     </div>
 
@@ -1059,9 +1107,9 @@ export default function WaiterView(props) {
                     </div>
                     <div className="flex justify-items-center mt-4">
                         <Box sx={{ m: 1, position: 'relative' }}>
-                            <Button  variant={"contained"} color={"error"} className="p-4" onClick={() => {
-                            deleteBill(selectedPaymentId);
-                        }}>Delete</Button>
+                            <Button variant={"contained"} color={"error"} className="p-4" onClick={() => {
+                                deleteBill(selectedPaymentId);
+                            }}>Delete</Button>
 
                         </Box>
                         <div className="flex-1 ms-4 me-4">
@@ -1108,7 +1156,7 @@ export default function WaiterView(props) {
 
                 </Box>
             </Modal>
-    )
+        )
     }
     const orderDetailInitialState = useMemo(() => {
         const defaultState = {
@@ -1140,13 +1188,23 @@ export default function WaiterView(props) {
             return defaultState;
         }
     }, [])
+
+    const canUserPrepareFood = () => {
+        return currentUser.Role == 1
+    }
+
+    const canUserDeliverFood = () => {
+        return currentUser.Role == 2
+    }
+
     const renderOrderDetail = () => {
         const currentOrderItem = orderItems.find((orderItem) => orderItem.ID == selectedOrderItemId);
 
         const orderItemCols = [
-            { field: 'Button_kitchen', headerName: 'Kitchen', width: getSavedColumnWidth('orderdetail', 'Button_kitchen'),
+            {
+                field: 'Button_kitchen', headerName: 'Kitchen', width: getSavedColumnWidth('orderdetail', 'Button_kitchen'),
                 renderCell: (params) => (
-                    <IconButton size="large" aria-label="kitchen" disabled={!!params.row.Time_Prepared} color={'error'} onClick={async (e) => {
+                    <IconButton size="large" aria-label="kitchen" disabled={!!params.row.Time_Prepared || !canUserPrepareFood()} color={'error'} onClick={async (e) => {
                         e.stopPropagation();
                         if (isOrderClosedOrCanceled()) return;
 
@@ -1163,11 +1221,12 @@ export default function WaiterView(props) {
             { field: 'id', headerName: 'ID', width: getSavedColumnWidth('orderdetail', 'id') },
             { field: 'ID_Order', headerName: 'ID_Order', width: getSavedColumnWidth('orderdetail', 'ID_Order') },
             { field: 'ID_Meal', headerName: 'ID_Meal', width: getSavedColumnWidth('orderdetail', 'ID_Meal') },
-            { field: 'Meal', headerName: 'Meal', width: getSavedColumnWidth('orderdetail', 'Meal'),
+            {
+                field: 'Meal', headerName: 'Meal', width: getSavedColumnWidth('orderdetail', 'Meal'),
                 renderCell: (params) => (
                     <div>
                         <b>{params.row.Meal}</b>
-                        <br/>
+                        <br />
                         <span>{params.row.Variant}</span>
                     </div>
                 ),
@@ -1176,34 +1235,37 @@ export default function WaiterView(props) {
             { field: 'Variant', headerName: 'Variant', width: getSavedColumnWidth('orderdetail', 'Variant') },
 
 
-            { field: 'Time',
+            {
+                field: 'Time',
                 headerName: 'Time',
                 width: getSavedColumnWidth('orderdetail', 'Time'),
                 valueGetter: (value, row) => row.TimeOfOrder,
-                type: 'dateTime',
+                type: 'date',
                 renderCell: (params) => (
                     <div>
                         <span>Ordered: {convertDate(params.row.TimeOfOrder)}</span>
-                        <br/>
+                        <br />
                         <span>Prepared: {convertDate(params.row.Time_Prepared)}</span>
-                        <br/>
+                        <br />
                         <span>Delivered: {convertDate(params.row.Time_Delivered)}</span>
                     </div>
                 ),
 
                 valueFormatter: convertDate,
+
             },
-            { field: 'TimeOfOrder', headerName: 'Ordered', width: getSavedColumnWidth('orderdetail', 'TimeOfOrder'), type: 'dateTime', valueFormatter: convertDate },
-            { field: 'Time_Prepared', headerName: 'Prep', width: getSavedColumnWidth('orderdetail', 'Time_Prepared'), type: 'dateTime', valueFormatter: convertDate },
-            { field: 'Time_Delivered', headerName: 'Deliver', width: getSavedColumnWidth('orderdetail', 'Time_Delivered'), type: 'dateTime', valueFormatter: convertDate },
+            { field: 'TimeOfOrder', headerName: 'Ordered', width: getSavedColumnWidth('orderdetail', 'TimeOfOrder'), type: 'date', valueFormatter: convertDate },
+            { field: 'Time_Prepared', headerName: 'Prep', width: getSavedColumnWidth('orderdetail', 'Time_Prepared'), type: 'date', valueFormatter: convertDate },
+            { field: 'Time_Delivered', headerName: 'Deliver', width: getSavedColumnWidth('orderdetail', 'Time_Delivered'), type: 'date', valueFormatter: convertDate },
             { field: 'Note', headerName: 'Note', width: getSavedColumnWidth('orderdetail', 'Note') },
 
             { field: 'Price', headerName: 'Price', width: getSavedColumnWidth('orderdetail', 'Price'), type: 'number' },
-            { field: 'Status', headerName: 'Status' , width: getSavedColumnWidth('orderdetail', 'Status'), valueOptions: ['Paid', 'Canceled'], type: 'singleSelect' },
+            { field: 'Status', headerName: 'Status', width: getSavedColumnWidth('orderdetail', 'Status'), valueOptions: ['Paid', 'Canceled'], type: 'singleSelect' },
 
-            { field: 'Button_waiter', headerName: 'Waiter', width: getSavedColumnWidth('orderdetail', 'Button_waiter'),
+            {
+                field: 'Button_waiter', headerName: 'Waiter', width: getSavedColumnWidth('orderdetail', 'Button_waiter'),
                 renderCell: (params) => (
-                    <IconButton size="large" aria-label="waiter" disabled={!!params.row.Time_Delivered} color={'error'} onClick={async (e) => {
+                    <IconButton size="large" aria-label="waiter" disabled={!!params.row.Time_Delivered || !canUserDeliverFood()} color={'error'} onClick={async (e) => {
                         e.stopPropagation();
                         if (isOrderClosedOrCanceled()) return;
 
@@ -1219,7 +1281,7 @@ export default function WaiterView(props) {
             },
         ]
 
-        const rows = orderItems.filter((orderItem) => orderItem.ID_Order == selectedOrderId).map((orderItem) =>  ({
+        const rows = orderItems.filter((orderItem) => orderItem.ID_Order == selectedOrderId).map((orderItem) => ({
             id: parseInt(orderItem.ID),
             ID_Order: parseInt(orderItem.ID_Order),
             ID_Meal: parseInt(orderItem.ID_Meal),
@@ -1245,9 +1307,9 @@ export default function WaiterView(props) {
                 <div className="flex items-center me-4 ms-4">
 
                     <Button variant={"contained"} className="p-4" onClick={() => setSelectedOrderId(null)}>Back</Button>
-                    <CardHeader title={"Order no. " + selectedOrderId + " - " + tables.find((table) => table.ID == orders.find((order) => order.ID == selectedOrderId)?.ID_Table)?.TableName} className="flex-1"/>
-                    {isOrderClosed() && <CardHeader title={"ORDER IS CLOSED"} className="flex-1"/>}
-                    {isOrderCanceled() && <CardHeader title={"ORDER IS CANCELED"} className="flex-1"/>}
+                    <CardHeader title={"Order no. " + selectedOrderId + " - " + tables.find((table) => table.ID == orders.find((order) => order.ID == selectedOrderId)?.ID_Table)?.TableName} className="flex-1" />
+                    {isOrderClosed() && <CardHeader title={"ORDER IS CLOSED"} className="flex-1" />}
+                    {isOrderCanceled() && <CardHeader title={"ORDER IS CANCELED"} className="flex-1" />}
                     {isOrderClosedOrCanceled() && <Button variant={"contained"} className="p-4" color={"success"} onClick={() => reopenOrder()}>Open Order</Button>}
 
                     {!isOrderClosedOrCanceled() && <Button variant={"contained"} className="p-4" color={"error"} onClick={() => cancelOrder()}>Cancel Order</Button>}
@@ -1272,8 +1334,8 @@ export default function WaiterView(props) {
                         if (isOrderClosedOrCanceled()) return;
                         setSelectedOrderItemId(id);
                         setOpenOrderItemActionsModal(true);
-                }}
-                    getRowClassName={(params) => params.row.Status == 'Canceled' ? 'bg-red-200' : params.row.Status == 'Paid' ? 'bg-green-200' : '' }
+                    }}
+                    getRowClassName={(params) => params.row.Status == 'Canceled' ? 'bg-red-200' : params.row.Status == 'Paid' ? 'bg-green-200' : ''}
                 />
 
                 <div className="flex items-center me-4 ms-4 mt-4">
@@ -1291,27 +1353,27 @@ export default function WaiterView(props) {
                 </div>
                 {!isOrderClosedOrCanceled() &&
                     <div className="flex justify-items-center me-4">
-                    <div className="mt-3.5 ms-4 mb-3.5">
-                        Sum : OMR {orderSum.toFixed(3)}
-                    </div>
-                    <div className="mt-3.5 ms-4 mb-3.5">
-                        Sum To Pay : OMR {orderSumToPay.toFixed(3)}
-                    </div>
-                    <div className="mt-3.5 ms-4 mb-3.5">
+                        <div className="mt-3.5 ms-4 mb-3.5">
+                            Sum : OMR {orderSum.toFixed(3)}
+                        </div>
+                        <div className="mt-3.5 ms-4 mb-3.5">
+                            Sum To Pay : OMR {orderSumToPay.toFixed(3)}
+                        </div>
+                        <div className="mt-3.5 ms-4 mb-3.5">
 
-                    </div>
-                    <div className="flex-1"></div>
-                    <div className="mt-3.5 ms-4 mb-3.5 flex">
+                        </div>
+                        <div className="flex-1"></div>
+                        <div className="mt-3.5 ms-4 mb-3.5 flex">
 
-                        <div className="p-2"></div>
-                        <Button variant={"contained"} className="p-4" color={"primary"} onClick={() => setShowOrderNoteModal(true)}>Note</Button>
-                        <div className="p-2"></div>
-                        <Button variant={"contained"} className="p-4" color={"success"} onClick={() => setOpenPayModal(true)}>Create Bill</Button>
-                        <div className="p-2"></div>
-                        <Button disabled={orderSumToPay > 0 || !hasAllPaymentsRealPayment} variant={"contained"} className="p-4" color={"success"} onClick={() => closeOrder()}>Close Order</Button>
+                            <div className="p-2"></div>
+                            <Button variant={"contained"} className="p-4" color={"primary"} onClick={() => setShowOrderNoteModal(true)}>Note</Button>
+                            <div className="p-2"></div>
+                            <Button variant={"contained"} className="p-4" color={"success"} onClick={() => setOpenPayModal(true)}>Create Bill</Button>
+                            <div className="p-2"></div>
+                            <Button disabled={orderSumToPay > 0 || !hasAllPaymentsRealPayment} variant={"contained"} className="p-4" color={"success"} onClick={() => closeOrder()}>Close Order</Button>
 
+                        </div>
                     </div>
-                </div>
                 }
 
                 <Modal
@@ -1381,12 +1443,12 @@ export default function WaiterView(props) {
                             <FormGroup>
                                 {orderItems.filter((orderItem) => orderItem.ID_Order == selectedOrderId && !orderItem.Canceled).map((orderItem) => (
                                     <FormControlLabel key={orderItem.ID}
-                                                      control={<Checkbox checked={checkboxes[orderItem.ID.toString()]}
-                                                                         onChange={onCheckboxChange}
-                                                                         name={orderItem.ID.toString()}
-                                                                         disabled={orderItem.ID_Payment}
-                                                      />}
-                                                      label={`${meals.find((meal) => meal.ID == orderItem.ID_Meal)?.Meal} ${variants.find((variant) => variant.ID == orderItem.ID_Variant)?.MealVariant ?? ''}   -   OMR ${orderItem.Price}`}/>
+                                        control={<Checkbox checked={checkboxes[orderItem.ID.toString()]}
+                                            onChange={onCheckboxChange}
+                                            name={orderItem.ID.toString()}
+                                            disabled={orderItem.ID_Payment}
+                                        />}
+                                        label={`${meals.find((meal) => meal.ID == orderItem.ID_Meal)?.Meal} ${variants.find((variant) => variant.ID == orderItem.ID_Variant)?.MealVariant ?? ''}   -   OMR ${orderItem.Price}`} />
                                 ))}
                             </FormGroup>
                         </div>
@@ -1395,7 +1457,7 @@ export default function WaiterView(props) {
                         </Typography>
                         <div className="flex-1">
                             {taxes.map((tax) => (
-                                <FormControlLabel key={tax.ID} control={<Checkbox name={tax.TaxName} checked={checkboxes[tax.TaxName]} onChange={onCheckboxChange}/>} label={`${tax.TaxName} - ${tax.Percentage ? tax.Percentage + '%' : tax.Value}`}/>
+                                <FormControlLabel key={tax.ID} control={<Checkbox name={tax.TaxName} checked={checkboxes[tax.TaxName]} onChange={onCheckboxChange} />} label={`${tax.TaxName} - ${tax.Percentage ? tax.Percentage + '%' : tax.Value}`} />
                             ))}
                         </div>
                         <Typography variant="h6" component="h2" className="pt-2 pb-2">
@@ -1472,7 +1534,7 @@ export default function WaiterView(props) {
                         </Typography>
                         <div className="flex">
                             {paymentMethods.map((paymentMethod) => (
-                                <FormControlLabel key={paymentMethod.ID} control={<Checkbox name={paymentMethod.PaymentMethod} checked={checkboxes[paymentMethod.PaymentMethod]} onChange={onCheckboxChange}/>} label={`${paymentMethod.PaymentMethod}`}/>
+                                <FormControlLabel key={paymentMethod.ID} control={<Checkbox name={paymentMethod.PaymentMethod} checked={checkboxes[paymentMethod.PaymentMethod]} onChange={onCheckboxChange} />} label={`${paymentMethod.PaymentMethod}`} />
                             ))}
                         </div>
 
@@ -1540,19 +1602,19 @@ export default function WaiterView(props) {
                             }`}
                         </style>
                         <Box className="contentToPrint"
-                             sx={{
-                                 position: 'absolute' as 'absolute',
-                                 top: '50%',
-                                 left: '50%',
-                                 transform: 'translate(-50%, -50%)',
-                                 width: 600,
-                                 bgcolor: 'white',
-                                 p: 4,
-                                 overflow: 'scroll',
-                                 display: 'flex',
-                                 flexDirection: 'column',
-                                 maxHeight: '100%',
-                             }}>
+                            sx={{
+                                position: 'absolute' as 'absolute',
+                                top: '50%',
+                                left: '50%',
+                                transform: 'translate(-50%, -50%)',
+                                width: 600,
+                                bgcolor: 'white',
+                                p: 4,
+                                overflow: 'scroll',
+                                display: 'flex',
+                                flexDirection: 'column',
+                                maxHeight: '100%',
+                            }}>
                             <>
                                 <div ref={contentToPrint}>
                                     <div key={'title'} className="flex-1 flex items-center mb-4">
@@ -1563,14 +1625,14 @@ export default function WaiterView(props) {
                                     <div className="flex-1">
 
                                         {selectedPaymentItems
-                                        .map(({ key, count, orderItem }) => (
-                                            <div key={orderItem.ID} className="flex-1 flex items-center">
-                                                <Typography className="w-12">{count}x</Typography>
-                                                <Typography>{`${meals.find((meal) => meal.ID == orderItem.ID_Meal)?.Meal} ${variants.find((variant) => variant.ID == orderItem.ID_Variant)?.MealVariant ?? ''}`}</Typography>
-                                                <div className="flex-1"></div>
-                                                <Typography>OMR {(parseFloat(orderItem.Price?.toString()) * count).toFixed(3)}</Typography>
-                                            </div>
-                                        ))}
+                                            .map(({ key, count, orderItem }) => (
+                                                <div key={orderItem.ID} className="flex-1 flex items-center">
+                                                    <Typography className="w-12">{count}x</Typography>
+                                                    <Typography>{`${meals.find((meal) => meal.ID == orderItem.ID_Meal)?.Meal} ${variants.find((variant) => variant.ID == orderItem.ID_Variant)?.MealVariant ?? ''}`}</Typography>
+                                                    <div className="flex-1"></div>
+                                                    <Typography>OMR {(parseFloat(orderItem.Price?.toString()) * count).toFixed(3)}</Typography>
+                                                </div>
+                                            ))}
                                     </div>
 
                                     {selectedPayment?.Discount > 0 &&
@@ -1640,14 +1702,14 @@ export default function WaiterView(props) {
                             <div className="flex-1">
 
                                 {selectedPaymentItems
-                                .map(({ key, count, orderItem }) => (
-                                    <div key={orderItem.ID} className="flex-1 flex items-center">
-                                        <Typography className="w-12">{count}x</Typography>
-                                        <Typography>{`${meals.find((meal) => meal.ID == orderItem.ID_Meal)?.Meal} ${variants.find((variant) => variant.ID == orderItem.ID_Variant)?.MealVariant ?? ''}`}</Typography>
-                                        <div className="flex-1"></div>
-                                        <Typography>OMR {(parseFloat(orderItem.Price?.toString()) * count).toFixed(3)}</Typography>
-                                    </div>
-                                ))}
+                                    .map(({ key, count, orderItem }) => (
+                                        <div key={orderItem.ID} className="flex-1 flex items-center">
+                                            <Typography className="w-12">{count}x</Typography>
+                                            <Typography>{`${meals.find((meal) => meal.ID == orderItem.ID_Meal)?.Meal} ${variants.find((variant) => variant.ID == orderItem.ID_Variant)?.MealVariant ?? ''}`}</Typography>
+                                            <div className="flex-1"></div>
+                                            <Typography>OMR {(parseFloat(orderItem.Price?.toString()) * count).toFixed(3)}</Typography>
+                                        </div>
+                                    ))}
                             </div>
 
                             {selectedPayment?.Discount &&
@@ -1797,7 +1859,7 @@ export default function WaiterView(props) {
             const isPaid = !!customerPaymentPayments.find((cp) => cp.ID_Payments == payment.ID);
             return {
                 ...payment,
-                isPaid : isPaid,
+                isPaid: isPaid,
             }
         })
 
@@ -1806,9 +1868,10 @@ export default function WaiterView(props) {
 
         const cols = [
             { field: 'id', headerName: 'ID', width: getSavedColumnWidth('cumulatedbills', 'ID') },
-            { field: 'TimeOfPay', headerName: 'Time', width: getSavedColumnWidth('cumulatedbills', 'TimeOfPay'), type: 'dateTime', valueFormatter: convertDate },
+            { field: 'TimeOfPay', headerName: 'Time', width: getSavedColumnWidth('cumulatedbills', 'TimeOfPay'), type: 'date', valueFormatter: convertDate, filterOperators: todayFilterOperator },
             { field: 'TotalAmount', headerName: 'Total', width: getSavedColumnWidth('cumulatedbills', 'TotalAmount'), type: 'number' },
-            { field: 'isPaid', headerName: 'Paid', width: getSavedColumnWidth('cumulatedbills', 'isPaid'), type: 'boolean',
+            {
+                field: 'isPaid', headerName: 'Paid', width: getSavedColumnWidth('cumulatedbills', 'isPaid'), type: 'boolean',
                 renderCell: (params) => (
                     <div>{params.row.isPaid ? '✅' : '❌'}</div>
                 ),
@@ -1842,7 +1905,7 @@ export default function WaiterView(props) {
                         setSelectedOrderId(null)
                         setSelectedPayment(null)
                     }}>Back</Button>
-                    <CardHeader title={"Cumulated bills"} className="flex-1"/>
+                    <CardHeader title={"Cumulated bills"} className="flex-1" />
 
 
                     <FormControl className="flex-1">
@@ -1920,7 +1983,7 @@ export default function WaiterView(props) {
                         setSelectedOrderId(paymentOrderID);
                         openCumulatedBillModal(paymentID);
                     }}
-                    getRowClassName={(params) => params.row.Status == 'Canceled' ? 'bg-red-200' : params.row.Status == 'Paid' ? 'bg-green-200' : '' }
+                    getRowClassName={(params) => params.row.Status == 'Canceled' ? 'bg-red-200' : params.row.Status == 'Paid' ? 'bg-green-200' : ''}
                 />
 
                 <div className="flex items-center me-4">
@@ -1943,18 +2006,18 @@ export default function WaiterView(props) {
                             <FormGroup>
                                 {unpaidCustomerPayments.map((payment) => (
                                     <FormControlLabel key={payment.ID}
-                                                      control={<Checkbox checked={selectedPayments.includes(payment.ID)}
-                                                                         onChange={(e) => {
-                                                                                if (e.target.checked) {
-                                                                                    setSelectedPayments([...selectedPayments, payment.ID])
-                                                                                } else {
-                                                                                    setSelectedPayments(selectedPayments.filter((selectedPayment) => selectedPayment != payment.ID))
-                                                                                }
-                                                                         }}
-                                                                         name={payment.ID.toString()}
-                                                                         disabled={payment.isPaid}
-                                                      />}
-                                                      label={`${convertDate(payment.TimeOfPay)} - ${payment.TotalAmount}`}/>
+                                        control={<Checkbox checked={selectedPayments.includes(payment.ID)}
+                                            onChange={(e) => {
+                                                if (e.target.checked) {
+                                                    setSelectedPayments([...selectedPayments, payment.ID])
+                                                } else {
+                                                    setSelectedPayments(selectedPayments.filter((selectedPayment) => selectedPayment != payment.ID))
+                                                }
+                                            }}
+                                            name={payment.ID.toString()}
+                                            disabled={payment.isPaid}
+                                        />}
+                                        label={`${convertDate(payment.TimeOfPay)} - ${payment.TotalAmount}`} />
                                 ))}
                             </FormGroup>
                         </div>
@@ -2031,19 +2094,19 @@ export default function WaiterView(props) {
                             }`}
                         </style>
                         <Box className="contentToPrint"
-                             sx={{
-                                 position: 'absolute' as 'absolute',
-                                 top: '50%',
-                                 left: '50%',
-                                 transform: 'translate(-50%, -50%)',
-                                 width: 600,
-                                 bgcolor: 'white',
-                                 p: 4,
-                                 overflow: 'scroll',
-                                 display: 'flex',
-                                 flexDirection: 'column',
-                                 maxHeight: '100%',
-                             }}>
+                            sx={{
+                                position: 'absolute' as 'absolute',
+                                top: '50%',
+                                left: '50%',
+                                transform: 'translate(-50%, -50%)',
+                                width: 600,
+                                bgcolor: 'white',
+                                p: 4,
+                                overflow: 'scroll',
+                                display: 'flex',
+                                flexDirection: 'column',
+                                maxHeight: '100%',
+                            }}>
                             <>
                                 <div ref={contentToPrint}>
                                     <div key={'title'} className="flex-1 flex items-center mb-4">
@@ -2054,14 +2117,14 @@ export default function WaiterView(props) {
                                     <div className="flex-1">
 
                                         {selectedPaymentItems
-                                        .map(({ key, count, orderItem }) => (
-                                            <div key={orderItem.ID} className="flex-1 flex items-center">
-                                                <Typography className="w-12">{count}x</Typography>
-                                                <Typography>{`${meals.find((meal) => meal.ID == orderItem.ID_Meal)?.Meal} ${variants.find((variant) => variant.ID == orderItem.ID_Variant)?.MealVariant ?? ''}`}</Typography>
-                                                <div className="flex-1"></div>
-                                                <Typography>OMR {(parseFloat(orderItem.Price?.toString()) * count).toFixed(3)}</Typography>
-                                            </div>
-                                        ))}
+                                            .map(({ key, count, orderItem }) => (
+                                                <div key={orderItem.ID} className="flex-1 flex items-center">
+                                                    <Typography className="w-12">{count}x</Typography>
+                                                    <Typography>{`${meals.find((meal) => meal.ID == orderItem.ID_Meal)?.Meal} ${variants.find((variant) => variant.ID == orderItem.ID_Variant)?.MealVariant ?? ''}`}</Typography>
+                                                    <div className="flex-1"></div>
+                                                    <Typography>OMR {(parseFloat(orderItem.Price?.toString()) * count).toFixed(3)}</Typography>
+                                                </div>
+                                            ))}
                                     </div>
 
                                     {selectedPayment?.Discount > 0 &&
@@ -2131,14 +2194,14 @@ export default function WaiterView(props) {
                             <div className="flex-1">
 
                                 {selectedPaymentItems
-                                .map(({ key, count, orderItem }) => (
-                                    <div key={orderItem.ID} className="flex-1 flex items-center">
-                                        <Typography className="w-12">{count}x</Typography>
-                                        <Typography>{`${meals.find((meal) => meal.ID == orderItem.ID_Meal)?.Meal} ${variants.find((variant) => variant.ID == orderItem.ID_Variant)?.MealVariant ?? ''}`}</Typography>
-                                        <div className="flex-1"></div>
-                                        <Typography>OMR {(parseFloat(orderItem.Price?.toString()) * count).toFixed(3)}</Typography>
-                                    </div>
-                                ))}
+                                    .map(({ key, count, orderItem }) => (
+                                        <div key={orderItem.ID} className="flex-1 flex items-center">
+                                            <Typography className="w-12">{count}x</Typography>
+                                            <Typography>{`${meals.find((meal) => meal.ID == orderItem.ID_Meal)?.Meal} ${variants.find((variant) => variant.ID == orderItem.ID_Variant)?.MealVariant ?? ''}`}</Typography>
+                                            <div className="flex-1"></div>
+                                            <Typography>OMR {(parseFloat(orderItem.Price?.toString()) * count).toFixed(3)}</Typography>
+                                        </div>
+                                    ))}
                             </div>
 
                             {selectedPayment?.Discount &&

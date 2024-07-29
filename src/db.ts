@@ -179,7 +179,8 @@ export async function getWaiterData(): Promise<WAITER_DATA> {
     const users = await prisma.dBT_Users.findMany();
     const taxes = await prisma.dBT_Taxes.findMany();
 
-    const payments = await prisma.dBT_Payments.findMany({ take: 10000, orderBy: { ID: 'desc' } });
+    // where not deleted
+    const payments = await prisma.dBT_Payments.findMany({ where: { Deleted: false }, take: 10000, orderBy: { ID: 'desc' } });
     const paymentTaxes = await prisma.dBT_PaymentTaxes.findMany({ take: 10000, orderBy: { ID: 'desc' } });
 
     const customerPayments = await prisma.dBT_CustomerPayments.findMany({ take: 10000, orderBy: { ID: 'desc' } });
@@ -354,7 +355,13 @@ export async function DB_createPayment(total_amount: number, discount: number, d
 }
 
 export async function DB_removePayment(payment_id:number) {
-    const payment = await prisma.dBT_Payments.delete({ where: { ID: payment_id } });
+    // set deleted to true
+    const payment = await prisma.dBT_Payments.update({
+        where: { ID: payment_id },
+        data: {
+            Deleted: true,
+        }
+    });
     return payment;
 }
 
@@ -436,7 +443,8 @@ export async function DB_closeOrder(order_id: number | bigint): Promise<DBT_Orde
     let paymentAmounts: number = 0;
     for (const paymentID of paymentIDs) {
         if (!paymentID) continue;
-        const payment = await prisma.dBT_Payments.findFirst({ where: { ID: paymentID } });
+        // where id = paymentID and not deleted or null deleted
+        const payment = await prisma.dBT_Payments.findFirst({ where: { ID: paymentID, Deleted: false } });
         paymentAmounts += payment?.TotalAmount?.toNumber() ?? 0;
     }
 

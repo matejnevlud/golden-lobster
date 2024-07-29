@@ -176,6 +176,7 @@ model DBT_Payments {
   DiscountPercent  Decimal   @default(0, map: "DF_DBT_Payments_DiscountPercent") @db.Decimal(18, 3)
   RealPayment      Decimal?  @db.Decimal(18, 3)
   Vaucher          String?   @db.VarChar(50)
+  Deleted          Boolean?  @default(false, map: "DF__DBT_Payme__Delet__14270015")
 }
 
 model DBT_PaymentTaxes {

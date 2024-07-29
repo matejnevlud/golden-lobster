@@ -284,7 +284,8 @@ exports.Prisma.DBT_PaymentsScalarFieldEnum = {
   ID_User: 'ID_User',
   DiscountPercent: 'DiscountPercent',
   RealPayment: 'RealPayment',
-  Vaucher: 'Vaucher'
+  Vaucher: 'Vaucher',
+  Deleted: 'Deleted'
 };
 
 exports.Prisma.DBT_PaymentTaxesScalarFieldEnum = {

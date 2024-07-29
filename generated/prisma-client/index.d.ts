@@ -17151,6 +17151,7 @@ export namespace Prisma {
     DiscountPercent: Decimal | null
     RealPayment: Decimal | null
     Vaucher: string | null
+    Deleted: boolean | null
   }
 
   export type DBT_PaymentsMaxAggregateOutputType = {
@@ -17169,6 +17170,7 @@ export namespace Prisma {
     DiscountPercent: Decimal | null
     RealPayment: Decimal | null
     Vaucher: string | null
+    Deleted: boolean | null
   }
 
   export type DBT_PaymentsCountAggregateOutputType = {
@@ -17187,6 +17189,7 @@ export namespace Prisma {
     DiscountPercent: number
     RealPayment: number
     Vaucher: number
+    Deleted: number
     _all: number
   }
 
@@ -17233,6 +17236,7 @@ export namespace Prisma {
     DiscountPercent?: true
     RealPayment?: true
     Vaucher?: true
+    Deleted?: true
   }
 
   export type DBT_PaymentsMaxAggregateInputType = {
@@ -17251,6 +17255,7 @@ export namespace Prisma {
     DiscountPercent?: true
     RealPayment?: true
     Vaucher?: true
+    Deleted?: true
   }
 
   export type DBT_PaymentsCountAggregateInputType = {
@@ -17269,6 +17274,7 @@ export namespace Prisma {
     DiscountPercent?: true
     RealPayment?: true
     Vaucher?: true
+    Deleted?: true
     _all?: true
   }
 
@@ -17374,6 +17380,7 @@ export namespace Prisma {
     DiscountPercent: Decimal
     RealPayment: Decimal | null
     Vaucher: string | null
+    Deleted: boolean | null
     _count: DBT_PaymentsCountAggregateOutputType | null
     _avg: DBT_PaymentsAvgAggregateOutputType | null
     _sum: DBT_PaymentsSumAggregateOutputType | null
@@ -17411,6 +17418,7 @@ export namespace Prisma {
     DiscountPercent?: boolean
     RealPayment?: boolean
     Vaucher?: boolean
+    Deleted?: boolean
   }, ExtArgs["result"]["dBT_Payments"]>
 
   export type DBT_PaymentsSelectScalar = {
@@ -17429,6 +17437,7 @@ export namespace Prisma {
     DiscountPercent?: boolean
     RealPayment?: boolean
     Vaucher?: boolean
+    Deleted?: boolean
   }
 
 
@@ -17452,6 +17461,7 @@ export namespace Prisma {
       DiscountPercent: Prisma.Decimal
       RealPayment: Prisma.Decimal | null
       Vaucher: string | null
+      Deleted: boolean | null
     }, ExtArgs["result"]["dBT_Payments"]>
     composites: {}
   }
@@ -17861,6 +17871,7 @@ export namespace Prisma {
     readonly DiscountPercent: FieldRef<"DBT_Payments", 'Decimal'>
     readonly RealPayment: FieldRef<"DBT_Payments", 'Decimal'>
     readonly Vaucher: FieldRef<"DBT_Payments", 'String'>
+    readonly Deleted: FieldRef<"DBT_Payments", 'Boolean'>
   }
     
 
@@ -21897,7 +21908,8 @@ export namespace Prisma {
     ID_User: 'ID_User',
     DiscountPercent: 'DiscountPercent',
     RealPayment: 'RealPayment',
-    Vaucher: 'Vaucher'
+    Vaucher: 'Vaucher',
+    Deleted: 'Deleted'
   };
 
   export type DBT_PaymentsScalarFieldEnum = (typeof DBT_PaymentsScalarFieldEnum)[keyof typeof DBT_PaymentsScalarFieldEnum]
@@ -23010,6 +23022,7 @@ export namespace Prisma {
     DiscountPercent?: DecimalFilter<"DBT_Payments"> | Decimal | DecimalJsLike | number | string
     RealPayment?: DecimalNullableFilter<"DBT_Payments"> | Decimal | DecimalJsLike | number | string | null
     Vaucher?: StringNullableFilter<"DBT_Payments"> | string | null
+    Deleted?: BoolNullableFilter<"DBT_Payments"> | boolean | null
   }
 
   export type DBT_PaymentsOrderByWithRelationInput = {
@@ -23028,6 +23041,7 @@ export namespace Prisma {
     DiscountPercent?: SortOrder
     RealPayment?: SortOrderInput | SortOrder
     Vaucher?: SortOrderInput | SortOrder
+    Deleted?: SortOrderInput | SortOrder
   }
 
   export type DBT_PaymentsWhereUniqueInput = Prisma.AtLeast<{
@@ -23049,6 +23063,7 @@ export namespace Prisma {
     DiscountPercent?: DecimalFilter<"DBT_Payments"> | Decimal | DecimalJsLike | number | string
     RealPayment?: DecimalNullableFilter<"DBT_Payments"> | Decimal | DecimalJsLike | number | string | null
     Vaucher?: StringNullableFilter<"DBT_Payments"> | string | null
+    Deleted?: BoolNullableFilter<"DBT_Payments"> | boolean | null
   }, "ID">
 
   export type DBT_PaymentsOrderByWithAggregationInput = {
@@ -23067,6 +23082,7 @@ export namespace Prisma {
     DiscountPercent?: SortOrder
     RealPayment?: SortOrderInput | SortOrder
     Vaucher?: SortOrderInput | SortOrder
+    Deleted?: SortOrderInput | SortOrder
     _count?: DBT_PaymentsCountOrderByAggregateInput
     _avg?: DBT_PaymentsAvgOrderByAggregateInput
     _max?: DBT_PaymentsMaxOrderByAggregateInput
@@ -23093,6 +23109,7 @@ export namespace Prisma {
     DiscountPercent?: DecimalWithAggregatesFilter<"DBT_Payments"> | Decimal | DecimalJsLike | number | string
     RealPayment?: DecimalNullableWithAggregatesFilter<"DBT_Payments"> | Decimal | DecimalJsLike | number | string | null
     Vaucher?: StringNullableWithAggregatesFilter<"DBT_Payments"> | string | null
+    Deleted?: BoolNullableWithAggregatesFilter<"DBT_Payments"> | boolean | null
   }
 
   export type DBT_PaymentTaxesWhereInput = {
@@ -24330,6 +24347,7 @@ export namespace Prisma {
     DiscountPercent?: Decimal | DecimalJsLike | number | string
     RealPayment?: Decimal | DecimalJsLike | number | string | null
     Vaucher?: string | null
+    Deleted?: boolean | null
   }
 
   export type DBT_PaymentsUncheckedCreateInput = {
@@ -24348,6 +24366,7 @@ export namespace Prisma {
     DiscountPercent?: Decimal | DecimalJsLike | number | string
     RealPayment?: Decimal | DecimalJsLike | number | string | null
     Vaucher?: string | null
+    Deleted?: boolean | null
   }
 
   export type DBT_PaymentsUpdateInput = {
@@ -24366,6 +24385,7 @@ export namespace Prisma {
     DiscountPercent?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     RealPayment?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     Vaucher?: NullableStringFieldUpdateOperationsInput | string | null
+    Deleted?: NullableBoolFieldUpdateOperationsInput | boolean | null
   }
 
   export type DBT_PaymentsUncheckedUpdateInput = {
@@ -24384,6 +24404,7 @@ export namespace Prisma {
     DiscountPercent?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     RealPayment?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     Vaucher?: NullableStringFieldUpdateOperationsInput | string | null
+    Deleted?: NullableBoolFieldUpdateOperationsInput | boolean | null
   }
 
   export type DBT_PaymentsCreateManyInput = {
@@ -24401,6 +24422,7 @@ export namespace Prisma {
     DiscountPercent?: Decimal | DecimalJsLike | number | string
     RealPayment?: Decimal | DecimalJsLike | number | string | null
     Vaucher?: string | null
+    Deleted?: boolean | null
   }
 
   export type DBT_PaymentsUpdateManyMutationInput = {
@@ -24419,6 +24441,7 @@ export namespace Prisma {
     DiscountPercent?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     RealPayment?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     Vaucher?: NullableStringFieldUpdateOperationsInput | string | null
+    Deleted?: NullableBoolFieldUpdateOperationsInput | boolean | null
   }
 
   export type DBT_PaymentsUncheckedUpdateManyInput = {
@@ -24437,6 +24460,7 @@ export namespace Prisma {
     DiscountPercent?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     RealPayment?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     Vaucher?: NullableStringFieldUpdateOperationsInput | string | null
+    Deleted?: NullableBoolFieldUpdateOperationsInput | boolean | null
   }
 
   export type DBT_PaymentTaxesCreateInput = {
@@ -25494,6 +25518,7 @@ export namespace Prisma {
     DiscountPercent?: SortOrder
     RealPayment?: SortOrder
     Vaucher?: SortOrder
+    Deleted?: SortOrder
   }
 
   export type DBT_PaymentsAvgOrderByAggregateInput = {
@@ -25525,6 +25550,7 @@ export namespace Prisma {
     DiscountPercent?: SortOrder
     RealPayment?: SortOrder
     Vaucher?: SortOrder
+    Deleted?: SortOrder
   }
 
   export type DBT_PaymentsMinOrderByAggregateInput = {
@@ -25543,6 +25569,7 @@ export namespace Prisma {
     DiscountPercent?: SortOrder
     RealPayment?: SortOrder
     Vaucher?: SortOrder
+    Deleted?: SortOrder
   }
 
   export type DBT_PaymentsSumOrderByAggregateInput = {
