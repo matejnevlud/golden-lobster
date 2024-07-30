@@ -60,6 +60,9 @@ export default function WaiterView(props) {
     const [users, setUsers] = useState(props.users);
     const [taxes, setTaxes] = useState(props.taxes);
 
+    const [ordersCalculated, setOrdersCalculated] = useState(props.ordersCalculated);
+
+
     const headLayout = layouts.find((layout) => layout.Type === "Head" && layout.Active);
     const parser = new XMLParser({ ignoreAttributes: false });
     let jsonObj = parser.parse(headLayout?.Xml ?? "");
@@ -147,7 +150,7 @@ export default function WaiterView(props) {
 
 
         const { languages, layouts, meals, mealGroups, mealsInGroups, variants, menuSetUp, translatedData } = await getAllData();
-        const { customers, orders, orderItems, paymentMethods, tables, users, taxes, payments, paymentTaxes, customerPayments, customerPaymentPayments } = await getWaiterData()
+        const { customers, orders, orderItems, paymentMethods, tables, users, taxes, payments, paymentTaxes, customerPayments, customerPaymentPayments, ordersCalculated } = await getWaiterData()
 
         setLayouts(layouts)
         setMeals(meals)
@@ -159,6 +162,9 @@ export default function WaiterView(props) {
         setTables(tables)
         setUsers(users)
         setTaxes(taxes)
+        setOrdersCalculated(ordersCalculated)
+
+        console.log(ordersCalculated)
 
         setOrders(orders)
         setOrderItems(orderItems)
@@ -431,6 +437,10 @@ export default function WaiterView(props) {
 
 
     const [ordersSum, setOrdersSum] = useState(0);
+    const [orderItemsCostSum, setOrderItemsCostSum] = useState(0);
+    const [orderTaxesSum, setOrderTaxesSum] = useState(0);
+    const [orderTotalSum, setOrderTotalSum] = useState(0);
+    const [orderRealPaymentSum, setOrderRealPaymentSum] = useState(0);
     const orderInitialState = useMemo(() => {
         const defaultState = {
             sorting: {
@@ -488,7 +498,10 @@ export default function WaiterView(props) {
                 valueFormatter: convertDate,
                 filterOperators: todayFilterOperator,
             },
-            { field: 'Price', headerName: 'Price', width: getSavedColumnWidth('order', 'Price'), type: 'number' },
+            { field: 'ItemsCost', headerName: 'ItemsCost', width: getSavedColumnWidth('order', 'ItemsCost'), type: 'number' },
+            { field: 'Taxes', headerName: 'Taxes', width: getSavedColumnWidth('order', 'Taxes'), type: 'number' },
+            { field: 'Total', headerName: 'Total', width: getSavedColumnWidth('order', 'Total'), type: 'number' },
+            { field: 'RealPayment', headerName: 'RealPayment', width: getSavedColumnWidth('order', 'RealPayment'), type: 'number' },
             { field: 'Status', headerName: 'Status', width: getSavedColumnWidth('order', 'Status'), type: 'singleSelect', valueOptions: ['Active', 'Closed', 'Canceled'] },
         ]
 
@@ -502,6 +515,12 @@ export default function WaiterView(props) {
             Price: order.Price,
             OrderClosed: order.OrderClosed,
             Status: order.OrderClosed ? 'Closed' : order.Canceled ? 'Canceled' : 'Active',
+
+            ItemsCost: parseFloat(ordersCalculated.find((oc) => oc.OrderID == order.ID)?.ItemsCost ?? 0),
+            Taxes: parseFloat(ordersCalculated.find((oc) => oc.OrderID == order.ID)?.Taxes ?? 0),
+            Total: parseFloat(ordersCalculated.find((oc) => oc.OrderID == order.ID)?.Cost ?? 0),
+            RealPayment: parseFloat(ordersCalculated.find((oc) => oc.OrderID == order.ID)?.RealPayment ?? 0),
+
         })).filter((order) => ordersFilterToggle == 'active' ? !order.OrderClosed && !order.Canceled : ordersFilterToggle == 'closed' ? order.OrderClosed : ordersFilterToggle == 'canceled' ? order.Canceled : true);
 
         return (
@@ -580,6 +599,18 @@ export default function WaiterView(props) {
                         const sum = ordersFiltered.reduce((acc, order) => acc + parseFloat(order.Price ?? 0), 0);
                         setOrdersSum(sum);
 
+                        const orderItemsCostSum = rows.reduce((acc, row) => acc + row.ItemsCost, 0);
+                        setOrderItemsCostSum(orderItemsCostSum);
+
+                        const orderTaxesSum = rows.reduce((acc, row) => acc + row.Taxes, 0);
+                        setOrderTaxesSum(orderTaxesSum);
+
+                        const orderTotalSum = rows.reduce((acc, row) => acc + row.Total, 0);
+                        setOrderTotalSum(orderTotalSum);
+
+                        const orderRealPaymentSum = rows.reduce((acc, row) => acc + row.RealPayment, 0);
+                        setOrderRealPaymentSum(orderRealPaymentSum);
+
 
                     }}
                     rows={rows} columns={cols} onRowClick={({ id, row }) => {
@@ -588,8 +619,18 @@ export default function WaiterView(props) {
                     getRowClassName={(params) => params.row.Canceled ? 'bg-red-200' : params.row.OrderClosed ? 'bg-gray-200' : ''}
                 />
                 <div className="flex items-center me-4">
-                    <div className="mt-3.5 ms-4 mb-3.5">
-                        Sum : OMR {ordersSum.toFixed(3)}
+
+                    <div className="flex-1 mt-3.5 me-4 mb-3.5">
+                        Items Cost Sum<br/> OMR {orderItemsCostSum.toFixed(3)}
+                    </div>
+                    <div className="flex-1 mt-3.5 me-4 mb-3.5">
+                        Taxes Sum<br/> OMR {orderTaxesSum.toFixed(3)}
+                    </div>
+                    <div className="flex-1 mt-3.5 me-4 mb-3.5">
+                        Total Sum<br/> OMR {orderTotalSum.toFixed(3)}
+                    </div>
+                    <div className="flex-1 mt-3.5 me-4 mb-3.5">
+                        Real Payment Sum<br/> OMR {orderRealPaymentSum.toFixed(3)}
                     </div>
                 </div>
                 <Modal

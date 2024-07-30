@@ -172,6 +172,8 @@ export async function getWaiterData(): Promise<WAITER_DATA> {
     const customers = await prisma.dBT_Customer.findMany();
     // get last 1000 orders
     const orders = await prisma.dBT_Orders.findMany({ take: 10000, orderBy: { ID: 'desc' } });
+    // get orders with payments
+
     // get last 10000 orders
     const orderItems = await prisma.dBT_OrderItems.findMany({ take: 10000, orderBy: { ID: 'desc' } });
     const paymentMethods = await prisma.dBT_PaymentMethods.findMany();
@@ -187,7 +189,41 @@ export async function getWaiterData(): Promise<WAITER_DATA> {
     const customerPaymentPayments = await prisma.dBT_CustomerPaymentPayments.findMany({ take: 10000, orderBy: { ID: 'desc' } });
 
 
-    return { customers, orders, orderItems, paymentMethods, tables, users, taxes, payments, paymentTaxes, customerPayments, customerPaymentPayments };
+    /*
+    * SELECT o.ID AS OrderID,
+	SUM(p.ItemsCost) - SUM(p.Discount) AS ItemsCost,
+	SUM(p.Taxes) AS Taxes,
+	SUM(p.ItemsCost) - SUM(p.Discount) + SUM(p.Taxes) AS Cost,
+	SUM(p.RealPayment) AS RealPayment
+FROM DBT_Orders AS o
+LEFT JOIN (
+    SELECT DISTINCT ID_Order, ID_Payment
+    FROM DBT_OrderItems
+    WHERE Canceled != 1
+) AS oi ON oi.ID_Order = o.ID
+LEFT JOIN DBT_Payments AS p ON p.ID = oi.ID_Payment AND p.Deleted != 1
+GROUP BY o.ID;
+    * */
+    // get all orders with payments using raw query
+    const ordersCalculated = await prisma.$queryRaw`
+    SELECT o.ID AS OrderID,
+    SUM(p.ItemsCost) - SUM(p.Discount) AS ItemsCost,
+    SUM(p.Taxes) AS Taxes,
+    SUM(p.ItemsCost) - SUM(p.Discount) + SUM(p.Taxes) AS Cost,
+    SUM(p.RealPayment) AS RealPayment
+    FROM DBT_Orders AS o
+    LEFT JOIN (
+        SELECT DISTINCT ID_Order, ID_Payment
+        FROM DBT_OrderItems
+        WHERE Canceled != 1
+    ) AS oi ON oi.ID_Order = o.ID
+    LEFT JOIN DBT_Payments AS p ON p.ID = oi.ID_Payment AND p.Deleted != 1
+    GROUP BY o.ID;
+    `;
+    console.log(ordersCalculated);
+
+
+    return { customers, orders, orderItems, paymentMethods, tables, users, taxes, payments, paymentTaxes, customerPayments, customerPaymentPayments, ordersCalculated };
 }
 
 
