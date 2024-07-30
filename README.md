@@ -16,3 +16,10 @@ datasource db {
   //url      = "sqlserver://127.0.0.1:1433;database=GoldenLobster_1;user=sa;password=Manzes1997;trustServerCertificate=true"
 }
 ```
+
+
+```bash
+
+docker run --hostname=96c77158bca0 --mac-address=02:42:ac:11:00:02 --env=YARN_VERSION=1.22.19 --env=PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin --env=NODE_VERSION=18.20.3 --network=bridge --workdir=/usr/src/app -p 3000:3000 --restart=always --runtime=runc -d ghcr.io/matejnevlud/golden-lobster:latest
+
+```
