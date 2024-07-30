@@ -592,23 +592,24 @@ export default function WaiterView(props) {
                             }
                         }
                         console.log('visibleItems', visibleItems)
-                        const ordersFiltered = orders.filter((row) => visibleItems.includes(row.ID));
+                        const rowsFiltered = rows.filter((row) => visibleItems.includes(row.id));
 
-                        console.log('ordersFiltered', ordersFiltered)
 
-                        const sum = ordersFiltered.reduce((acc, order) => acc + parseFloat(order.Price ?? 0), 0);
+                        const sum = rowsFiltered.reduce((acc, order) => acc + parseFloat(order.Price ?? 0), 0);
+
                         setOrdersSum(sum);
 
-                        const orderItemsCostSum = rows.reduce((acc, row) => acc + row.ItemsCost, 0);
+                        const orderItemsCostSum = rowsFiltered.reduce((acc, row) => acc + row.ItemsCost, 0);
+                        console.log('orderItemsCostSum', orderItemsCostSum)
                         setOrderItemsCostSum(orderItemsCostSum);
 
-                        const orderTaxesSum = rows.reduce((acc, row) => acc + row.Taxes, 0);
+                        const orderTaxesSum = rowsFiltered.reduce((acc, row) => acc + row.Taxes, 0);
                         setOrderTaxesSum(orderTaxesSum);
 
-                        const orderTotalSum = rows.reduce((acc, row) => acc + row.Total, 0);
+                        const orderTotalSum = rowsFiltered.reduce((acc, row) => acc + row.Total, 0);
                         setOrderTotalSum(orderTotalSum);
 
-                        const orderRealPaymentSum = rows.reduce((acc, row) => acc + row.RealPayment, 0);
+                        const orderRealPaymentSum = rowsFiltered.reduce((acc, row) => acc + row.RealPayment, 0);
                         setOrderRealPaymentSum(orderRealPaymentSum);
 
 
