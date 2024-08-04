@@ -498,10 +498,10 @@ export default function WaiterView(props) {
                 valueFormatter: convertDate,
                 filterOperators: todayFilterOperator,
             },
-            { field: 'ItemsCost', headerName: 'ItemsCost', width: getSavedColumnWidth('order', 'ItemsCost'), type: 'number' },
-            { field: 'Taxes', headerName: 'Taxes', width: getSavedColumnWidth('order', 'Taxes'), type: 'number' },
-            { field: 'Total', headerName: 'Total', width: getSavedColumnWidth('order', 'Total'), type: 'number' },
-            { field: 'RealPayment', headerName: 'RealPayment', width: getSavedColumnWidth('order', 'RealPayment'), type: 'number' },
+            { field: 'ItemsCost', headerName: 'ItemsCost', width: getSavedColumnWidth('order', 'ItemsCost'), type: 'number', valueFormatter: val => val.toFixed(3) },
+            { field: 'Taxes', headerName: 'Taxes', width: getSavedColumnWidth('order', 'Taxes'), type: 'number', valueFormatter: val => val.toFixed(3) },
+            { field: 'Total', headerName: 'Total', width: getSavedColumnWidth('order', 'Total'), type: 'number', valueFormatter: val => val.toFixed(3) },
+            { field: 'RealPayment', headerName: 'RealPayment', width: getSavedColumnWidth('order', 'RealPayment'), type: 'number', valueFormatter: val => val.toFixed(3) },
             { field: 'Status', headerName: 'Status', width: getSavedColumnWidth('order', 'Status'), type: 'singleSelect', valueOptions: ['Active', 'Closed', 'Canceled'] },
         ]
 
@@ -1354,7 +1354,9 @@ export default function WaiterView(props) {
                     {isOrderCanceled() && <CardHeader title={"ORDER IS CANCELED"} className="flex-1" />}
                     {isOrderClosedOrCanceled() && <Button variant={"contained"} className="p-4" color={"success"} onClick={() => reopenOrder()}>Open Order</Button>}
 
-                    {!isOrderClosedOrCanceled() && <Button variant={"contained"} className="p-4" color={"error"} onClick={() => cancelOrder()}>Cancel Order</Button>}
+                    {!isOrderClosedOrCanceled() && <Button variant={"contained"} className="p-4" color={"error"}
+                                                           disabled={!!orderPayments.length}
+                                                           onClick={() => cancelOrder()}>Cancel Order</Button>}
                 </div>
                 <DataGrid
                     isRowSelectable={() => false}
