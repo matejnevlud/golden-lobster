@@ -173,9 +173,7 @@ export default function WaiterView(props) {
             setOrderItems(orderItems)
             setPayments(payments)
             setPaymentTaxes(paymentTaxes)
-
-
-            await new Promise((resolve) => setTimeout(resolve, 1000));
+            
         } catch (e) {
 
         } finally {
@@ -610,9 +608,10 @@ export default function WaiterView(props) {
                     <Button variant={"contained"} className="p-4" onClick={() => setOpenTableModal(true)}>New Order</Button>
 
                 </div>
+
+                {isRefreshing && <LinearProgress/>}
                 <DataGrid
                     key={'ordergrid'}
-                    loading={isRefreshing}
                     isRowSelectable={() => false}
                     getRowHeight={() => 'auto'}
                     getEstimatedRowHeight={() => 72}
@@ -1424,9 +1423,9 @@ export default function WaiterView(props) {
                                                            onClick={() => cancelOrder()}>Cancel Order</Button>}
                 </div>
 
+                {isRefreshing && <LinearProgress/>}
                 <DataGrid
                     key={'orderDetial'}
-                loading={isRefreshing}
                     isRowSelectable={() => false}
                     getRowHeight={() => 'auto'} getEstimatedRowHeight={() => 72}
                     sx={{
@@ -2048,9 +2047,9 @@ export default function WaiterView(props) {
                 </div>
 
 
+                {isRefreshing && <LinearProgress/>}
                 <DataGrid
                     key={'cumulatedbills'}
-                    loading={isRefreshing}
                     isRowSelectable={() => false}
                     getRowHeight={() => 'auto'} getEstimatedRowHeight={() => 72}
                     sx={{
@@ -2387,6 +2386,7 @@ export default function WaiterView(props) {
             },
             columns: {
                 columnVisibilityModel: {
+                    id: false,
                     ID_Meal: false,
                     OrderName: false,
                     ID_Variant: false,
@@ -2547,9 +2547,9 @@ export default function WaiterView(props) {
                     <CardHeader title={"Kitchen View"} className="flex-1" />
                 </div>
 
+                {isRefreshing && <LinearProgress/>}
                 <DataGrid
                     key={'kitchenView'}
-                    loading={isRefreshing}
                     apiRef={kitchenViewRef}
                     isRowSelectable={() => false}
                     getRowHeight={() => 'auto'}
