@@ -88,6 +88,7 @@ export default function WaiterView(props) {
 
 
     const [openTableModal, setOpenTableModal] = useState(false);
+    const [openOrderNameModal, setOpenOrderNameModal] = useState(false);
 
     const [openOrderItemActionsModal, setOpenOrderItemActionsModal] = useState(false);
     const [selectedOrderItemId, setSelectedOrderItemId] = useState<bigint | null>(null);
@@ -121,6 +122,8 @@ export default function WaiterView(props) {
     const [selectedCustomer, setSelectedCustomer] = useState(null);
 
 
+    const [showKitchenView, setShowKitchenView] = useState(false);
+
     const [showCumulatedBills, setShowCumulatedBills] = useState(false);
 
 
@@ -148,34 +151,46 @@ export default function WaiterView(props) {
     const refreshData = async () => {
         setIsRefreshing(true);
 
+        try {
+            const { languages, layouts, meals, mealGroups, mealsInGroups, variants, menuSetUp, translatedData } = await getAllData();
+            const { customers, orders, orderItems, paymentMethods, tables, users, taxes, payments, paymentTaxes, customerPayments, customerPaymentPayments, ordersCalculated } = await getWaiterData()
 
-        const { languages, layouts, meals, mealGroups, mealsInGroups, variants, menuSetUp, translatedData } = await getAllData();
-        const { customers, orders, orderItems, paymentMethods, tables, users, taxes, payments, paymentTaxes, customerPayments, customerPaymentPayments, ordersCalculated } = await getWaiterData()
+            setLayouts(layouts)
+            setMeals(meals)
+            setMealGroups(mealGroups)
+            setMealsInGroups(mealsInGroups)
+            setVariants(variants)
+            setCustomers(customers)
+            setPaymentMethods(paymentMethods)
+            setTables(tables)
+            setUsers(users)
+            setTaxes(taxes)
+            setOrdersCalculated(ordersCalculated)
 
-        setLayouts(layouts)
-        setMeals(meals)
-        setMealGroups(mealGroups)
-        setMealsInGroups(mealsInGroups)
-        setVariants(variants)
-        setCustomers(customers)
-        setPaymentMethods(paymentMethods)
-        setTables(tables)
-        setUsers(users)
-        setTaxes(taxes)
-        setOrdersCalculated(ordersCalculated)
+            console.log(ordersCalculated)
 
-        console.log(ordersCalculated)
-
-        setOrders(orders)
-        setOrderItems(orderItems)
-        setPayments(payments)
-        setPaymentTaxes(paymentTaxes)
+            setOrders(orders)
+            setOrderItems(orderItems)
+            setPayments(payments)
+            setPaymentTaxes(paymentTaxes)
 
 
-        await new Promise((resolve) => setTimeout(resolve, 1000));
+            await new Promise((resolve) => setTimeout(resolve, 1000));
+        } catch (e) {
 
-        setIsRefreshing(false);
+        } finally {
+            setIsRefreshing(false);
+        }
     }
+
+    // refresh data every 10 seconds
+    useEffect(() => {
+        const interval = setInterval(() => {
+            refreshData();
+        }, 10_000);
+
+        return () => clearInterval(interval);
+    }, []);
 
     useEffect(() => {
         if (!selectedOrderId) refreshData();
@@ -366,6 +381,7 @@ export default function WaiterView(props) {
     const logout = () => {
         setCurrentUser(null);
         localStorage.removeItem('currentUser');
+
     }
     const addMealToOrder = async (mealId: bigint) => {
         console.log('addMealToOrder', mealId)
@@ -424,15 +440,24 @@ export default function WaiterView(props) {
 
 
 
-    const createOrder = async (tableId: number) => {
-        console.log('createOrder', tableId)
-        const newOrder = await createNewOrder(tableId, currentUser.ID);
+    const [newOrderTableID, setNewOrderTableID] = useState(-1);
+    const [newOrderOrderName, setNewOrderOrderName] = useState(null);
+    const createOrder = async () => {
+        if (newOrderTableID == -1) {
+            alert('Please select a table');
+            return;
+        }
+
+        console.log('createOrder', newOrderTableID, newOrderOrderName)
+        const newOrder = await createNewOrder(newOrderTableID, currentUser.ID, newOrderOrderName);
         console.log('newOrder', newOrder)
 
         setOrders([...orders, newOrder]);
         setOpenTableModal(false)
 
         setSelectedOrderId(newOrder.ID);
+        setNewOrderTableID(-1);
+        setNewOrderOrderName(null);
     }
 
 
@@ -452,6 +477,7 @@ export default function WaiterView(props) {
             columns: {
                 columnVisibilityModel: {
                     id: false,
+                    OrderName: false,
                     ID_Table: false,
                     Canceled: false,
                     OrderClosed: false,
@@ -488,6 +514,17 @@ export default function WaiterView(props) {
     const renderOrdersList = () => {
         const cols = [
             { field: 'id', headerName: 'ID', width: getSavedColumnWidth('order', 'id') },
+            { field: 'OrderName', headerName: 'Order Name', width: getSavedColumnWidth('order', 'OrderName') },
+            { field: 'ID_Order', headerName: 'Order', width: getSavedColumnWidth('order', 'ID_Order'), type: 'number',
+                renderCell: (params) => (
+                    <div>
+                        <b>{params.row.id}</b>
+                        <br />
+                        <span>{params.row.OrderName ?? '-'}</span>
+                    </div>
+                ),
+            },
+
             { field: 'ID_Table', headerName: 'ID_Table', width: getSavedColumnWidth('order', 'ID_Table') },
             { field: 'Table', headerName: 'Table', width: getSavedColumnWidth('order', 'Table'), type: 'singleSelect', valueOptions: tables.map((table) => table.TableName) },
             {
@@ -506,6 +543,7 @@ export default function WaiterView(props) {
         ]
 
         const rows = orders.map((order) => ({
+            OrderName: order.OrderName,
             id: parseInt(order.ID),
             ID_Table: parseInt(order.ID_Table),
             Table: tables.find((table) => table.ID == order.ID_Table)?.TableName,
@@ -520,6 +558,7 @@ export default function WaiterView(props) {
             Taxes: parseFloat(ordersCalculated.find((oc) => oc.OrderID == order.ID)?.Taxes ?? 0),
             Total: parseFloat(ordersCalculated.find((oc) => oc.OrderID == order.ID)?.Cost ?? 0),
             RealPayment: parseFloat(ordersCalculated.find((oc) => oc.OrderID == order.ID)?.RealPayment ?? 0),
+
 
         })).filter((order) => ordersFilterToggle == 'active' ? !order.OrderClosed && !order.Canceled : ordersFilterToggle == 'closed' ? order.OrderClosed : ordersFilterToggle == 'canceled' ? order.Canceled : true);
 
@@ -566,13 +605,22 @@ export default function WaiterView(props) {
                     <div className="flex-1"></div>
                     <Button variant={"contained"} className="p-4" onClick={() => setShowCumulatedBills(true)}>Cumulated bills</Button>
                     <div className="flex-1"></div>
+                    <Button variant={"contained"} className="p-4" onClick={() => setShowKitchenView(true)}>Kitchen</Button>
+                    <div className="flex-1"></div>
                     <Button variant={"contained"} className="p-4" onClick={() => setOpenTableModal(true)}>New Order</Button>
 
                 </div>
-                {isRefreshing && <LinearProgress/>}
                 <DataGrid
+                    key={'ordergrid'}
+                    loading={isRefreshing}
                     isRowSelectable={() => false}
-                    sx={{ overflowX: 'scroll' }}
+                    getRowHeight={() => 'auto'}
+                    getEstimatedRowHeight={() => 72}
+                    sx={{
+                        '&.MuiDataGrid-root--densityCompact .MuiDataGrid-cell': { py: '8px' },
+                        '&.MuiDataGrid-root--densityStandard .MuiDataGrid-cell': { py: '15px' },
+                        '&.MuiDataGrid-root--densityComfortable .MuiDataGrid-cell': { py: '22px' },
+                        overflowX: 'scroll' }}
                     initialState={orderInitialState}
                     onColumnWidthChange={(params) => {
                         localStorage.setItem(`order_${params.colDef.field}`, params.width.toString())
@@ -652,34 +700,51 @@ export default function WaiterView(props) {
                         p: 4,
                     }}>
                         <Typography id="modal-modal-title" variant="h6" component="h2">
-                            Create new order for table :
+                            1. Select table
                         </Typography>
-                        <div className="flex flex-row justify-between">
+                        <div className="flex flex-row justify-between mt-4 mb-4">
                             <div className="flex flex-col">
                                 {tables.filter(t => t.Col == 1).map((table) => (
-                                    <Button key={table.ID} disabled={!table.Active} onClick={() => createOrder(table.ID)}>{table.TableName}</Button>
+                                    <Button key={table.ID} style={{ marginBottom: 5 }} variant={newOrderTableID == table.ID ? 'contained' : 'outlined'} disabled={!table.Active} onClick={() => setNewOrderTableID(table.ID)}>{table.TableName}</Button>
                                 ))}
                             </div>
                             <div className="flex flex-col">
                                 {tables.filter(t => t.Col == 2).map((table) => (
-                                    <Button key={table.ID} disabled={!table.Active} onClick={() => createOrder(table.ID)}>{table.TableName}</Button>
+                                    <Button key={table.ID} style={{ marginBottom: 5 }} variant={newOrderTableID == table.ID ? 'contained' : 'outlined'} disabled={!table.Active} onClick={() => setNewOrderTableID(table.ID)}>{table.TableName}</Button>
                                 ))}
                             </div>
                             <div className="flex flex-col">
                                 {tables.filter(t => t.Col == 3).map((table) => (
-                                    <Button key={table.ID} disabled={!table.Active} onClick={() => createOrder(table.ID)}>{table.TableName}</Button>
+                                    <Button key={table.ID} style={{ marginBottom: 5 }} variant={newOrderTableID == table.ID ? 'contained' : 'outlined'} disabled={!table.Active} onClick={() => setNewOrderTableID(table.ID)}>{table.TableName}</Button>
                                 ))}
                             </div>
                             <div className="flex flex-col">
                                 {tables.filter(t => t.Col == 4).map((table) => (
-                                    <Button key={table.ID} disabled={!table.Active} onClick={() => createOrder(table.ID)}>{table.TableName}</Button>
+                                    <Button key={table.ID} style={{ marginBottom: 5 }} variant={newOrderTableID == table.ID ? 'contained' : 'outlined'} disabled={!table.Active} onClick={() => setNewOrderTableID(table.ID)}>{table.TableName}</Button>
                                 ))}
                             </div>
                         </div>
+
+                        <Typography id="modal-modal-title" variant="h6" component="h2">
+                            2. Set order name
+                        </Typography>
+                        <div className="flex flex-row justify-between mt-4 mb-4">
+                            <div className="flex flex-col">
+                                <TextField label="Order name" value={newOrderOrderName ?? ''} onChange={(e) => setNewOrderOrderName(e.target.value)}/>
+                            </div>
+                            <div className="flex flex-col">
+                                <Button onClick={() => createOrder(newOrderTableID)} disabled={newOrderTableID == -1} size={"large"} variant={"contained"} color={"success"}>Create Order</Button>
+                            </div>
+                        </div>
+
+
+
                     </Box>
                 </Modal>
+
+
             </div>
-        )
+    )
     }
 
 
@@ -1349,7 +1414,7 @@ export default function WaiterView(props) {
                 <div className="flex items-center me-4 ms-4">
 
                     <Button variant={"contained"} className="p-4" onClick={() => setSelectedOrderId(null)}>Back</Button>
-                    <CardHeader title={"Order no. " + selectedOrderId + " - " + tables.find((table) => table.ID == orders.find((order) => order.ID == selectedOrderId)?.ID_Table)?.TableName} className="flex-1" />
+                    <CardHeader title={"Order no. " + selectedOrderId + " - " + (orders.find((order) => order.ID == selectedOrderId)?.OrderName ?? '') + " - "  + tables.find((table) => table.ID == orders.find((order) => order.ID == selectedOrderId)?.ID_Table)?.TableName} className="flex-1" />
                     {isOrderClosed() && <CardHeader title={"ORDER IS CLOSED"} className="flex-1" />}
                     {isOrderCanceled() && <CardHeader title={"ORDER IS CANCELED"} className="flex-1" />}
                     {isOrderClosedOrCanceled() && <Button variant={"contained"} className="p-4" color={"success"} onClick={() => reopenOrder()}>Open Order</Button>}
@@ -1358,7 +1423,10 @@ export default function WaiterView(props) {
                                                            disabled={!!orderPayments.length}
                                                            onClick={() => cancelOrder()}>Cancel Order</Button>}
                 </div>
+
                 <DataGrid
+                    key={'orderDetial'}
+                loading={isRefreshing}
                     isRowSelectable={() => false}
                     getRowHeight={() => 'auto'} getEstimatedRowHeight={() => 72}
                     sx={{
@@ -1981,6 +2049,8 @@ export default function WaiterView(props) {
 
 
                 <DataGrid
+                    key={'cumulatedbills'}
+                    loading={isRefreshing}
                     isRowSelectable={() => false}
                     getRowHeight={() => 'auto'} getEstimatedRowHeight={() => 72}
                     sx={{
@@ -2307,6 +2377,207 @@ export default function WaiterView(props) {
     }
 
 
+    const kitchenViewRef = useRef(null);
+    const kitchenViewInitialState = useMemo(() => {
+        const defaultState = {
+            sorting: {
+                sortModel: [
+                    { field: 'ID_Order', sort: 'desc' },
+                ],
+            },
+            columns: {
+                columnVisibilityModel: {
+                    ID_Meal: false,
+                    OrderName: false,
+                    ID_Variant: false,
+                    Time: false,
+                    Time_Prepared: false,
+                    Time_Delivered: false,
+                    Price: false,
+                    Status: false,
+                    Button_waiter: false,
+                }
+            }
+        };
+
+        const stateJSON = localStorage.getItem("kitchenViewState");
+        if (!stateJSON) return defaultState;
+
+        try {
+            return JSON.parse(stateJSON);
+        } catch {
+            return defaultState;
+        }
+    }, [])
+
+
+    useEffect(() => {
+        //if(showKitchenView) setTimeout(() => { kitchenViewRef.current.restoreState(kitchenViewInitialState) }, 100);
+    }, [showKitchenView]);
+    const renderKitchenView = () => {
+
+
+        const kitchenViewCols = [
+            {
+                field: 'Button_kitchen', headerName: 'Kitchen', width: getSavedColumnWidth('kitchenview', 'Button_kitchen'),
+                renderCell: (params) => (
+                    <IconButton size="large" aria-label="kitchen" disabled={!!params.row.Time_Prepared || !canUserPrepareFood()} color={'error'} onClick={async (e) => {
+                        e.stopPropagation();
+                        if (isOrderClosedOrCanceled()) return;
+
+                        const oi = await DB_prepareOrderItem(params.row.id);
+                        setOrderItems(orderItems.map((orderItem) => orderItem.ID == oi.ID ? oi : orderItem));
+                    }}>
+                        <RestaurantIcon />
+                    </IconButton>
+                ),
+                type: 'boolean',
+                valueGetter: (value, row) => !!row.Time_Prepared,
+            },
+
+            { field: 'id', headerName: 'ID', width: getSavedColumnWidth('kitchenview', 'id') },
+            { field: 'OrderName', headerName: 'Order Name', width: getSavedColumnWidth('kitchenview', 'OrderName') },
+            { field: 'ID_Order', headerName: 'Order', width: getSavedColumnWidth('kitchenview', 'ID_Order'), type: 'number',
+                renderCell: (params) => (
+                    <div>
+                        <b>{params.row.id}</b>
+                        <br />
+                        <span>{params.row.OrderName ?? '-'}</span>
+                    </div>
+                ),
+            },
+            { field: 'ID_Meal', headerName: 'ID_Meal', width: getSavedColumnWidth('kitchenview', 'ID_Meal') },
+            {
+                field: 'Meal', headerName: 'Meal', width: getSavedColumnWidth('kitchenview', 'Meal'),
+                renderCell: (params) => (
+                    <div>
+                        <b>{params.row.Meal}</b>
+                        <br />
+                        <span>{params.row.Variant}</span>
+                    </div>
+                ),
+            },
+            { field: 'Is_Kitchen', headerName: 'Is Kitchen', width: getSavedColumnWidth('kitchenview', 'Is_Kitchen'), type: 'boolean' },
+            { field: 'ID_Variant', headerName: 'ID_Variant', width: getSavedColumnWidth('kitchenview', 'ID_Variant') },
+            { field: 'Variant', headerName: 'Variant', width: getSavedColumnWidth('kitchenview', 'Variant') },
+
+
+            {
+                field: 'Time',
+                headerName: 'Time',
+                width: getSavedColumnWidth('kitchenview', 'Time'),
+                valueGetter: (value, row) => row.TimeOfOrder,
+                type: 'date',
+                renderCell: (params) => (
+                    <div>
+                        <span>Ordered: {convertDate(params.row.TimeOfOrder)}</span>
+                        <br />
+                        <span>Prepared: {convertDate(params.row.Time_Prepared)}</span>
+                        <br />
+                        <span>Delivered: {convertDate(params.row.Time_Delivered)}</span>
+                    </div>
+                ),
+
+                valueFormatter: convertDate,
+
+            },
+            { field: 'TimeOfOrder', headerName: 'Time of Order', width: getSavedColumnWidth('kitchenview', 'TimeOfOrder'), type: 'date', valueFormatter: convertDate },
+            { field: 'Time_Prepared', headerName: 'Prep', width: getSavedColumnWidth('kitchenview', 'Time_Prepared'), type: 'date', valueFormatter: convertDate },
+            { field: 'Time_Delivered', headerName: 'Deliver', width: getSavedColumnWidth('kitchenview', 'Time_Delivered'), type: 'date', valueFormatter: convertDate },
+            { field: 'Note', headerName: 'Note', width: getSavedColumnWidth('kitchenview', 'Note') },
+
+            { field: 'Price', headerName: 'Price', width: getSavedColumnWidth('kitchenview', 'Price'), type: 'number' },
+            { field: 'Status', headerName: 'Status', width: getSavedColumnWidth('kitchenview', 'Status'), valueOptions: ['Paid', 'Canceled'], type: 'singleSelect' },
+
+            {
+                field: 'Button_waiter', headerName: 'Waiter', width: getSavedColumnWidth('kitchenview', 'Button_waiter'),
+                renderCell: (params) => (
+                    <IconButton size="large" aria-label="waiter" disabled={!!params.row.Time_Delivered || !canUserDeliverFood()} color={'error'} onClick={async (e) => {
+                        e.stopPropagation();
+                        if (isOrderClosedOrCanceled()) return;
+
+                        const oi = await DB_deliverOrderItem(params.row.id);
+                        setOrderItems(orderItems.map((orderItem) => orderItem.ID == oi.ID ? oi : orderItem));
+                    }}>
+                        <TableBarIcon />
+                    </IconButton>
+                ),
+                type: 'boolean',
+                valueGetter: (value, row) => !!row.Time_Delivered,
+
+            },
+
+
+
+        ]
+
+        const rows = orderItems
+        .filter((orderItem) => !orderItem.Time_Prepared)
+        .map((orderItem) => ({
+            id: parseInt(orderItem.ID),
+            ID_Order: parseInt(orderItem.ID_Order),
+            ID_Meal: parseInt(orderItem.ID_Meal),
+            Meal: meals.find((meal) => meal.ID == orderItem.ID_Meal)?.Meal,
+            ID_Variant: parseInt(orderItem.ID_Variant),
+            Variant: variants.find((variant) => variant.ID == orderItem.ID_Variant)?.MealVariant,
+            TimeOfOrder: orderItem.TimeOfOrder,
+            Price: orderItem.Price,
+            Canceled: orderItem.Canceled,
+            ID_Payment: orderItem.ID_Payment,
+
+            Time_Prepared: orderItem.Time_Prepared,
+            Time_Delivered: orderItem.Time_Delivered,
+
+            Note: orderItem.Note,
+
+            Status: orderItem.ID_Payment ? 'Paid' : orderItem.Canceled ? 'Canceled' : '',
+
+            Is_Kitchen: meals.find((meal) => meal.ID == orderItem.ID_Meal)?.Kitchen,
+            OrderName: orders.find((order) => order.ID == orderItem.ID_Order)?.OrderName,
+        }));
+
+        return (
+            <div style={{ display: 'flex', flexDirection: 'column', height: '100vh' }}>
+
+                <div className="flex items-center me-4 ms-4">
+
+                    <Button variant={"contained"} className="p-4" onClick={() => {
+                        setShowKitchenView(false)
+                    }}>Back</Button>
+                    <CardHeader title={"Kitchen View"} className="flex-1" />
+                </div>
+
+                <DataGrid
+                    key={'kitchenView'}
+                    loading={isRefreshing}
+                    apiRef={kitchenViewRef}
+                    isRowSelectable={() => false}
+                    getRowHeight={() => 'auto'}
+                    getEstimatedRowHeight={() => 72}
+                    sx={{
+                        '&.MuiDataGrid-root--densityCompact .MuiDataGrid-cell': { py: '8px' },
+                        '&.MuiDataGrid-root--densityStandard .MuiDataGrid-cell': { py: '15px' },
+                        '&.MuiDataGrid-root--densityComfortable .MuiDataGrid-cell': { py: '22px' },
+                    }}
+                    style={{ flex: 1, overflow: 'scroll' }}
+                    onColumnWidthChange={(params) => {
+                        localStorage.setItem(`kitchenview_${params.colDef.field}`, params.width.toString())
+                    }}
+
+                    initialState={kitchenViewInitialState}
+                    onStateChange={(state) => {
+                        localStorage.setItem("kitchenViewState", JSON.stringify(state));
+                    }}
+                    rows={rows}
+                    columns={kitchenViewCols}
+                    onRowClick={({ id, row }) => {
+
+                    }}
+                    getRowClassName={(params) => params.row.Status == 'Canceled' ? 'bg-red-200' : params.row.Status == 'Paid' ? 'bg-green-200' : ''}
+                />
+            </div>
+        )
+    }
 
 
     if (!currentUser)
@@ -2354,7 +2625,7 @@ export default function WaiterView(props) {
         </div>,
         <div key="orderlistdetail" style={{ backgroundColor: 'white', width: "calc(100vw - 62.5vh - 6vh" }}>
             <div style={{ width: '100%' }}>
-                {showCumulatedBills ? renderCumulatedBills() : selectedOrderId ? renderOrderDetail() : renderOrdersList()}
+                {showKitchenView ? renderKitchenView() : showCumulatedBills ? renderCumulatedBills() : selectedOrderId ? renderOrderDetail() : renderOrdersList()}
             </div>
         </div>,
 

@@ -278,11 +278,12 @@ export async function getAllData(): Promise<ALL_DATA> {
 
 
 
-export async function createNewOrder(table: number, user_id: bigint | number): Promise<DBT_Orders> {
+export async function createNewOrder(table: number, user_id: bigint | number, order_name?: string): Promise<DBT_Orders> {
     const order = await prisma.dBT_Orders.create({
         data: {
             ID_Table: table,
-            ID_User: user_id
+            ID_User: user_id,
+            OrderName: order_name,
             //ID_OrderStatus: 1,
             //OrderDate: new Date(),
         }
