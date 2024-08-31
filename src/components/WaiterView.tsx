@@ -187,7 +187,7 @@ export default function WaiterView(props) {
     useEffect(() => {
         const interval = setInterval(() => {
             refreshData();
-        }, 10_000);
+        }, 60_000);
 
         return () => clearInterval(interval);
     }, []);
