@@ -17,7 +17,8 @@ import {
     DBT_Taxes,
     DBT_Payments,
     DBT_PaymentTaxes,
-    DBT_CustomerPayments, DBT_CustomerPaymentPayments
+    DBT_CustomerPayments, DBT_CustomerPaymentPayments,
+    Prisma
 } from '../generated/prisma-client'
 
 
@@ -41,7 +42,48 @@ function convertUint8ArraysToBase64(obj: any): any {
     }
     return obj;
 }
+const stripProto = (obj) => {
+    if (Array.isArray(obj)) {
+        obj = obj.map(item => stripProto(item)).filter(item => {
+            return String(item) !== '__proto__';
+        });
+    } else if (typeof obj === 'object' && !Array.isArray(obj)) {
+        for (const key in obj) {
+            if (String(obj[key]) === '__proto__' || key === '__proto__') {
+                delete obj[key];
+            } else {
+                obj[key] = stripProto(obj[key]);
+            }
+        }
+    }
+    return obj;
+};
+function convertDecimalToNumber(obj: any): any {
+    return JSON.parse(JSON.stringify(obj, (key, value) => {
+        if (value instanceof Prisma.Decimal) {
+            return value.toNumber();
+        }
 
+        if (typeof value === 'bigint') {
+            return parseInt(value.toString());
+        }
+
+        // safely stringify Date
+        if (value instanceof Date) {
+            return value.toISOString();
+        }
+
+
+
+        return value
+    }), (key, value) => {
+        // revive Date, check for ISO string using regex
+        if (typeof value === 'string' && value.match(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}.\d{3}Z$/)) {
+            return new Date(value);
+        }
+        return value;
+    });
+}
 
 
 export async function getLanguages() {
@@ -55,6 +97,8 @@ export async function translate(text: string | null, id_language: number) {
     //if (process.env.NODE_ENV === 'development') return text;
     try {
         const procedure = await prisma.$queryRaw`SELECT dbo.Translate(${text}, ${id_language})`;
+        if (!procedure) return text;
+
         const procedure_string = procedure[0]?.[''];
 
         const result = await prisma.dBT_Translations.findFirst({ where: { ID_Language: id_language, Text: text } });
@@ -75,7 +119,7 @@ export async function translate(text: string | null, id_language: number) {
 }
 
 export async function getLayouts(langID?: number) {
-    var result = await prisma.dBT_Layouts.findMany({ where: { Active: true} });
+    var result = await prisma.dBT_Layouts.findMany({ where: { Active: true } });
     result = convertUint8ArraysToBase64(result);
 
     const { cookies } = require('next/headers');
@@ -89,7 +133,7 @@ export async function getLayouts(langID?: number) {
 
 export async function getMealGroups(langID?: number) {
 
-    var result = await prisma.dBT_MealGroups.findMany({ where: { Active: true}, orderBy: { Order: 'asc' } });
+    var result = await prisma.dBT_MealGroups.findMany({ where: { Active: true }, orderBy: { Order: 'asc' } });
     result = convertUint8ArraysToBase64(result);
 
     const { cookies } = require('next/headers');
@@ -103,7 +147,7 @@ export async function getMealGroups(langID?: number) {
 }
 
 export async function getMeals(langID?: number) {
-    var result = await prisma.dBT_Meals.findMany({ where: { Active: true} });
+    var result = await prisma.dBT_Meals.findMany({ where: { Active: true } });
     result = convertUint8ArraysToBase64(result);
 
     // translate
@@ -126,7 +170,7 @@ export async function getMealsInGroups() {
 }
 
 export async function getVariants(langID?: number) {
-    var result = await prisma.dBT_Variants.findMany({ where: { Active: true} });
+    var result = await prisma.dBT_Variants.findMany({ where: { Active: true } });
 
     result = convertUint8ArraysToBase64(result);
 
@@ -141,7 +185,7 @@ export async function getVariants(langID?: number) {
 }
 
 export async function getMenuSetUp(langID?: number) {
-    var result = await prisma.dBT_MenuSetUp.findFirst({ where: { Active: true} });
+    var result = await prisma.dBT_MenuSetUp.findFirst({ where: { Active: true } });
     result = convertUint8ArraysToBase64(result);
 
 
@@ -168,42 +212,31 @@ export type WAITER_DATA = {
     paymentTaxes: DBT_PaymentTaxes[]
 
 }
-export async function getWaiterData(): Promise<WAITER_DATA> {
+export async function getWaiterData(): Promise<any> {
     const customers = await prisma.dBT_Customer.findMany();
     // get last 1000 orders
-    const orders = await prisma.dBT_Orders.findMany({ take: 10000, orderBy: { ID: 'desc' } });
+    let orders = await prisma.dBT_Orders.findMany({ take: 10000, orderBy: { ID: 'desc' } });
+    orders = (orders);
     // get orders with payments
 
     // get last 10000 orders
-    const orderItems = await prisma.dBT_OrderItems.findMany({ take: 10000, orderBy: { ID: 'desc' } });
+    let orderItems = await prisma.dBT_OrderItems.findMany({ take: 10000, orderBy: { ID: 'desc' } });
+    orderItems = (orderItems);
+
     const paymentMethods = await prisma.dBT_PaymentMethods.findMany();
     const tables = await prisma.dBT_Tables.findMany();
     const users = await prisma.dBT_Users.findMany();
     const taxes = await prisma.dBT_Taxes.findMany();
 
     // where not deleted
-    const payments = await prisma.dBT_Payments.findMany({ where: { Deleted: false }, take: 10000, orderBy: { ID: 'desc' } });
+    let payments = await prisma.dBT_Payments.findMany({ where: { Deleted: false }, take: 10000, orderBy: { ID: 'desc' } });
+    payments = (payments);
+
     const paymentTaxes = await prisma.dBT_PaymentTaxes.findMany({ take: 10000, orderBy: { ID: 'desc' } });
 
     const customerPayments = await prisma.dBT_CustomerPayments.findMany({ take: 10000, orderBy: { ID: 'desc' } });
     const customerPaymentPayments = await prisma.dBT_CustomerPaymentPayments.findMany({ take: 10000, orderBy: { ID: 'desc' } });
 
-
-    /*
-    * SELECT o.ID AS OrderID,
-	SUM(p.ItemsCost) - SUM(p.Discount) AS ItemsCost,
-	SUM(p.Taxes) AS Taxes,
-	SUM(p.ItemsCost) - SUM(p.Discount) + SUM(p.Taxes) AS Cost,
-	SUM(p.RealPayment) AS RealPayment
-FROM DBT_Orders AS o
-LEFT JOIN (
-    SELECT DISTINCT ID_Order, ID_Payment
-    FROM DBT_OrderItems
-    WHERE Canceled != 1
-) AS oi ON oi.ID_Order = o.ID
-LEFT JOIN DBT_Payments AS p ON p.ID = oi.ID_Payment AND p.Deleted != 1
-GROUP BY o.ID;
-    * */
     // get all orders with payments using raw query
     const ordersCalculated = await prisma.$queryRaw`
     SELECT o.ID AS OrderID,
@@ -220,10 +253,11 @@ GROUP BY o.ID;
     LEFT JOIN DBT_Payments AS p ON p.ID = oi.ID_Payment AND p.Deleted != 1
     GROUP BY o.ID;
     `;
-    console.log(ordersCalculated);
 
 
-    return { customers, orders, orderItems, paymentMethods, tables, users, taxes, payments, paymentTaxes, customerPayments, customerPaymentPayments, ordersCalculated };
+
+
+    return convertDecimalToNumber({ customers, orders, orderItems, paymentMethods, tables, users, taxes, payments, paymentTaxes, customerPayments, customerPaymentPayments, ordersCalculated });
 }
 
 
@@ -238,7 +272,7 @@ export type ALL_DATA = {
     variants: DBT_Variants[]
     menuSetUp: DBT_MenuSetUp
 
-    translatedData : {
+    translatedData: {
         [key: number]: {
             mealGroups: DBT_MealGroups[]
             meals: DBT_Meals[]
@@ -248,7 +282,7 @@ export type ALL_DATA = {
         }
     }
 }
-export async function getAllData(): Promise<ALL_DATA> {
+export async function getAllData(): Promise<any> {
     const languages = await getLanguages();
     const layouts = await getLayouts();
     const mealGroups = await getMealGroups();
@@ -263,15 +297,15 @@ export async function getAllData(): Promise<ALL_DATA> {
     for (const language of languages) {
         const langID = language.ID as unknown as number;
         translatedData[langID] = {
-            mealGroups : await getMealGroups(langID),
-            meals : await getMeals(langID),
-            variants : await getVariants(langID),
-            menuSetUp : await getMenuSetUp(langID),
-            layouts : await getLayouts(langID),
+            mealGroups: await getMealGroups(langID),
+            meals: await getMeals(langID),
+            variants: await getVariants(langID),
+            menuSetUp: await getMenuSetUp(langID),
+            layouts: await getLayouts(langID),
         }
     }
 
-    return { languages, layouts, meals, mealGroups, mealsInGroups, variants, menuSetUp, translatedData };
+    return convertDecimalToNumber({ languages, layouts, meals, mealGroups, mealsInGroups, variants, menuSetUp, translatedData });
 }
 
 
@@ -391,7 +425,7 @@ export async function DB_createPayment(total_amount: number, discount: number, d
     return payment;
 }
 
-export async function DB_removePayment(payment_id:number) {
+export async function DB_removePayment(payment_id: number) {
     // set deleted to true
     const payment = await prisma.dBT_Payments.update({
         where: { ID: payment_id },
@@ -403,7 +437,7 @@ export async function DB_removePayment(payment_id:number) {
 }
 
 
-export async function DB_editPayment(payment_id:number, total_amount: number, discount: number, discountPercent: number, payment_method_id: number, items_cost: number, taxes: number, user_id: bigint | number, realPayment: number | null, customer: number | null): Promise<DBT_Payments> {
+export async function DB_editPayment(payment_id: number, total_amount: number, discount: number, discountPercent: number, payment_method_id: number, items_cost: number, taxes: number, user_id: bigint | number, realPayment: number | null, customer: number | null): Promise<DBT_Payments> {
     const payment = await prisma.dBT_Payments.update({
         where: { ID: payment_id },
         data: {
@@ -423,13 +457,22 @@ export async function DB_editPayment(payment_id:number, total_amount: number, di
 }
 
 export async function DB_bindOrderItemToPayment(order_item_id: number | bigint, payment_id: number | bigint | null): Promise<DBT_OrderItems> {
-    const orderItem = await prisma.dBT_OrderItems.update({
+
+    // Check if order item is already bound to a payment
+    const orderItemCheck = await prisma.dBT_OrderItems.findFirst({ where: { ID: order_item_id } });
+    if (orderItemCheck?.ID_Payment) {
+        throw new Error('Order item is already bound to a payment');
+    }
+
+
+
+    const updatedOrderItem = await prisma.dBT_OrderItems.update({
         where: { ID: order_item_id },
         data: {
             ID_Payment: payment_id,
         }
     });
-    return orderItem;
+    return updatedOrderItem;
 }
 
 export async function DB_unbindOrderItemsFromPayment(payment_id: number | bigint): Promise<DBT_OrderItems> {

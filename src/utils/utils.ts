@@ -12,6 +12,7 @@ export function base64DataUri(base64?: string): string {
 
 export function convertDate(date?: Date): string {
     if (!date) return '';
+    if (!date.getMonth) return date
 
     const mm = date.getMonth() + 1; // getMonth() is zero-based
     const dd = date.getDate();

@@ -29,12 +29,12 @@ class SizeableAcko extends Component {
 
     componentDidMount() {
         const meal = this.props.meal as DBT_Meals;
-        const mealGroup = this.props.mealGroup as DBT_MealGroups;
+        const mealGroup = this.props.mealgroup as DBT_MealGroups;
         const idx = this.props.idx as number;
         const div = this.divRef.current;
         if (div) {
             const rect = div.getBoundingClientRect();
-            console.log('mealDidMount', meal, mealGroup, rect)
+            //console.log('mealDidMount', meal, mealGroup, rect)
             if (rect.height > 0 && meal.Meal != ' ')
                 localStorage.setItem(`mg_${mealGroup.ID}_m_${meal.ID}_idx_${idx}`, rect.y.toString());
         }
@@ -66,7 +66,7 @@ export default function Workspace(props: WorkspaceProps) {
     const mealGroupLayout = layouts.find((layout) => layout.ID == mealGroup?.ID_Layout);
 
 
-    const parser = new XMLParser({ ignoreAttributes : false });
+    const parser = new XMLParser({ ignoreAttributes: false });
     let mealJsonObj = parser.parse(mealGroupLayout?.Xml ?? "");
     let headJsonObj = parser.parse(headLayout?.Xml ?? "");
     console.log('mealGroupLayout headJsonObj', mealJsonObj)
@@ -81,16 +81,16 @@ export default function Workspace(props: WorkspaceProps) {
         const positionStyle = {
             marginLeft: container.left,
             width: container.width,
-            marginBottom: vh(o?.BottomSpace ?? 0, null )
+            marginBottom: vh(o?.BottomSpace ?? 0, null)
         }
 
-        if(!text) return null;
+        if (!text) return null;
 
         const showEye = meal.PictureDescription || meal.Picture
 
         return (
             <div key={text} style={{ textAlign: container.textAlign, font: container.font.font, color: container.font.color, ...positionStyle, ...(strike ? { textDecoration: 'line-through' } : {}) }}>
-                {showEye && <Eye style={{ position:'absolute', marginLeft: '-32px' }} color={container.font.color}/>}
+                {showEye && <Eye style={{ position: 'absolute', marginLeft: '-32px' }} color={container.font.color} />}
                 <p>{text}</p>
             </div>
         );
@@ -100,10 +100,10 @@ export default function Workspace(props: WorkspaceProps) {
         const positionStyle = {
             marginLeft: container.left,
             width: container.width,
-            marginBottom: vh(o?.BottomSpace ?? 0, null )
+            marginBottom: vh(o?.BottomSpace ?? 0, null)
         }
 
-        if(!text) return null;
+        if (!text) return null;
 
         return (
             <div key={text} style={{ textAlign: container.textAlign, font: container.font.font, color: container.font.color, ...positionStyle, ...(strike ? { textDecoration: 'line-through' } : {}) }}>
@@ -148,7 +148,7 @@ export default function Workspace(props: WorkspaceProps) {
                     style={{ cursor: 'pointer' }}
                     className={"mealName"}
                     meal={meal}
-                    mealGroup={mealGroup}
+                    mealgroup={mealGroup}
                     idx={idx}
                 >
                     {renderMealNameText(o.FoodComponent?.Title, meal.Meal, !meal.Active || !meal.Available, meal)}

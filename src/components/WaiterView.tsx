@@ -39,6 +39,7 @@ const getSavedColumnWidth = (table: string, field: string) => {
 }
 
 BigInt.prototype.toJSON = function () { return parseInt(this.toString()) }
+
 export default function WaiterView(props) {
 
     const { getRemainingTime } = useIdleTimer({
@@ -152,28 +153,28 @@ export default function WaiterView(props) {
         setIsRefreshing(true);
 
         try {
-            const { languages, layouts, meals, mealGroups, mealsInGroups, variants, menuSetUp, translatedData } = await getAllData();
+            //const { languages, layouts, meals, mealGroups, mealsInGroups, variants, menuSetUp, translatedData } = await getAllData();
             const { customers, orders, orderItems, paymentMethods, tables, users, taxes, payments, paymentTaxes, customerPayments, customerPaymentPayments, ordersCalculated } = await getWaiterData()
 
-            setLayouts(layouts)
-            setMeals(meals)
-            setMealGroups(mealGroups)
-            setMealsInGroups(mealsInGroups)
-            setVariants(variants)
-            setCustomers(customers)
-            setPaymentMethods(paymentMethods)
-            setTables(tables)
-            setUsers(users)
-            setTaxes(taxes)
+            //setLayouts(layouts)
+            //setMeals(meals)
+            //setMealGroups(mealGroups)
+            //setMealsInGroups(mealsInGroups)
+            //setVariants(variants)
+            //setCustomers(customers)
+            //setPaymentMethods(paymentMethods)
+            //setTables(tables)
+            //setUsers(users)
+            //setTaxes(taxes)
             setOrdersCalculated(ordersCalculated)
 
-            console.log(ordersCalculated)
+            console.log('firstOrder', orders[0])
 
             setOrders(orders)
             setOrderItems(orderItems)
             setPayments(payments)
             setPaymentTaxes(paymentTaxes)
-            
+
         } catch (e) {
 
         } finally {
@@ -356,7 +357,7 @@ export default function WaiterView(props) {
     }, [checkboxes, orderItems, discountPercent]);
 
     window.addEventListener('storage', function (event) {
-        console.log('storage event', event)
+        //console.log('storage event', event)
         if (event.key === 'mealGroup') {
             setCurrentMealGroupID(BigInt(event.newValue));
         }
@@ -513,7 +514,8 @@ export default function WaiterView(props) {
         const cols = [
             { field: 'id', headerName: 'ID', width: getSavedColumnWidth('order', 'id') },
             { field: 'OrderName', headerName: 'Order Name', width: getSavedColumnWidth('order', 'OrderName') },
-            { field: 'ID_Order', headerName: 'Order', width: getSavedColumnWidth('order', 'ID_Order'), type: 'number',
+            {
+                field: 'ID_Order', headerName: 'Order', width: getSavedColumnWidth('order', 'ID_Order'), type: 'number',
                 renderCell: (params) => (
                     <div>
                         <b>{params.row.id}</b>
@@ -525,6 +527,7 @@ export default function WaiterView(props) {
 
             { field: 'ID_Table', headerName: 'ID_Table', width: getSavedColumnWidth('order', 'ID_Table') },
             { field: 'Table', headerName: 'Table', width: getSavedColumnWidth('order', 'Table'), type: 'singleSelect', valueOptions: tables.map((table) => table.TableName) },
+            { field: 'Note', headerName: 'Note', width: getSavedColumnWidth('order', 'Note'), type: 'text' },
             {
                 field: 'DateTime',
                 headerName: 'Created At',
@@ -556,7 +559,7 @@ export default function WaiterView(props) {
             Taxes: parseFloat(ordersCalculated.find((oc) => oc.OrderID == order.ID)?.Taxes ?? 0),
             Total: parseFloat(ordersCalculated.find((oc) => oc.OrderID == order.ID)?.Cost ?? 0),
             RealPayment: parseFloat(ordersCalculated.find((oc) => oc.OrderID == order.ID)?.RealPayment ?? 0),
-
+            Note: order.Note,
 
         })).filter((order) => ordersFilterToggle == 'active' ? !order.OrderClosed && !order.Canceled : ordersFilterToggle == 'closed' ? order.OrderClosed : ordersFilterToggle == 'canceled' ? order.Canceled : true);
 
@@ -595,9 +598,9 @@ export default function WaiterView(props) {
 
 
                     <div className="flex-1"></div>
-                    <IconButton className="p-4" size="large" aria-label="refresh" onClick={() => refreshData()}><RefreshIcon/></IconButton>
+                    <IconButton className="p-4" size="large" aria-label="refresh" onClick={() => refreshData()}><RefreshIcon /></IconButton>
 
-                    <IconButton className="p-4" size="large" onClick={() => setIsFullscreen(!isFullscreen)}><OpenInFullIcon/></IconButton>
+                    <IconButton className="p-4" size="large" onClick={() => setIsFullscreen(!isFullscreen)}><OpenInFullIcon /></IconButton>
                     <div className="flex-1"></div>
                     <Button variant={"contained"} color={"error"} className="p-4" onClick={() => logout()}>Logout {currentUser.Name}</Button>
                     <div className="flex-1"></div>
@@ -609,7 +612,7 @@ export default function WaiterView(props) {
 
                 </div>
 
-                {isRefreshing && <LinearProgress/>}
+                {isRefreshing && <LinearProgress />}
                 <DataGrid
                     key={'ordergrid'}
                     isRowSelectable={() => false}
@@ -619,7 +622,8 @@ export default function WaiterView(props) {
                         '&.MuiDataGrid-root--densityCompact .MuiDataGrid-cell': { py: '8px' },
                         '&.MuiDataGrid-root--densityStandard .MuiDataGrid-cell': { py: '15px' },
                         '&.MuiDataGrid-root--densityComfortable .MuiDataGrid-cell': { py: '22px' },
-                        overflowX: 'scroll' }}
+                        overflowX: 'scroll'
+                    }}
                     initialState={orderInitialState}
                     onColumnWidthChange={(params) => {
                         localStorage.setItem(`order_${params.colDef.field}`, params.width.toString())
@@ -629,7 +633,7 @@ export default function WaiterView(props) {
 
                         // using visible rows to calculate sum
                         const visibleRowsLookup = state.filter.filteredRowsLookup
-                        console.log('visibleRowsLookup', visibleRowsLookup)
+
                         if (!visibleRowsLookup) return;
 
                         const visibleItems = [];
@@ -638,7 +642,7 @@ export default function WaiterView(props) {
                                 visibleItems.push(parseInt(id));
                             }
                         }
-                        console.log('visibleItems', visibleItems)
+
                         const rowsFiltered = rows.filter((row) => visibleItems.includes(row.id));
 
 
@@ -647,7 +651,7 @@ export default function WaiterView(props) {
                         setOrdersSum(sum);
 
                         const orderItemsCostSum = rowsFiltered.reduce((acc, row) => acc + row.ItemsCost, 0);
-                        console.log('orderItemsCostSum', orderItemsCostSum)
+
                         setOrderItemsCostSum(orderItemsCostSum);
 
                         const orderTaxesSum = rowsFiltered.reduce((acc, row) => acc + row.Taxes, 0);
@@ -662,23 +666,23 @@ export default function WaiterView(props) {
 
                     }}
                     rows={rows} columns={cols} onRowClick={({ id, row }) => {
-                    setSelectedOrderId(id)
-                }}
+                        setSelectedOrderId(id)
+                    }}
                     getRowClassName={(params) => params.row.Canceled ? 'bg-red-200' : params.row.OrderClosed ? 'bg-gray-200' : ''}
                 />
                 <div className="flex items-center me-4">
 
                     <div className="flex-1 mt-3.5 me-4 mb-3.5">
-                        Items Cost Sum<br/> OMR {orderItemsCostSum.toFixed(3)}
+                        Items Cost Sum<br /> OMR {orderItemsCostSum.toFixed(3)}
                     </div>
                     <div className="flex-1 mt-3.5 me-4 mb-3.5">
-                        Taxes Sum<br/> OMR {orderTaxesSum.toFixed(3)}
+                        Taxes Sum<br /> OMR {orderTaxesSum.toFixed(3)}
                     </div>
                     <div className="flex-1 mt-3.5 me-4 mb-3.5">
-                        Total Sum<br/> OMR {orderTotalSum.toFixed(3)}
+                        Total Sum<br /> OMR {orderTotalSum.toFixed(3)}
                     </div>
                     <div className="flex-1 mt-3.5 me-4 mb-3.5">
-                        Real Payment Sum<br/> OMR {orderRealPaymentSum.toFixed(3)}
+                        Real Payment Sum<br /> OMR {orderRealPaymentSum.toFixed(3)}
                     </div>
                 </div>
                 <Modal
@@ -729,7 +733,7 @@ export default function WaiterView(props) {
                         </Typography>
                         <div className="flex flex-row justify-between mt-4 mb-4">
                             <div className="flex flex-col">
-                                <TextField label="Order name" value={newOrderOrderName ?? ''} onChange={(e) => setNewOrderOrderName(e.target.value)}/>
+                                <TextField label="Order name" value={newOrderOrderName ?? ''} onChange={(e) => setNewOrderOrderName(e.target.value)} />
                             </div>
                             <div className="flex flex-col">
                                 <Button onClick={() => createOrder(newOrderTableID)} disabled={newOrderTableID == -1} size={"large"} variant={"contained"} color={"success"}>Create Order</Button>
@@ -743,7 +747,7 @@ export default function WaiterView(props) {
 
 
             </div>
-    )
+        )
     }
 
 
@@ -949,7 +953,9 @@ export default function WaiterView(props) {
             setSavedPaymentSuccess(true);
 
         } catch (e) {
-
+            if (e instanceof Error) {
+                alert(e.message);
+            }
         } finally {
             setSavingPayment(false);
         }
@@ -957,58 +963,69 @@ export default function WaiterView(props) {
 
 
 
+    const [creatingPayment, setCreatingPayment] = useState(false);
     const createPaymentNew = async () => {
-        console.log('pay')
-        const ois = orderItems.filter((orderItem) => orderItem.ID_Order == selectedOrderId && checkboxes[orderItem.ID.toString()] && !orderItem.Canceled);
-        const ts = taxes.filter((tax) => checkboxes[tax.TaxName]);
-        const paymentMethod = paymentMethods.find((paymentMethod) => checkboxes[paymentMethod.PaymentMethod]);
-
-        console.log('ois', ois, 'ts', ts, 'paymentMethod', paymentMethod)
-
-        if (!paymentMethod) return;
-        if (!ois.length) return;
-
-        let parsedRealPayment = null;
+        if (creatingPayment) {
+            alert('Please wait for the current bill creation to finish');
+            //return;
+        }
+        setCreatingPayment(true);
         try {
-            parsedRealPayment = parseFloat(newPaymentRealPayment);
-        } catch {
-            alert('Invalid real payment, skipping.');
+            const ois = orderItems.filter((orderItem) => orderItem.ID_Order == selectedOrderId && checkboxes[orderItem.ID.toString()] && !orderItem.Canceled);
+            const ts = taxes.filter((tax) => checkboxes[tax.TaxName]);
+            const paymentMethod = paymentMethods.find((paymentMethod) => checkboxes[paymentMethod.PaymentMethod]);
+
+            console.log('ois', ois, 'ts', ts, 'paymentMethod', paymentMethod)
+
+            if (!paymentMethod) throw new Error('Please select a payment method');
+            if (!ois.length) throw new Error('Please select at least one item to pay');
+
+            let parsedRealPayment = null;
+            try {
+                parsedRealPayment = parseFloat(newPaymentRealPayment);
+            } catch {
+                alert('Invalid real payment, skipping.');
+            }
+
+
+            // 1. Create DBT_Payment
+            const newPayment = await DB_createPayment(newPaymentTotal, newPaymentDiscount, discountPercent, paymentMethod.ID, newPaymentCost, newPaymentTaxes, currentUser.ID, parsedRealPayment, selectedCustomer);
+            if (!newPayment) return;
+
+            // 2. Update DBT_OrderItem with ID_Payment
+            const updatedOrderItems: DBT_OrderItems[] = [];
+            for (const oi of ois) {
+                const updatedOrderItem = await DB_bindOrderItemToPayment(oi.ID, newPayment.ID);
+                updatedOrderItems.push(updatedOrderItem);
+            }
+
+            // 3. Create multiple DBT_PaymentTax
+            const newPts = [];
+            for (const t of ts) {
+                const newpt = await DB_bindTaxToPayment(t.ID, newPayment.ID);
+                newPts.push(newpt);
+            }
+
+            // Revalidate the orderItems and payments
+            const newOrderItems = orderItems.map((orderItem: DBT_OrderItems) => updatedOrderItems.find((oi) => oi.ID == orderItem.ID) ?? orderItem);
+            setOrderItems(newOrderItems);
+            const newPayments = [...payments, newPayment];
+            setPayments(newPayments);
+            const newPaymentTaxesArray = [...paymentTaxes, ...newPts];
+            setPaymentTaxes(newPaymentTaxesArray);
+            //setCheckboxes({});
+            //setDiscountPercent(0);
+            setOpenPayModal(false);
+            setSelectedCustomer(null);
+
+            openEditPaymentModal(newPayment.ID, newOrderItems, newPayments, newPaymentTaxesArray);
+        } catch (e) {
+            if (e instanceof Error) {
+                alert(e.message);
+            }
+        } finally {
+            setCreatingPayment(false);
         }
-
-
-        // 1. Create DBT_Payment
-        const newPayment = await DB_createPayment(newPaymentTotal, newPaymentDiscount, discountPercent, paymentMethod.ID, newPaymentCost, newPaymentTaxes, currentUser.ID, parsedRealPayment, selectedCustomer);
-        if (!newPayment) return;
-
-        // 2. Update DBT_OrderItem with ID_Payment
-        const updatedOrderItems: DBT_OrderItems[] = [];
-        for (const oi of ois) {
-            const updatedOrderItem = await DB_bindOrderItemToPayment(oi.ID, newPayment.ID);
-            updatedOrderItems.push(updatedOrderItem);
-        }
-
-        // 3. Create multiple DBT_PaymentTax
-        const newPts = [];
-        for (const t of ts) {
-            const newpt = await DB_bindTaxToPayment(t.ID, newPayment.ID);
-            newPts.push(newpt);
-        }
-
-        // Revalidate the orderItems and payments
-        const newOrderItems = orderItems.map((orderItem: DBT_OrderItems) => updatedOrderItems.find((oi) => oi.ID == orderItem.ID) ?? orderItem);
-        setOrderItems(newOrderItems);
-        const newPayments = [...payments, newPayment];
-        setPayments(newPayments);
-        const newPaymentTaxesArray = [...paymentTaxes, ...newPts];
-        setPaymentTaxes(newPaymentTaxesArray);
-        //setCheckboxes({});
-        //setDiscountPercent(0);
-        setOpenPayModal(false);
-        setSelectedCustomer(null);
-
-        openEditPaymentModal(newPayment.ID, newOrderItems, newPayments, newPaymentTaxesArray);
-
-
     }
 
     const closeOrder = async () => {
@@ -1131,6 +1148,9 @@ export default function WaiterView(props) {
                         >Apply Customer Discount</Button>
                     </div>
                     <div className="flex-1 flex items-center">
+                        <Button onClick={() => {
+                            setDiscountPercent(0)
+                        }}>-</Button>
                         <TextField
                             id="outlined-basic"
                             variant="outlined"
@@ -1413,17 +1433,17 @@ export default function WaiterView(props) {
                 <div className="flex items-center me-4 ms-4">
 
                     <Button variant={"contained"} className="p-4" onClick={() => setSelectedOrderId(null)}>Back</Button>
-                    <CardHeader title={"Order no. " + selectedOrderId + " - " + (orders.find((order) => order.ID == selectedOrderId)?.OrderName ?? '') + " - "  + tables.find((table) => table.ID == orders.find((order) => order.ID == selectedOrderId)?.ID_Table)?.TableName} className="flex-1" />
+                    <CardHeader title={"Order no. " + selectedOrderId + " - " + (orders.find((order) => order.ID == selectedOrderId)?.OrderName ?? '') + " - " + tables.find((table) => table.ID == orders.find((order) => order.ID == selectedOrderId)?.ID_Table)?.TableName} className="flex-1" />
                     {isOrderClosed() && <CardHeader title={"ORDER IS CLOSED"} className="flex-1" />}
                     {isOrderCanceled() && <CardHeader title={"ORDER IS CANCELED"} className="flex-1" />}
                     {isOrderClosedOrCanceled() && <Button variant={"contained"} className="p-4" color={"success"} onClick={() => reopenOrder()}>Open Order</Button>}
 
                     {!isOrderClosedOrCanceled() && <Button variant={"contained"} className="p-4" color={"error"}
-                                                           disabled={!!orderPayments.length}
-                                                           onClick={() => cancelOrder()}>Cancel Order</Button>}
+                        disabled={!!orderPayments.length}
+                        onClick={() => cancelOrder()}>Cancel Order</Button>}
                 </div>
 
-                {isRefreshing && <LinearProgress/>}
+                {isRefreshing && <LinearProgress />}
                 <DataGrid
                     key={'orderDetial'}
                     isRowSelectable={() => false}
@@ -1598,39 +1618,30 @@ export default function WaiterView(props) {
                             Discount
                         </Typography>
                         <div className="flex-1 flex items-center">
+                            <Button variant="outlined" onClick={() => {
+                                let newValue = Math.max(0, discountPercent - 0.05)
+                                setDiscountPercent(parseFloat(newValue.toFixed(2)))
+                            }}>-</Button>
                             <TextField
                                 id="outlined-basic"
                                 variant="outlined"
-                                value={discountPercent * 100}
+                                value={Math.round(discountPercent * 100)}
                                 disabled
-                                sx={{ width: '10ch' }}
+                                sx={{ width: '10ch', marginLeft: '10px', marginRight: '10px' }}
                                 InputProps={{
                                     endAdornment: <InputAdornment position="start">%</InputAdornment>,
                                 }}
                             />
+                            <Button variant="outlined" onClick={() => {
+                                let newValue = Math.min(1.0, discountPercent + 0.05)
+                                console.log('newValue', newValue)
+                                console.log('parsed', parseFloat(newValue.toFixed(2)))
+
+
+                                setDiscountPercent(parseFloat(newValue.toFixed(2)))
+                            }}>+</Button>
 
                             <ButtonGroup variant="text" aria-label="Basic button group">
-                                <Button onClick={() => {
-                                    setDiscountPercent(0)
-                                }}>0 %</Button>
-                                <Button onClick={() => {
-                                    setDiscountPercent(0.05)
-                                }}>5 %</Button>
-                                <Button onClick={() => {
-                                    setDiscountPercent(0.1)
-                                }}>10 %</Button>
-                                <Button onClick={() => {
-                                    setDiscountPercent(0.15)
-                                }}>15 %</Button>
-                                <Button onClick={() => {
-                                    setDiscountPercent(0.2)
-                                }}>20 %</Button>
-                                <Button onClick={() => {
-                                    setDiscountPercent(0.25)
-                                }}>25 %</Button>
-                                <Button onClick={() => {
-                                    setDiscountPercent(0.3)
-                                }}>30 %</Button>
                                 <Button
                                     disabled={!selectedCustomer}
                                     onClick={() => {
@@ -1688,7 +1699,30 @@ export default function WaiterView(props) {
 
                         <div className="flex justify-items-center me-4">
                             <div className="flex-1"></div>
-                            <Button disabled={!hasPaymentChecked()} variant={"contained"} className="p-4" color={"success"} onClick={createPaymentNew}>Create Bill</Button>
+                            <Box sx={{ m: 1, position: 'relative' }}>
+                                <Button
+                                    className="p-4"
+                                    variant="contained"
+                                    color={"success"}
+                                    disabled={!hasPaymentChecked() || creatingPayment}
+                                    onClick={createPaymentNew}
+                                >
+                                    Create Bill
+                                </Button>
+                                {creatingPayment && (
+                                    <CircularProgress
+                                        size={24}
+                                        sx={{
+                                            color: 'green',
+                                            position: 'absolute',
+                                            top: '50%',
+                                            left: '50%',
+                                            marginTop: '-12px',
+                                            marginLeft: '-12px',
+                                        }}
+                                    />
+                                )}
+                            </Box>
                         </div>
                     </Box>
                 </Modal>
@@ -1709,7 +1743,7 @@ export default function WaiterView(props) {
                             {`@media print {
                                 .contentToPrint{ top: 0; left: 0; transform: none; width: 100%; height: 100%; padding: 20px; overflow: visible; display: flex; flex: 1; background-color: white; }
                                 .printButton{ display: none; }
-                                    
+
                             }`}
                         </style>
                         <Box className="contentToPrint"
@@ -1962,10 +1996,21 @@ export default function WaiterView(props) {
     }
 
     const [cumulatedBillsSum, setCumulatedBillsSum] = useState(0);
+    const [cumulatedBillsRealPaymentSum, setCumulatedBillsRealPaymentSum] = useState(0);
+    function CustomFooterStatusComponent(
+        props: any,
+    ) {
+        return (
+            <Box sx={{ p: 1, display: 'flex' }}>
+                Status {"OK"}
+            </Box>
+        );
+    }
+
     const renderCumulatedBills = () => {
 
         //const selectedCustomer = customers.find((customer) => customer.ID == selectedCustomer);
-        const customerPaymentsLocal = payments.filter((payment) => payment.ID_PaymentMethod == 3 && payment.ID_Customer == selectedCustomer).map(payment => {
+        const paymentsByCustomer = payments.filter((payment) => payment.ID_PaymentMethod == 3 && payment.ID_Customer == selectedCustomer).map(payment => {
             // find any customerPayment
             const isPaid = !!customerPaymentPayments.find((cp) => cp.ID_Payments == payment.ID);
             return {
@@ -1974,7 +2019,7 @@ export default function WaiterView(props) {
             }
         })
 
-        const unpaidCustomerPayments = customerPaymentsLocal.filter((payment) => !payment.isPaid);
+        const unpaidCustomerPayments = paymentsByCustomer.filter((payment) => !payment.isPaid);
 
 
         const cols = [
@@ -1995,7 +2040,7 @@ export default function WaiterView(props) {
             { field: 'Printed', headerName: 'Printed', width: getSavedColumnWidth('cumulatedbills', 'Printed') },*/
         ]
 
-        const rows = customerPaymentsLocal.map((payment) => ({
+        const rows = paymentsByCustomer.map((payment) => ({
             id: payment.ID,
             TimeOfPay: payment.TimeOfPay,
             TotalAmount: payment.TotalAmount,
@@ -2047,7 +2092,7 @@ export default function WaiterView(props) {
                 </div>
 
 
-                {isRefreshing && <LinearProgress/>}
+                {isRefreshing && <LinearProgress />}
                 <DataGrid
                     key={'cumulatedbills'}
                     isRowSelectable={() => false}
@@ -2077,12 +2122,18 @@ export default function WaiterView(props) {
                             }
                         }
                         console.log('visibleItems', visibleItems)
-                        const paymentsFiltered = customerPaymentsLocal.filter((row) => visibleItems.includes(row.ID));
+                        const paymentsFiltered = paymentsByCustomer.filter((row) => visibleItems.includes(row.ID));
 
                         console.log('paymentsFiltered', paymentsFiltered)
 
                         const sum = paymentsFiltered.reduce((acc, payment) => acc + parseFloat(payment.TotalAmount), 0);
                         setCumulatedBillsSum(sum);
+
+
+                        // get customer cumulated bills topup
+                        const realPaymentsSum = customerPayments.filter(cp => cp.ID_Customer == selectedCustomer).reduce((acc, cp) => acc + parseFloat(cp.Payment), 0);
+                        setCumulatedBillsRealPaymentSum(realPaymentsSum);
+
 
                     }}
 
@@ -2101,7 +2152,10 @@ export default function WaiterView(props) {
 
                 <div className="flex items-center me-4">
                     <div className="mt-3.5 ms-4 mb-3.5">
-                        Sum : OMR {cumulatedBillsSum.toFixed(3)}
+                        Sum of costs : OMR {cumulatedBillsSum.toFixed(3)}
+                    </div>
+                    <div className="mt-3.5 ms-4 mb-3.5">
+                        Sum of real payments : OMR {cumulatedBillsRealPaymentSum.toFixed(3)}
                     </div>
                 </div>
 
@@ -2203,7 +2257,7 @@ export default function WaiterView(props) {
                             {`@media print {
                                 .contentToPrint{ top: 0; left: 0; transform: none; width: 100%; height: 100%; padding: 20px; overflow: visible; display: flex; flex: 1; background-color: white; }
                                 .printButton{ display: none; }
-                                    
+
                             }`}
                         </style>
                         <Box className="contentToPrint"
@@ -2396,6 +2450,7 @@ export default function WaiterView(props) {
                     Price: false,
                     Status: false,
                     Button_waiter: false,
+                    OrderStatus: false
                 }
             }
         };
@@ -2437,7 +2492,8 @@ export default function WaiterView(props) {
 
             { field: 'id', headerName: 'ID', width: getSavedColumnWidth('kitchenview', 'id') },
             { field: 'OrderName', headerName: 'Order Name', width: getSavedColumnWidth('kitchenview', 'OrderName') },
-            { field: 'ID_Order', headerName: 'Order', width: getSavedColumnWidth('kitchenview', 'ID_Order'), type: 'number',
+            {
+                field: 'ID_Order', headerName: 'Order', width: getSavedColumnWidth('kitchenview', 'ID_Order'), type: 'number',
                 renderCell: (params) => (
                     <div>
                         <b>{params.row.id}</b>
@@ -2507,34 +2563,40 @@ export default function WaiterView(props) {
 
             },
 
+            { field: 'OrderStatus', headerName: 'Order Status', width: getSavedColumnWidth('kitchenview', 'orderStatus'), type: 'singleSelect', valueOptions: ['Active', 'Closed', 'Canceled'] },
 
 
         ]
 
         const rows = orderItems
-        .filter((orderItem) => !orderItem.Time_Prepared)
-        .map((orderItem) => ({
-            id: parseInt(orderItem.ID),
-            ID_Order: parseInt(orderItem.ID_Order),
-            ID_Meal: parseInt(orderItem.ID_Meal),
-            Meal: meals.find((meal) => meal.ID == orderItem.ID_Meal)?.Meal,
-            ID_Variant: parseInt(orderItem.ID_Variant),
-            Variant: variants.find((variant) => variant.ID == orderItem.ID_Variant)?.MealVariant,
-            TimeOfOrder: orderItem.TimeOfOrder,
-            Price: orderItem.Price,
-            Canceled: orderItem.Canceled,
-            ID_Payment: orderItem.ID_Payment,
+            .filter((orderItem) => !orderItem.Time_Prepared)
+            .map((orderItem) => ({
+                id: parseInt(orderItem.ID),
+                ID_Order: parseInt(orderItem.ID_Order),
+                ID_Meal: parseInt(orderItem.ID_Meal),
+                Meal: meals.find((meal) => meal.ID == orderItem.ID_Meal)?.Meal,
+                ID_Variant: parseInt(orderItem.ID_Variant),
+                Variant: variants.find((variant) => variant.ID == orderItem.ID_Variant)?.MealVariant,
+                TimeOfOrder: orderItem.TimeOfOrder,
+                Price: orderItem.Price,
+                Canceled: orderItem.Canceled,
+                ID_Payment: orderItem.ID_Payment,
 
-            Time_Prepared: orderItem.Time_Prepared,
-            Time_Delivered: orderItem.Time_Delivered,
+                Time_Prepared: orderItem.Time_Prepared,
+                Time_Delivered: orderItem.Time_Delivered,
 
-            Note: orderItem.Note,
+                Note: orderItem.Note,
 
-            Status: orderItem.ID_Payment ? 'Paid' : orderItem.Canceled ? 'Canceled' : '',
+                Status: orderItem.ID_Payment ? 'Paid' : orderItem.Canceled ? 'Canceled' : '',
 
-            Is_Kitchen: meals.find((meal) => meal.ID == orderItem.ID_Meal)?.Kitchen,
-            OrderName: orders.find((order) => order.ID == orderItem.ID_Order)?.OrderName,
-        }));
+                Is_Kitchen: meals.find((meal) => meal.ID == orderItem.ID_Meal)?.Kitchen,
+                OrderName: orders.find((order) => order.ID == orderItem.ID_Order)?.OrderName,
+                OrderStatus: (() => {
+                    const order = orders.find((order) => order.ID == orderItem.ID_Order);
+                    if (!order) return 'Active';
+                    return order.Closed ? 'Closed' : order.Canceled ? 'Canceled' : 'Active';
+                })(),
+            }));
 
         return (
             <div style={{ display: 'flex', flexDirection: 'column', height: '100vh' }}>
@@ -2547,7 +2609,7 @@ export default function WaiterView(props) {
                     <CardHeader title={"Kitchen View"} className="flex-1" />
                 </div>
 
-                {isRefreshing && <LinearProgress/>}
+                {isRefreshing && <LinearProgress />}
                 <DataGrid
                     key={'kitchenView'}
                     apiRef={kitchenViewRef}
