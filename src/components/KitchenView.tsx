@@ -7,7 +7,7 @@ import { DB_deliverOrderItem, DB_prepareOrderItem } from "@/db";
 import RestaurantIcon from "@mui/icons-material/Restaurant";
 import { convertDate } from "@/utils/utils";
 import TableBarIcon from "@mui/icons-material/TableBar";
-import { getLayoutFooter, LayoutDataGrid, LayoutFooter } from "@/components/LayoutFooter";
+import { LayoutDataGrid, LayoutFooter } from "@/components/LayoutFooter";
 
 const getSavedColumnWidth = (table: string, field: string) => {
     // @ts-ignore

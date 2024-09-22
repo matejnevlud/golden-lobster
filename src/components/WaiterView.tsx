@@ -34,7 +34,7 @@ import { useIdleTimer } from 'react-idle-timer/legacy'
 import { Snackbar } from "@mui/base";
 import { GridFilterInputDate } from "@mui/x-data-grid/components/panel/filterPanel/GridFilterInputDate";
 import KitchenView from "@/components/KitchenView";
-import { getLayoutFooter, LayoutDataGrid, LayoutFooter } from "@/components/LayoutFooter";
+import { LayoutDataGrid, LayoutFooter } from "@/components/LayoutFooter";
 
 const getSavedColumnWidth = (table: string, field: string) => {
     return localStorage.getItem(`${table}_${field}`) != null ? parseInt(localStorage.getItem(`${table}_${field}`)) : undefined;

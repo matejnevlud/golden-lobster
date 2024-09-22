@@ -8,6 +8,7 @@ import { createUILayout, getUILayouts, saveUILayout } from "@/db";
 
 
 // @ts-ignore
+// eslint-disable-next-line react/display-name
 export const LayoutFooter = forwardRef((props, ref: React.MutableRefObject<GridApiCommunity>) => {
     const { viewName, refresh } = props;
     const [layoutId, setLayoutId] = React.useState('');
@@ -134,12 +135,7 @@ export const LayoutFooter = forwardRef((props, ref: React.MutableRefObject<GridA
         </GridFooterContainer>
     )
 });
-
-export function getLayoutFooter(viewName: string) {
-    return () => <LayoutFooter viewName={viewName} />
-}
-
-// preinsert apiref and slots
+ 
 export const LayoutDataGrid = (props: any) => {
     const apiRef = useGridApiRef()
     const [randomKey, setRandomKey] = React.useState(Math.random());
