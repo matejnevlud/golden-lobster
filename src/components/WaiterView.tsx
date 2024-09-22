@@ -70,7 +70,7 @@ export default function WaiterView(props) {
     const parser = new XMLParser({ ignoreAttributes: false });
     let jsonObj = parser.parse(headLayout?.Xml ?? "");
 
-    const [ordersFilterToggle, setOrdersFilterToggle] = useState('active');
+    const [ordersFilterToggle, setOrdersFilterToggle] = useState('Active');
     const [orders, setOrders] = useState(props.orders);
     const [orderItems, setOrderItems] = useState(props.orderItems);
     const [payments, setPayments] = useState(props.payments);
@@ -475,6 +475,13 @@ export default function WaiterView(props) {
                 { field: 'DateTime', sort: 'desc' },
             ],
         },
+        filter: {
+          filterModel: {
+            items: [
+              { field: 'Status', operator: 'is', value: 'Active' },
+            ],
+          }
+        },
         columns: {
             columnVisibilityModel: {
                 id: false,
@@ -502,7 +509,23 @@ export default function WaiterView(props) {
         ...getGridDateOperators()
     ];
 
-    const ordergridRef = useRef(null);
+
+    const ordergridRef = useGridApiRef()
+    const [randomKey, setRandomKey] = React.useState(Math.random());
+
+    const determineOrderGridStatusFilter = () => {
+        console.log('determineOrderGridStatusFilter')
+        if (!ordergridRef.current?.exportState) return 'All';
+        const filterItems = ordergridRef.current?.exportState()?.filter?.filterModel?.items;
+        console.log('filterItems', filterItems)
+
+        const statusFilter = filterItems?.find((item) => item.field === 'Status');
+        if (!statusFilter) return 'All';
+        if (statusFilter.value === undefined) return 'All';
+
+        return statusFilter.value;
+    }
+
     const renderOrdersList = () => {
         const cols = [
             { field: 'id', headerName: 'ID' },
@@ -554,7 +577,7 @@ export default function WaiterView(props) {
             RealPayment: parseFloat(ordersCalculated.find((oc) => oc.OrderID == order.ID)?.RealPayment ?? 0),
             Note: order.Note,
 
-        })).filter((order) => ordersFilterToggle == 'active' ? !order.OrderClosed && !order.Canceled : ordersFilterToggle == 'closed' ? order.OrderClosed : ordersFilterToggle == 'canceled' ? order.Canceled : true);
+        }))//.filter((order) => ordersFilterToggle == 'active' ? !order.OrderClosed && !order.Canceled : ordersFilterToggle == 'closed' ? order.OrderClosed : ordersFilterToggle == 'canceled' ? order.Canceled : true);
 
         return (
             <div style={{ display: 'flex', flexDirection: 'column', height: '100vh' }}>
@@ -578,14 +601,26 @@ export default function WaiterView(props) {
                         <Select
                             labelId="demo-simple-select-label"
                             id="demo-simple-select"
-                            value={ordersFilterToggle}
+                            value={determineOrderGridStatusFilter()}
                             label="State"
-                            onChange={(e) => setOrdersFilterToggle(e.target.value)}
+                            onChange={(e) => {
+                                setOrdersFilterToggle(e.target.value);
+                                if(e.target.value === 'All')
+                                    ordergridRef.current?.setFilterModel({
+                                        items: []
+                                    })
+                                else
+                                    ordergridRef.current?.setFilterModel({
+                                        items: [
+                                            { field: 'Status', operator: 'is', value: e.target.value }
+                                        ]
+                                    })
+                            }}
                         >
-                            <MenuItem value="active">Active</MenuItem>
-                            <MenuItem value="closed">Closed</MenuItem>
-                            <MenuItem value="canceled">Canceled</MenuItem>
-                            <MenuItem value="all">All</MenuItem>
+                            <MenuItem value="Active">Active</MenuItem>
+                            <MenuItem value="Closed">Closed</MenuItem>
+                            <MenuItem value="Canceled">Canceled</MenuItem>
+                            <MenuItem value="All">All</MenuItem>
                         </Select>
                     </FormControl>
 
@@ -606,9 +641,12 @@ export default function WaiterView(props) {
                 </div>
 
                 {isRefreshing && <LinearProgress />}
-                <LayoutDataGrid
-                    key={'ordergrid'}
+                <DataGrid
+                    apiRef={ordergridRef}
+                    key={'ordergrid' + randomKey}
                     viewName={'ordergrid'}
+                    slots={{ footer: LayoutFooter }}
+                    slotProps={{ footer: { viewName: 'ordergrid', refresh: () => setRandomKey(Math.random()), ref: ordergridRef } }}
                     isRowSelectable={() => false}
                     getRowHeight={() => 'auto'}
                     getEstimatedRowHeight={() => 72}

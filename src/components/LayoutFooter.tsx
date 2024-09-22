@@ -135,7 +135,7 @@ export const LayoutFooter = forwardRef((props, ref: React.MutableRefObject<GridA
         </GridFooterContainer>
     )
 });
- 
+
 export const LayoutDataGrid = (props: any) => {
     const apiRef = useGridApiRef()
     const [randomKey, setRandomKey] = React.useState(Math.random());
@@ -143,5 +143,8 @@ export const LayoutDataGrid = (props: any) => {
     function refresh() {
         setRandomKey(Math.random());
     }
-    return <DataGrid key={randomKey} apiRef={apiRef} slots={{ footer: () => <LayoutFooter refresh={refresh} viewName={props.viewName} ref={apiRef} initialState={props.initialState}/> }} {...props} />
+    return <DataGrid key={randomKey} apiRef={apiRef}
+                     slots={{ footer: LayoutFooter }}
+                     slotProps={{ footer: { viewName: props.viewName, refresh, ref: apiRef } }}
+                     {...props} />
 }
