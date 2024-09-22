@@ -118,6 +118,16 @@ export type DBT_CustomerPaymentPayments = $Result.DefaultSelection<Prisma.$DBT_C
  * 
  */
 export type DBT_CustomerPayments = $Result.DefaultSelection<Prisma.$DBT_CustomerPaymentsPayload>
+/**
+ * Model DBT_UILayouts
+ * 
+ */
+export type DBT_UILayouts = $Result.DefaultSelection<Prisma.$DBT_UILayoutsPayload>
+/**
+ * Model sysdiagrams
+ * 
+ */
+export type sysdiagrams = $Result.DefaultSelection<Prisma.$sysdiagramsPayload>
 
 /**
  * ##  Prisma Client ʲˢ
@@ -450,6 +460,26 @@ export class PrismaClient<
     * ```
     */
   get dBT_CustomerPayments(): Prisma.DBT_CustomerPaymentsDelegate<ExtArgs>;
+
+  /**
+   * `prisma.dBT_UILayouts`: Exposes CRUD operations for the **DBT_UILayouts** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more DBT_UILayouts
+    * const dBT_UILayouts = await prisma.dBT_UILayouts.findMany()
+    * ```
+    */
+  get dBT_UILayouts(): Prisma.DBT_UILayoutsDelegate<ExtArgs>;
+
+  /**
+   * `prisma.sysdiagrams`: Exposes CRUD operations for the **sysdiagrams** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more Sysdiagrams
+    * const sysdiagrams = await prisma.sysdiagrams.findMany()
+    * ```
+    */
+  get sysdiagrams(): Prisma.sysdiagramsDelegate<ExtArgs>;
 }
 
 export namespace Prisma {
@@ -947,7 +977,9 @@ export namespace Prisma {
     DBT_PaymentTaxes: 'DBT_PaymentTaxes',
     DBT_CashWithdrawals: 'DBT_CashWithdrawals',
     DBT_CustomerPaymentPayments: 'DBT_CustomerPaymentPayments',
-    DBT_CustomerPayments: 'DBT_CustomerPayments'
+    DBT_CustomerPayments: 'DBT_CustomerPayments',
+    DBT_UILayouts: 'DBT_UILayouts',
+    sysdiagrams: 'sysdiagrams'
   };
 
   export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -964,7 +996,7 @@ export namespace Prisma {
 
   export type TypeMap<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     meta: {
-      modelProps: 'dBT_Customer' | 'dBT_Languages' | 'dBT_Layouts' | 'dBT_MealGroups' | 'dBT_Meals' | 'dBT_MenuSetUp' | 'dBT_OrderItems' | 'dBT_Orders' | 'dBT_PaymentMethods' | 'dBT_Tables' | 'dBT_Taxes' | 'dBT_Translations' | 'dBT_Users' | 'dBT_MealsInGroups' | 'dBT_Variants' | 'dBT_PaymentDetail' | 'dBT_Payments' | 'dBT_PaymentTaxes' | 'dBT_CashWithdrawals' | 'dBT_CustomerPaymentPayments' | 'dBT_CustomerPayments'
+      modelProps: 'dBT_Customer' | 'dBT_Languages' | 'dBT_Layouts' | 'dBT_MealGroups' | 'dBT_Meals' | 'dBT_MenuSetUp' | 'dBT_OrderItems' | 'dBT_Orders' | 'dBT_PaymentMethods' | 'dBT_Tables' | 'dBT_Taxes' | 'dBT_Translations' | 'dBT_Users' | 'dBT_MealsInGroups' | 'dBT_Variants' | 'dBT_PaymentDetail' | 'dBT_Payments' | 'dBT_PaymentTaxes' | 'dBT_CashWithdrawals' | 'dBT_CustomerPaymentPayments' | 'dBT_CustomerPayments' | 'dBT_UILayouts' | 'sysdiagrams'
       txIsolationLevel: Prisma.TransactionIsolationLevel
     },
     model: {
@@ -2351,6 +2383,138 @@ export namespace Prisma {
           count: {
             args: Prisma.DBT_CustomerPaymentsCountArgs<ExtArgs>,
             result: $Utils.Optional<DBT_CustomerPaymentsCountAggregateOutputType> | number
+          }
+        }
+      }
+      DBT_UILayouts: {
+        payload: Prisma.$DBT_UILayoutsPayload<ExtArgs>
+        fields: Prisma.DBT_UILayoutsFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.DBT_UILayoutsFindUniqueArgs<ExtArgs>,
+            result: $Utils.PayloadToResult<Prisma.$DBT_UILayoutsPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.DBT_UILayoutsFindUniqueOrThrowArgs<ExtArgs>,
+            result: $Utils.PayloadToResult<Prisma.$DBT_UILayoutsPayload>
+          }
+          findFirst: {
+            args: Prisma.DBT_UILayoutsFindFirstArgs<ExtArgs>,
+            result: $Utils.PayloadToResult<Prisma.$DBT_UILayoutsPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.DBT_UILayoutsFindFirstOrThrowArgs<ExtArgs>,
+            result: $Utils.PayloadToResult<Prisma.$DBT_UILayoutsPayload>
+          }
+          findMany: {
+            args: Prisma.DBT_UILayoutsFindManyArgs<ExtArgs>,
+            result: $Utils.PayloadToResult<Prisma.$DBT_UILayoutsPayload>[]
+          }
+          create: {
+            args: Prisma.DBT_UILayoutsCreateArgs<ExtArgs>,
+            result: $Utils.PayloadToResult<Prisma.$DBT_UILayoutsPayload>
+          }
+          createMany: {
+            args: Prisma.DBT_UILayoutsCreateManyArgs<ExtArgs>,
+            result: Prisma.BatchPayload
+          }
+          delete: {
+            args: Prisma.DBT_UILayoutsDeleteArgs<ExtArgs>,
+            result: $Utils.PayloadToResult<Prisma.$DBT_UILayoutsPayload>
+          }
+          update: {
+            args: Prisma.DBT_UILayoutsUpdateArgs<ExtArgs>,
+            result: $Utils.PayloadToResult<Prisma.$DBT_UILayoutsPayload>
+          }
+          deleteMany: {
+            args: Prisma.DBT_UILayoutsDeleteManyArgs<ExtArgs>,
+            result: Prisma.BatchPayload
+          }
+          updateMany: {
+            args: Prisma.DBT_UILayoutsUpdateManyArgs<ExtArgs>,
+            result: Prisma.BatchPayload
+          }
+          upsert: {
+            args: Prisma.DBT_UILayoutsUpsertArgs<ExtArgs>,
+            result: $Utils.PayloadToResult<Prisma.$DBT_UILayoutsPayload>
+          }
+          aggregate: {
+            args: Prisma.DBT_UILayoutsAggregateArgs<ExtArgs>,
+            result: $Utils.Optional<AggregateDBT_UILayouts>
+          }
+          groupBy: {
+            args: Prisma.DBT_UILayoutsGroupByArgs<ExtArgs>,
+            result: $Utils.Optional<DBT_UILayoutsGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.DBT_UILayoutsCountArgs<ExtArgs>,
+            result: $Utils.Optional<DBT_UILayoutsCountAggregateOutputType> | number
+          }
+        }
+      }
+      sysdiagrams: {
+        payload: Prisma.$sysdiagramsPayload<ExtArgs>
+        fields: Prisma.sysdiagramsFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.sysdiagramsFindUniqueArgs<ExtArgs>,
+            result: $Utils.PayloadToResult<Prisma.$sysdiagramsPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.sysdiagramsFindUniqueOrThrowArgs<ExtArgs>,
+            result: $Utils.PayloadToResult<Prisma.$sysdiagramsPayload>
+          }
+          findFirst: {
+            args: Prisma.sysdiagramsFindFirstArgs<ExtArgs>,
+            result: $Utils.PayloadToResult<Prisma.$sysdiagramsPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.sysdiagramsFindFirstOrThrowArgs<ExtArgs>,
+            result: $Utils.PayloadToResult<Prisma.$sysdiagramsPayload>
+          }
+          findMany: {
+            args: Prisma.sysdiagramsFindManyArgs<ExtArgs>,
+            result: $Utils.PayloadToResult<Prisma.$sysdiagramsPayload>[]
+          }
+          create: {
+            args: Prisma.sysdiagramsCreateArgs<ExtArgs>,
+            result: $Utils.PayloadToResult<Prisma.$sysdiagramsPayload>
+          }
+          createMany: {
+            args: Prisma.sysdiagramsCreateManyArgs<ExtArgs>,
+            result: Prisma.BatchPayload
+          }
+          delete: {
+            args: Prisma.sysdiagramsDeleteArgs<ExtArgs>,
+            result: $Utils.PayloadToResult<Prisma.$sysdiagramsPayload>
+          }
+          update: {
+            args: Prisma.sysdiagramsUpdateArgs<ExtArgs>,
+            result: $Utils.PayloadToResult<Prisma.$sysdiagramsPayload>
+          }
+          deleteMany: {
+            args: Prisma.sysdiagramsDeleteManyArgs<ExtArgs>,
+            result: Prisma.BatchPayload
+          }
+          updateMany: {
+            args: Prisma.sysdiagramsUpdateManyArgs<ExtArgs>,
+            result: Prisma.BatchPayload
+          }
+          upsert: {
+            args: Prisma.sysdiagramsUpsertArgs<ExtArgs>,
+            result: $Utils.PayloadToResult<Prisma.$sysdiagramsPayload>
+          }
+          aggregate: {
+            args: Prisma.SysdiagramsAggregateArgs<ExtArgs>,
+            result: $Utils.Optional<AggregateSysdiagrams>
+          }
+          groupBy: {
+            args: Prisma.sysdiagramsGroupByArgs<ExtArgs>,
+            result: $Utils.Optional<SysdiagramsGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.sysdiagramsCountArgs<ExtArgs>,
+            result: $Utils.Optional<SysdiagramsCountAggregateOutputType> | number
           }
         }
       }
@@ -5263,6 +5427,7 @@ export namespace Prisma {
     ID_Layout: bigint | null
     BackgroudPicture: Buffer | null
     Order: number | null
+    VisibleInMenu: boolean | null
   }
 
   export type DBT_MealGroupsMaxAggregateOutputType = {
@@ -5272,6 +5437,7 @@ export namespace Prisma {
     ID_Layout: bigint | null
     BackgroudPicture: Buffer | null
     Order: number | null
+    VisibleInMenu: boolean | null
   }
 
   export type DBT_MealGroupsCountAggregateOutputType = {
@@ -5281,6 +5447,7 @@ export namespace Prisma {
     ID_Layout: number
     BackgroudPicture: number
     Order: number
+    VisibleInMenu: number
     _all: number
   }
 
@@ -5304,6 +5471,7 @@ export namespace Prisma {
     ID_Layout?: true
     BackgroudPicture?: true
     Order?: true
+    VisibleInMenu?: true
   }
 
   export type DBT_MealGroupsMaxAggregateInputType = {
@@ -5313,6 +5481,7 @@ export namespace Prisma {
     ID_Layout?: true
     BackgroudPicture?: true
     Order?: true
+    VisibleInMenu?: true
   }
 
   export type DBT_MealGroupsCountAggregateInputType = {
@@ -5322,6 +5491,7 @@ export namespace Prisma {
     ID_Layout?: true
     BackgroudPicture?: true
     Order?: true
+    VisibleInMenu?: true
     _all?: true
   }
 
@@ -5418,6 +5588,7 @@ export namespace Prisma {
     ID_Layout: bigint | null
     BackgroudPicture: Buffer | null
     Order: number | null
+    VisibleInMenu: boolean
     _count: DBT_MealGroupsCountAggregateOutputType | null
     _avg: DBT_MealGroupsAvgAggregateOutputType | null
     _sum: DBT_MealGroupsSumAggregateOutputType | null
@@ -5446,6 +5617,7 @@ export namespace Prisma {
     ID_Layout?: boolean
     BackgroudPicture?: boolean
     Order?: boolean
+    VisibleInMenu?: boolean
   }, ExtArgs["result"]["dBT_MealGroups"]>
 
   export type DBT_MealGroupsSelectScalar = {
@@ -5455,6 +5627,7 @@ export namespace Prisma {
     ID_Layout?: boolean
     BackgroudPicture?: boolean
     Order?: boolean
+    VisibleInMenu?: boolean
   }
 
 
@@ -5469,6 +5642,7 @@ export namespace Prisma {
       ID_Layout: bigint | null
       BackgroudPicture: Buffer | null
       Order: number | null
+      VisibleInMenu: boolean
     }, ExtArgs["result"]["dBT_MealGroups"]>
     composites: {}
   }
@@ -5869,6 +6043,7 @@ export namespace Prisma {
     readonly ID_Layout: FieldRef<"DBT_MealGroups", 'BigInt'>
     readonly BackgroudPicture: FieldRef<"DBT_MealGroups", 'Bytes'>
     readonly Order: FieldRef<"DBT_MealGroups", 'Int'>
+    readonly VisibleInMenu: FieldRef<"DBT_MealGroups", 'Boolean'>
   }
     
 
@@ -6176,8 +6351,8 @@ export namespace Prisma {
     IsCombo: boolean | null
     Picture: Buffer | null
     PictureDescription: string | null
-    Dicountable: Decimal | null
     Recipe: Buffer | null
+    Dicountable: Decimal | null
   }
 
   export type DBT_MealsMaxAggregateOutputType = {
@@ -6191,8 +6366,8 @@ export namespace Prisma {
     IsCombo: boolean | null
     Picture: Buffer | null
     PictureDescription: string | null
-    Dicountable: Decimal | null
     Recipe: Buffer | null
+    Dicountable: Decimal | null
   }
 
   export type DBT_MealsCountAggregateOutputType = {
@@ -6206,8 +6381,8 @@ export namespace Prisma {
     IsCombo: number
     Picture: number
     PictureDescription: number
-    Dicountable: number
     Recipe: number
+    Dicountable: number
     _all: number
   }
 
@@ -6235,8 +6410,8 @@ export namespace Prisma {
     IsCombo?: true
     Picture?: true
     PictureDescription?: true
-    Dicountable?: true
     Recipe?: true
+    Dicountable?: true
   }
 
   export type DBT_MealsMaxAggregateInputType = {
@@ -6250,8 +6425,8 @@ export namespace Prisma {
     IsCombo?: true
     Picture?: true
     PictureDescription?: true
-    Dicountable?: true
     Recipe?: true
+    Dicountable?: true
   }
 
   export type DBT_MealsCountAggregateInputType = {
@@ -6265,8 +6440,8 @@ export namespace Prisma {
     IsCombo?: true
     Picture?: true
     PictureDescription?: true
-    Dicountable?: true
     Recipe?: true
+    Dicountable?: true
     _all?: true
   }
 
@@ -6367,8 +6542,8 @@ export namespace Prisma {
     IsCombo: boolean
     Picture: Buffer | null
     PictureDescription: string | null
-    Dicountable: Decimal | null
     Recipe: Buffer | null
+    Dicountable: Decimal | null
     _count: DBT_MealsCountAggregateOutputType | null
     _avg: DBT_MealsAvgAggregateOutputType | null
     _sum: DBT_MealsSumAggregateOutputType | null
@@ -6401,8 +6576,8 @@ export namespace Prisma {
     IsCombo?: boolean
     Picture?: boolean
     PictureDescription?: boolean
-    Dicountable?: boolean
     Recipe?: boolean
+    Dicountable?: boolean
   }, ExtArgs["result"]["dBT_Meals"]>
 
   export type DBT_MealsSelectScalar = {
@@ -6416,8 +6591,8 @@ export namespace Prisma {
     IsCombo?: boolean
     Picture?: boolean
     PictureDescription?: boolean
-    Dicountable?: boolean
     Recipe?: boolean
+    Dicountable?: boolean
   }
 
 
@@ -6436,8 +6611,8 @@ export namespace Prisma {
       IsCombo: boolean
       Picture: Buffer | null
       PictureDescription: string | null
-      Dicountable: Prisma.Decimal | null
       Recipe: Buffer | null
+      Dicountable: Prisma.Decimal | null
     }, ExtArgs["result"]["dBT_Meals"]>
     composites: {}
   }
@@ -6842,8 +7017,8 @@ export namespace Prisma {
     readonly IsCombo: FieldRef<"DBT_Meals", 'Boolean'>
     readonly Picture: FieldRef<"DBT_Meals", 'Bytes'>
     readonly PictureDescription: FieldRef<"DBT_Meals", 'String'>
-    readonly Dicountable: FieldRef<"DBT_Meals", 'Decimal'>
     readonly Recipe: FieldRef<"DBT_Meals", 'Bytes'>
+    readonly Dicountable: FieldRef<"DBT_Meals", 'Decimal'>
   }
     
 
@@ -8040,8 +8215,8 @@ export namespace Prisma {
     ID_Variant: number | null
     Price: Decimal | null
     ID_User: number | null
-    Discountable: Decimal | null
     ID_Payment: number | null
+    Discountable: Decimal | null
   }
 
   export type DBT_OrderItemsSumAggregateOutputType = {
@@ -8051,8 +8226,8 @@ export namespace Prisma {
     ID_Variant: bigint | null
     Price: Decimal | null
     ID_User: bigint | null
-    Discountable: Decimal | null
     ID_Payment: bigint | null
+    Discountable: Decimal | null
   }
 
   export type DBT_OrderItemsMinAggregateOutputType = {
@@ -8066,9 +8241,9 @@ export namespace Prisma {
     ID_User: bigint | null
     Time_Prepared: Date | null
     Time_Delivered: Date | null
-    Discountable: Decimal | null
     ID_Payment: bigint | null
     Note: string | null
+    Discountable: Decimal | null
   }
 
   export type DBT_OrderItemsMaxAggregateOutputType = {
@@ -8082,9 +8257,9 @@ export namespace Prisma {
     ID_User: bigint | null
     Time_Prepared: Date | null
     Time_Delivered: Date | null
-    Discountable: Decimal | null
     ID_Payment: bigint | null
     Note: string | null
+    Discountable: Decimal | null
   }
 
   export type DBT_OrderItemsCountAggregateOutputType = {
@@ -8098,9 +8273,9 @@ export namespace Prisma {
     ID_User: number
     Time_Prepared: number
     Time_Delivered: number
-    Discountable: number
     ID_Payment: number
     Note: number
+    Discountable: number
     _all: number
   }
 
@@ -8112,8 +8287,8 @@ export namespace Prisma {
     ID_Variant?: true
     Price?: true
     ID_User?: true
-    Discountable?: true
     ID_Payment?: true
+    Discountable?: true
   }
 
   export type DBT_OrderItemsSumAggregateInputType = {
@@ -8123,8 +8298,8 @@ export namespace Prisma {
     ID_Variant?: true
     Price?: true
     ID_User?: true
-    Discountable?: true
     ID_Payment?: true
+    Discountable?: true
   }
 
   export type DBT_OrderItemsMinAggregateInputType = {
@@ -8138,9 +8313,9 @@ export namespace Prisma {
     ID_User?: true
     Time_Prepared?: true
     Time_Delivered?: true
-    Discountable?: true
     ID_Payment?: true
     Note?: true
+    Discountable?: true
   }
 
   export type DBT_OrderItemsMaxAggregateInputType = {
@@ -8154,9 +8329,9 @@ export namespace Prisma {
     ID_User?: true
     Time_Prepared?: true
     Time_Delivered?: true
-    Discountable?: true
     ID_Payment?: true
     Note?: true
+    Discountable?: true
   }
 
   export type DBT_OrderItemsCountAggregateInputType = {
@@ -8170,9 +8345,9 @@ export namespace Prisma {
     ID_User?: true
     Time_Prepared?: true
     Time_Delivered?: true
-    Discountable?: true
     ID_Payment?: true
     Note?: true
+    Discountable?: true
     _all?: true
   }
 
@@ -8273,9 +8448,9 @@ export namespace Prisma {
     ID_User: bigint | null
     Time_Prepared: Date | null
     Time_Delivered: Date | null
-    Discountable: Decimal | null
     ID_Payment: bigint | null
     Note: string | null
+    Discountable: Decimal | null
     _count: DBT_OrderItemsCountAggregateOutputType | null
     _avg: DBT_OrderItemsAvgAggregateOutputType | null
     _sum: DBT_OrderItemsSumAggregateOutputType | null
@@ -8308,9 +8483,9 @@ export namespace Prisma {
     ID_User?: boolean
     Time_Prepared?: boolean
     Time_Delivered?: boolean
-    Discountable?: boolean
     ID_Payment?: boolean
     Note?: boolean
+    Discountable?: boolean
   }, ExtArgs["result"]["dBT_OrderItems"]>
 
   export type DBT_OrderItemsSelectScalar = {
@@ -8324,9 +8499,9 @@ export namespace Prisma {
     ID_User?: boolean
     Time_Prepared?: boolean
     Time_Delivered?: boolean
-    Discountable?: boolean
     ID_Payment?: boolean
     Note?: boolean
+    Discountable?: boolean
   }
 
 
@@ -8345,9 +8520,9 @@ export namespace Prisma {
       ID_User: bigint | null
       Time_Prepared: Date | null
       Time_Delivered: Date | null
-      Discountable: Prisma.Decimal | null
       ID_Payment: bigint | null
       Note: string | null
+      Discountable: Prisma.Decimal | null
     }, ExtArgs["result"]["dBT_OrderItems"]>
     composites: {}
   }
@@ -8752,9 +8927,9 @@ export namespace Prisma {
     readonly ID_User: FieldRef<"DBT_OrderItems", 'BigInt'>
     readonly Time_Prepared: FieldRef<"DBT_OrderItems", 'DateTime'>
     readonly Time_Delivered: FieldRef<"DBT_OrderItems", 'DateTime'>
-    readonly Discountable: FieldRef<"DBT_OrderItems", 'Decimal'>
     readonly ID_Payment: FieldRef<"DBT_OrderItems", 'BigInt'>
     readonly Note: FieldRef<"DBT_OrderItems", 'String'>
+    readonly Discountable: FieldRef<"DBT_OrderItems", 'Decimal'>
   }
     
 
@@ -9064,8 +9239,8 @@ export namespace Prisma {
     Canceled: boolean | null
     Price: Decimal | null
     OrderClosed: boolean | null
-    ID_User: bigint | null
     Note: string | null
+    ID_User: bigint | null
   }
 
   export type DBT_OrdersMaxAggregateOutputType = {
@@ -9077,8 +9252,8 @@ export namespace Prisma {
     Canceled: boolean | null
     Price: Decimal | null
     OrderClosed: boolean | null
-    ID_User: bigint | null
     Note: string | null
+    ID_User: bigint | null
   }
 
   export type DBT_OrdersCountAggregateOutputType = {
@@ -9090,8 +9265,8 @@ export namespace Prisma {
     Canceled: number
     Price: number
     OrderClosed: number
-    ID_User: number
     Note: number
+    ID_User: number
     _all: number
   }
 
@@ -9121,8 +9296,8 @@ export namespace Prisma {
     Canceled?: true
     Price?: true
     OrderClosed?: true
-    ID_User?: true
     Note?: true
+    ID_User?: true
   }
 
   export type DBT_OrdersMaxAggregateInputType = {
@@ -9134,8 +9309,8 @@ export namespace Prisma {
     Canceled?: true
     Price?: true
     OrderClosed?: true
-    ID_User?: true
     Note?: true
+    ID_User?: true
   }
 
   export type DBT_OrdersCountAggregateInputType = {
@@ -9147,8 +9322,8 @@ export namespace Prisma {
     Canceled?: true
     Price?: true
     OrderClosed?: true
-    ID_User?: true
     Note?: true
+    ID_User?: true
     _all?: true
   }
 
@@ -9247,8 +9422,8 @@ export namespace Prisma {
     Canceled: boolean | null
     Price: Decimal | null
     OrderClosed: boolean | null
-    ID_User: bigint | null
     Note: string | null
+    ID_User: bigint | null
     _count: DBT_OrdersCountAggregateOutputType | null
     _avg: DBT_OrdersAvgAggregateOutputType | null
     _sum: DBT_OrdersSumAggregateOutputType | null
@@ -9279,8 +9454,8 @@ export namespace Prisma {
     Canceled?: boolean
     Price?: boolean
     OrderClosed?: boolean
-    ID_User?: boolean
     Note?: boolean
+    ID_User?: boolean
   }, ExtArgs["result"]["dBT_Orders"]>
 
   export type DBT_OrdersSelectScalar = {
@@ -9292,8 +9467,8 @@ export namespace Prisma {
     Canceled?: boolean
     Price?: boolean
     OrderClosed?: boolean
-    ID_User?: boolean
     Note?: boolean
+    ID_User?: boolean
   }
 
 
@@ -9310,8 +9485,8 @@ export namespace Prisma {
       Canceled: boolean | null
       Price: Prisma.Decimal | null
       OrderClosed: boolean | null
-      ID_User: bigint | null
       Note: string | null
+      ID_User: bigint | null
     }, ExtArgs["result"]["dBT_Orders"]>
     composites: {}
   }
@@ -9714,8 +9889,8 @@ export namespace Prisma {
     readonly Canceled: FieldRef<"DBT_Orders", 'Boolean'>
     readonly Price: FieldRef<"DBT_Orders", 'Decimal'>
     readonly OrderClosed: FieldRef<"DBT_Orders", 'Boolean'>
-    readonly ID_User: FieldRef<"DBT_Orders", 'BigInt'>
     readonly Note: FieldRef<"DBT_Orders", 'String'>
+    readonly ID_User: FieldRef<"DBT_Orders", 'BigInt'>
   }
     
 
@@ -17118,8 +17293,8 @@ export namespace Prisma {
     ItemsCost: Decimal | null
     Taxes: Decimal | null
     ID_User: number | null
-    DiscountPercent: Decimal | null
     RealPayment: Decimal | null
+    DiscountPercent: Decimal | null
   }
 
   export type DBT_PaymentsSumAggregateOutputType = {
@@ -17131,8 +17306,8 @@ export namespace Prisma {
     ItemsCost: Decimal | null
     Taxes: Decimal | null
     ID_User: bigint | null
-    DiscountPercent: Decimal | null
     RealPayment: Decimal | null
+    DiscountPercent: Decimal | null
   }
 
   export type DBT_PaymentsMinAggregateOutputType = {
@@ -17148,9 +17323,9 @@ export namespace Prisma {
     Taxes: Decimal | null
     TimeOfPay: Date | null
     ID_User: bigint | null
-    DiscountPercent: Decimal | null
-    RealPayment: Decimal | null
     Vaucher: string | null
+    RealPayment: Decimal | null
+    DiscountPercent: Decimal | null
     Deleted: boolean | null
   }
 
@@ -17167,9 +17342,9 @@ export namespace Prisma {
     Taxes: Decimal | null
     TimeOfPay: Date | null
     ID_User: bigint | null
-    DiscountPercent: Decimal | null
-    RealPayment: Decimal | null
     Vaucher: string | null
+    RealPayment: Decimal | null
+    DiscountPercent: Decimal | null
     Deleted: boolean | null
   }
 
@@ -17186,9 +17361,9 @@ export namespace Prisma {
     Taxes: number
     TimeOfPay: number
     ID_User: number
-    DiscountPercent: number
-    RealPayment: number
     Vaucher: number
+    RealPayment: number
+    DiscountPercent: number
     Deleted: number
     _all: number
   }
@@ -17203,8 +17378,8 @@ export namespace Prisma {
     ItemsCost?: true
     Taxes?: true
     ID_User?: true
-    DiscountPercent?: true
     RealPayment?: true
+    DiscountPercent?: true
   }
 
   export type DBT_PaymentsSumAggregateInputType = {
@@ -17216,8 +17391,8 @@ export namespace Prisma {
     ItemsCost?: true
     Taxes?: true
     ID_User?: true
-    DiscountPercent?: true
     RealPayment?: true
+    DiscountPercent?: true
   }
 
   export type DBT_PaymentsMinAggregateInputType = {
@@ -17233,9 +17408,9 @@ export namespace Prisma {
     Taxes?: true
     TimeOfPay?: true
     ID_User?: true
-    DiscountPercent?: true
-    RealPayment?: true
     Vaucher?: true
+    RealPayment?: true
+    DiscountPercent?: true
     Deleted?: true
   }
 
@@ -17252,9 +17427,9 @@ export namespace Prisma {
     Taxes?: true
     TimeOfPay?: true
     ID_User?: true
-    DiscountPercent?: true
-    RealPayment?: true
     Vaucher?: true
+    RealPayment?: true
+    DiscountPercent?: true
     Deleted?: true
   }
 
@@ -17271,9 +17446,9 @@ export namespace Prisma {
     Taxes?: true
     TimeOfPay?: true
     ID_User?: true
-    DiscountPercent?: true
-    RealPayment?: true
     Vaucher?: true
+    RealPayment?: true
+    DiscountPercent?: true
     Deleted?: true
     _all?: true
   }
@@ -17377,9 +17552,9 @@ export namespace Prisma {
     Taxes: Decimal | null
     TimeOfPay: Date | null
     ID_User: bigint | null
-    DiscountPercent: Decimal
-    RealPayment: Decimal | null
     Vaucher: string | null
+    RealPayment: Decimal | null
+    DiscountPercent: Decimal
     Deleted: boolean | null
     _count: DBT_PaymentsCountAggregateOutputType | null
     _avg: DBT_PaymentsAvgAggregateOutputType | null
@@ -17415,9 +17590,9 @@ export namespace Prisma {
     Taxes?: boolean
     TimeOfPay?: boolean
     ID_User?: boolean
-    DiscountPercent?: boolean
-    RealPayment?: boolean
     Vaucher?: boolean
+    RealPayment?: boolean
+    DiscountPercent?: boolean
     Deleted?: boolean
   }, ExtArgs["result"]["dBT_Payments"]>
 
@@ -17434,9 +17609,9 @@ export namespace Prisma {
     Taxes?: boolean
     TimeOfPay?: boolean
     ID_User?: boolean
-    DiscountPercent?: boolean
-    RealPayment?: boolean
     Vaucher?: boolean
+    RealPayment?: boolean
+    DiscountPercent?: boolean
     Deleted?: boolean
   }
 
@@ -17458,9 +17633,9 @@ export namespace Prisma {
       Taxes: Prisma.Decimal | null
       TimeOfPay: Date | null
       ID_User: bigint | null
-      DiscountPercent: Prisma.Decimal
-      RealPayment: Prisma.Decimal | null
       Vaucher: string | null
+      RealPayment: Prisma.Decimal | null
+      DiscountPercent: Prisma.Decimal
       Deleted: boolean | null
     }, ExtArgs["result"]["dBT_Payments"]>
     composites: {}
@@ -17868,9 +18043,9 @@ export namespace Prisma {
     readonly Taxes: FieldRef<"DBT_Payments", 'Decimal'>
     readonly TimeOfPay: FieldRef<"DBT_Payments", 'DateTime'>
     readonly ID_User: FieldRef<"DBT_Payments", 'BigInt'>
-    readonly DiscountPercent: FieldRef<"DBT_Payments", 'Decimal'>
-    readonly RealPayment: FieldRef<"DBT_Payments", 'Decimal'>
     readonly Vaucher: FieldRef<"DBT_Payments", 'String'>
+    readonly RealPayment: FieldRef<"DBT_Payments", 'Decimal'>
+    readonly DiscountPercent: FieldRef<"DBT_Payments", 'Decimal'>
     readonly Deleted: FieldRef<"DBT_Payments", 'Boolean'>
   }
     
@@ -21682,6 +21857,1783 @@ export namespace Prisma {
 
 
   /**
+   * Model DBT_UILayouts
+   */
+
+  export type AggregateDBT_UILayouts = {
+    _count: DBT_UILayoutsCountAggregateOutputType | null
+    _avg: DBT_UILayoutsAvgAggregateOutputType | null
+    _sum: DBT_UILayoutsSumAggregateOutputType | null
+    _min: DBT_UILayoutsMinAggregateOutputType | null
+    _max: DBT_UILayoutsMaxAggregateOutputType | null
+  }
+
+  export type DBT_UILayoutsAvgAggregateOutputType = {
+    id: number | null
+  }
+
+  export type DBT_UILayoutsSumAggregateOutputType = {
+    id: bigint | null
+  }
+
+  export type DBT_UILayoutsMinAggregateOutputType = {
+    id: bigint | null
+    name: string | null
+    viewName: string | null
+    state: string | null
+  }
+
+  export type DBT_UILayoutsMaxAggregateOutputType = {
+    id: bigint | null
+    name: string | null
+    viewName: string | null
+    state: string | null
+  }
+
+  export type DBT_UILayoutsCountAggregateOutputType = {
+    id: number
+    name: number
+    viewName: number
+    state: number
+    _all: number
+  }
+
+
+  export type DBT_UILayoutsAvgAggregateInputType = {
+    id?: true
+  }
+
+  export type DBT_UILayoutsSumAggregateInputType = {
+    id?: true
+  }
+
+  export type DBT_UILayoutsMinAggregateInputType = {
+    id?: true
+    name?: true
+    viewName?: true
+    state?: true
+  }
+
+  export type DBT_UILayoutsMaxAggregateInputType = {
+    id?: true
+    name?: true
+    viewName?: true
+    state?: true
+  }
+
+  export type DBT_UILayoutsCountAggregateInputType = {
+    id?: true
+    name?: true
+    viewName?: true
+    state?: true
+    _all?: true
+  }
+
+  export type DBT_UILayoutsAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which DBT_UILayouts to aggregate.
+     */
+    where?: DBT_UILayoutsWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of DBT_UILayouts to fetch.
+     */
+    orderBy?: DBT_UILayoutsOrderByWithRelationInput | DBT_UILayoutsOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: DBT_UILayoutsWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` DBT_UILayouts from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` DBT_UILayouts.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned DBT_UILayouts
+    **/
+    _count?: true | DBT_UILayoutsCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: DBT_UILayoutsAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: DBT_UILayoutsSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: DBT_UILayoutsMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: DBT_UILayoutsMaxAggregateInputType
+  }
+
+  export type GetDBT_UILayoutsAggregateType<T extends DBT_UILayoutsAggregateArgs> = {
+        [P in keyof T & keyof AggregateDBT_UILayouts]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateDBT_UILayouts[P]>
+      : GetScalarType<T[P], AggregateDBT_UILayouts[P]>
+  }
+
+
+
+
+  export type DBT_UILayoutsGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: DBT_UILayoutsWhereInput
+    orderBy?: DBT_UILayoutsOrderByWithAggregationInput | DBT_UILayoutsOrderByWithAggregationInput[]
+    by: DBT_UILayoutsScalarFieldEnum[] | DBT_UILayoutsScalarFieldEnum
+    having?: DBT_UILayoutsScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: DBT_UILayoutsCountAggregateInputType | true
+    _avg?: DBT_UILayoutsAvgAggregateInputType
+    _sum?: DBT_UILayoutsSumAggregateInputType
+    _min?: DBT_UILayoutsMinAggregateInputType
+    _max?: DBT_UILayoutsMaxAggregateInputType
+  }
+
+  export type DBT_UILayoutsGroupByOutputType = {
+    id: bigint
+    name: string | null
+    viewName: string | null
+    state: string | null
+    _count: DBT_UILayoutsCountAggregateOutputType | null
+    _avg: DBT_UILayoutsAvgAggregateOutputType | null
+    _sum: DBT_UILayoutsSumAggregateOutputType | null
+    _min: DBT_UILayoutsMinAggregateOutputType | null
+    _max: DBT_UILayoutsMaxAggregateOutputType | null
+  }
+
+  type GetDBT_UILayoutsGroupByPayload<T extends DBT_UILayoutsGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<DBT_UILayoutsGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof DBT_UILayoutsGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], DBT_UILayoutsGroupByOutputType[P]>
+            : GetScalarType<T[P], DBT_UILayoutsGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type DBT_UILayoutsSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    name?: boolean
+    viewName?: boolean
+    state?: boolean
+  }, ExtArgs["result"]["dBT_UILayouts"]>
+
+  export type DBT_UILayoutsSelectScalar = {
+    id?: boolean
+    name?: boolean
+    viewName?: boolean
+    state?: boolean
+  }
+
+
+
+  export type $DBT_UILayoutsPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "DBT_UILayouts"
+    objects: {}
+    scalars: $Extensions.GetPayloadResult<{
+      id: bigint
+      name: string | null
+      viewName: string | null
+      state: string | null
+    }, ExtArgs["result"]["dBT_UILayouts"]>
+    composites: {}
+  }
+
+
+  type DBT_UILayoutsGetPayload<S extends boolean | null | undefined | DBT_UILayoutsDefaultArgs> = $Result.GetResult<Prisma.$DBT_UILayoutsPayload, S>
+
+  type DBT_UILayoutsCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = 
+    Omit<DBT_UILayoutsFindManyArgs, 'select' | 'include' | 'distinct'> & {
+      select?: DBT_UILayoutsCountAggregateInputType | true
+    }
+
+  export interface DBT_UILayoutsDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['DBT_UILayouts'], meta: { name: 'DBT_UILayouts' } }
+    /**
+     * Find zero or one DBT_UILayouts that matches the filter.
+     * @param {DBT_UILayoutsFindUniqueArgs} args - Arguments to find a DBT_UILayouts
+     * @example
+     * // Get one DBT_UILayouts
+     * const dBT_UILayouts = await prisma.dBT_UILayouts.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+    **/
+    findUnique<T extends DBT_UILayoutsFindUniqueArgs<ExtArgs>>(
+      args: SelectSubset<T, DBT_UILayoutsFindUniqueArgs<ExtArgs>>
+    ): Prisma__DBT_UILayoutsClient<$Result.GetResult<Prisma.$DBT_UILayoutsPayload<ExtArgs>, T, 'findUnique'> | null, null, ExtArgs>
+
+    /**
+     * Find one DBT_UILayouts that matches the filter or throw an error with `error.code='P2025'` 
+     * if no matches were found.
+     * @param {DBT_UILayoutsFindUniqueOrThrowArgs} args - Arguments to find a DBT_UILayouts
+     * @example
+     * // Get one DBT_UILayouts
+     * const dBT_UILayouts = await prisma.dBT_UILayouts.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+    **/
+    findUniqueOrThrow<T extends DBT_UILayoutsFindUniqueOrThrowArgs<ExtArgs>>(
+      args?: SelectSubset<T, DBT_UILayoutsFindUniqueOrThrowArgs<ExtArgs>>
+    ): Prisma__DBT_UILayoutsClient<$Result.GetResult<Prisma.$DBT_UILayoutsPayload<ExtArgs>, T, 'findUniqueOrThrow'>, never, ExtArgs>
+
+    /**
+     * Find the first DBT_UILayouts that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {DBT_UILayoutsFindFirstArgs} args - Arguments to find a DBT_UILayouts
+     * @example
+     * // Get one DBT_UILayouts
+     * const dBT_UILayouts = await prisma.dBT_UILayouts.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+    **/
+    findFirst<T extends DBT_UILayoutsFindFirstArgs<ExtArgs>>(
+      args?: SelectSubset<T, DBT_UILayoutsFindFirstArgs<ExtArgs>>
+    ): Prisma__DBT_UILayoutsClient<$Result.GetResult<Prisma.$DBT_UILayoutsPayload<ExtArgs>, T, 'findFirst'> | null, null, ExtArgs>
+
+    /**
+     * Find the first DBT_UILayouts that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {DBT_UILayoutsFindFirstOrThrowArgs} args - Arguments to find a DBT_UILayouts
+     * @example
+     * // Get one DBT_UILayouts
+     * const dBT_UILayouts = await prisma.dBT_UILayouts.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+    **/
+    findFirstOrThrow<T extends DBT_UILayoutsFindFirstOrThrowArgs<ExtArgs>>(
+      args?: SelectSubset<T, DBT_UILayoutsFindFirstOrThrowArgs<ExtArgs>>
+    ): Prisma__DBT_UILayoutsClient<$Result.GetResult<Prisma.$DBT_UILayoutsPayload<ExtArgs>, T, 'findFirstOrThrow'>, never, ExtArgs>
+
+    /**
+     * Find zero or more DBT_UILayouts that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {DBT_UILayoutsFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all DBT_UILayouts
+     * const dBT_UILayouts = await prisma.dBT_UILayouts.findMany()
+     * 
+     * // Get first 10 DBT_UILayouts
+     * const dBT_UILayouts = await prisma.dBT_UILayouts.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const dBT_UILayoutsWithIdOnly = await prisma.dBT_UILayouts.findMany({ select: { id: true } })
+     * 
+    **/
+    findMany<T extends DBT_UILayoutsFindManyArgs<ExtArgs>>(
+      args?: SelectSubset<T, DBT_UILayoutsFindManyArgs<ExtArgs>>
+    ): Prisma.PrismaPromise<$Result.GetResult<Prisma.$DBT_UILayoutsPayload<ExtArgs>, T, 'findMany'>>
+
+    /**
+     * Create a DBT_UILayouts.
+     * @param {DBT_UILayoutsCreateArgs} args - Arguments to create a DBT_UILayouts.
+     * @example
+     * // Create one DBT_UILayouts
+     * const DBT_UILayouts = await prisma.dBT_UILayouts.create({
+     *   data: {
+     *     // ... data to create a DBT_UILayouts
+     *   }
+     * })
+     * 
+    **/
+    create<T extends DBT_UILayoutsCreateArgs<ExtArgs>>(
+      args: SelectSubset<T, DBT_UILayoutsCreateArgs<ExtArgs>>
+    ): Prisma__DBT_UILayoutsClient<$Result.GetResult<Prisma.$DBT_UILayoutsPayload<ExtArgs>, T, 'create'>, never, ExtArgs>
+
+    /**
+     * Create many DBT_UILayouts.
+     * @param {DBT_UILayoutsCreateManyArgs} args - Arguments to create many DBT_UILayouts.
+     * @example
+     * // Create many DBT_UILayouts
+     * const dBT_UILayouts = await prisma.dBT_UILayouts.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+    **/
+    createMany<T extends DBT_UILayoutsCreateManyArgs<ExtArgs>>(
+      args?: SelectSubset<T, DBT_UILayoutsCreateManyArgs<ExtArgs>>
+    ): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Delete a DBT_UILayouts.
+     * @param {DBT_UILayoutsDeleteArgs} args - Arguments to delete one DBT_UILayouts.
+     * @example
+     * // Delete one DBT_UILayouts
+     * const DBT_UILayouts = await prisma.dBT_UILayouts.delete({
+     *   where: {
+     *     // ... filter to delete one DBT_UILayouts
+     *   }
+     * })
+     * 
+    **/
+    delete<T extends DBT_UILayoutsDeleteArgs<ExtArgs>>(
+      args: SelectSubset<T, DBT_UILayoutsDeleteArgs<ExtArgs>>
+    ): Prisma__DBT_UILayoutsClient<$Result.GetResult<Prisma.$DBT_UILayoutsPayload<ExtArgs>, T, 'delete'>, never, ExtArgs>
+
+    /**
+     * Update one DBT_UILayouts.
+     * @param {DBT_UILayoutsUpdateArgs} args - Arguments to update one DBT_UILayouts.
+     * @example
+     * // Update one DBT_UILayouts
+     * const dBT_UILayouts = await prisma.dBT_UILayouts.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+    **/
+    update<T extends DBT_UILayoutsUpdateArgs<ExtArgs>>(
+      args: SelectSubset<T, DBT_UILayoutsUpdateArgs<ExtArgs>>
+    ): Prisma__DBT_UILayoutsClient<$Result.GetResult<Prisma.$DBT_UILayoutsPayload<ExtArgs>, T, 'update'>, never, ExtArgs>
+
+    /**
+     * Delete zero or more DBT_UILayouts.
+     * @param {DBT_UILayoutsDeleteManyArgs} args - Arguments to filter DBT_UILayouts to delete.
+     * @example
+     * // Delete a few DBT_UILayouts
+     * const { count } = await prisma.dBT_UILayouts.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+    **/
+    deleteMany<T extends DBT_UILayoutsDeleteManyArgs<ExtArgs>>(
+      args?: SelectSubset<T, DBT_UILayoutsDeleteManyArgs<ExtArgs>>
+    ): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more DBT_UILayouts.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {DBT_UILayoutsUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many DBT_UILayouts
+     * const dBT_UILayouts = await prisma.dBT_UILayouts.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+    **/
+    updateMany<T extends DBT_UILayoutsUpdateManyArgs<ExtArgs>>(
+      args: SelectSubset<T, DBT_UILayoutsUpdateManyArgs<ExtArgs>>
+    ): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create or update one DBT_UILayouts.
+     * @param {DBT_UILayoutsUpsertArgs} args - Arguments to update or create a DBT_UILayouts.
+     * @example
+     * // Update or create a DBT_UILayouts
+     * const dBT_UILayouts = await prisma.dBT_UILayouts.upsert({
+     *   create: {
+     *     // ... data to create a DBT_UILayouts
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the DBT_UILayouts we want to update
+     *   }
+     * })
+    **/
+    upsert<T extends DBT_UILayoutsUpsertArgs<ExtArgs>>(
+      args: SelectSubset<T, DBT_UILayoutsUpsertArgs<ExtArgs>>
+    ): Prisma__DBT_UILayoutsClient<$Result.GetResult<Prisma.$DBT_UILayoutsPayload<ExtArgs>, T, 'upsert'>, never, ExtArgs>
+
+    /**
+     * Count the number of DBT_UILayouts.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {DBT_UILayoutsCountArgs} args - Arguments to filter DBT_UILayouts to count.
+     * @example
+     * // Count the number of DBT_UILayouts
+     * const count = await prisma.dBT_UILayouts.count({
+     *   where: {
+     *     // ... the filter for the DBT_UILayouts we want to count
+     *   }
+     * })
+    **/
+    count<T extends DBT_UILayoutsCountArgs>(
+      args?: Subset<T, DBT_UILayoutsCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], DBT_UILayoutsCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a DBT_UILayouts.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {DBT_UILayoutsAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends DBT_UILayoutsAggregateArgs>(args: Subset<T, DBT_UILayoutsAggregateArgs>): Prisma.PrismaPromise<GetDBT_UILayoutsAggregateType<T>>
+
+    /**
+     * Group by DBT_UILayouts.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {DBT_UILayoutsGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends DBT_UILayoutsGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: DBT_UILayoutsGroupByArgs['orderBy'] }
+        : { orderBy?: DBT_UILayoutsGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, DBT_UILayoutsGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetDBT_UILayoutsGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the DBT_UILayouts model
+   */
+  readonly fields: DBT_UILayoutsFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for DBT_UILayouts.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__DBT_UILayoutsClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: 'PrismaPromise';
+
+
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>;
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>;
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>;
+  }
+
+
+
+  /**
+   * Fields of the DBT_UILayouts model
+   */ 
+  interface DBT_UILayoutsFieldRefs {
+    readonly id: FieldRef<"DBT_UILayouts", 'BigInt'>
+    readonly name: FieldRef<"DBT_UILayouts", 'String'>
+    readonly viewName: FieldRef<"DBT_UILayouts", 'String'>
+    readonly state: FieldRef<"DBT_UILayouts", 'String'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * DBT_UILayouts findUnique
+   */
+  export type DBT_UILayoutsFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DBT_UILayouts
+     */
+    select?: DBT_UILayoutsSelect<ExtArgs> | null
+    /**
+     * Filter, which DBT_UILayouts to fetch.
+     */
+    where: DBT_UILayoutsWhereUniqueInput
+  }
+
+  /**
+   * DBT_UILayouts findUniqueOrThrow
+   */
+  export type DBT_UILayoutsFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DBT_UILayouts
+     */
+    select?: DBT_UILayoutsSelect<ExtArgs> | null
+    /**
+     * Filter, which DBT_UILayouts to fetch.
+     */
+    where: DBT_UILayoutsWhereUniqueInput
+  }
+
+  /**
+   * DBT_UILayouts findFirst
+   */
+  export type DBT_UILayoutsFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DBT_UILayouts
+     */
+    select?: DBT_UILayoutsSelect<ExtArgs> | null
+    /**
+     * Filter, which DBT_UILayouts to fetch.
+     */
+    where?: DBT_UILayoutsWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of DBT_UILayouts to fetch.
+     */
+    orderBy?: DBT_UILayoutsOrderByWithRelationInput | DBT_UILayoutsOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for DBT_UILayouts.
+     */
+    cursor?: DBT_UILayoutsWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` DBT_UILayouts from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` DBT_UILayouts.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of DBT_UILayouts.
+     */
+    distinct?: DBT_UILayoutsScalarFieldEnum | DBT_UILayoutsScalarFieldEnum[]
+  }
+
+  /**
+   * DBT_UILayouts findFirstOrThrow
+   */
+  export type DBT_UILayoutsFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DBT_UILayouts
+     */
+    select?: DBT_UILayoutsSelect<ExtArgs> | null
+    /**
+     * Filter, which DBT_UILayouts to fetch.
+     */
+    where?: DBT_UILayoutsWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of DBT_UILayouts to fetch.
+     */
+    orderBy?: DBT_UILayoutsOrderByWithRelationInput | DBT_UILayoutsOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for DBT_UILayouts.
+     */
+    cursor?: DBT_UILayoutsWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` DBT_UILayouts from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` DBT_UILayouts.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of DBT_UILayouts.
+     */
+    distinct?: DBT_UILayoutsScalarFieldEnum | DBT_UILayoutsScalarFieldEnum[]
+  }
+
+  /**
+   * DBT_UILayouts findMany
+   */
+  export type DBT_UILayoutsFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DBT_UILayouts
+     */
+    select?: DBT_UILayoutsSelect<ExtArgs> | null
+    /**
+     * Filter, which DBT_UILayouts to fetch.
+     */
+    where?: DBT_UILayoutsWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of DBT_UILayouts to fetch.
+     */
+    orderBy?: DBT_UILayoutsOrderByWithRelationInput | DBT_UILayoutsOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing DBT_UILayouts.
+     */
+    cursor?: DBT_UILayoutsWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` DBT_UILayouts from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` DBT_UILayouts.
+     */
+    skip?: number
+    distinct?: DBT_UILayoutsScalarFieldEnum | DBT_UILayoutsScalarFieldEnum[]
+  }
+
+  /**
+   * DBT_UILayouts create
+   */
+  export type DBT_UILayoutsCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DBT_UILayouts
+     */
+    select?: DBT_UILayoutsSelect<ExtArgs> | null
+    /**
+     * The data needed to create a DBT_UILayouts.
+     */
+    data?: XOR<DBT_UILayoutsCreateInput, DBT_UILayoutsUncheckedCreateInput>
+  }
+
+  /**
+   * DBT_UILayouts createMany
+   */
+  export type DBT_UILayoutsCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many DBT_UILayouts.
+     */
+    data: DBT_UILayoutsCreateManyInput | DBT_UILayoutsCreateManyInput[]
+  }
+
+  /**
+   * DBT_UILayouts update
+   */
+  export type DBT_UILayoutsUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DBT_UILayouts
+     */
+    select?: DBT_UILayoutsSelect<ExtArgs> | null
+    /**
+     * The data needed to update a DBT_UILayouts.
+     */
+    data: XOR<DBT_UILayoutsUpdateInput, DBT_UILayoutsUncheckedUpdateInput>
+    /**
+     * Choose, which DBT_UILayouts to update.
+     */
+    where: DBT_UILayoutsWhereUniqueInput
+  }
+
+  /**
+   * DBT_UILayouts updateMany
+   */
+  export type DBT_UILayoutsUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update DBT_UILayouts.
+     */
+    data: XOR<DBT_UILayoutsUpdateManyMutationInput, DBT_UILayoutsUncheckedUpdateManyInput>
+    /**
+     * Filter which DBT_UILayouts to update
+     */
+    where?: DBT_UILayoutsWhereInput
+  }
+
+  /**
+   * DBT_UILayouts upsert
+   */
+  export type DBT_UILayoutsUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DBT_UILayouts
+     */
+    select?: DBT_UILayoutsSelect<ExtArgs> | null
+    /**
+     * The filter to search for the DBT_UILayouts to update in case it exists.
+     */
+    where: DBT_UILayoutsWhereUniqueInput
+    /**
+     * In case the DBT_UILayouts found by the `where` argument doesn't exist, create a new DBT_UILayouts with this data.
+     */
+    create: XOR<DBT_UILayoutsCreateInput, DBT_UILayoutsUncheckedCreateInput>
+    /**
+     * In case the DBT_UILayouts was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<DBT_UILayoutsUpdateInput, DBT_UILayoutsUncheckedUpdateInput>
+  }
+
+  /**
+   * DBT_UILayouts delete
+   */
+  export type DBT_UILayoutsDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DBT_UILayouts
+     */
+    select?: DBT_UILayoutsSelect<ExtArgs> | null
+    /**
+     * Filter which DBT_UILayouts to delete.
+     */
+    where: DBT_UILayoutsWhereUniqueInput
+  }
+
+  /**
+   * DBT_UILayouts deleteMany
+   */
+  export type DBT_UILayoutsDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which DBT_UILayouts to delete
+     */
+    where?: DBT_UILayoutsWhereInput
+  }
+
+  /**
+   * DBT_UILayouts without action
+   */
+  export type DBT_UILayoutsDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DBT_UILayouts
+     */
+    select?: DBT_UILayoutsSelect<ExtArgs> | null
+  }
+
+
+  /**
+   * Model sysdiagrams
+   */
+
+  export type AggregateSysdiagrams = {
+    _count: SysdiagramsCountAggregateOutputType | null
+    _avg: SysdiagramsAvgAggregateOutputType | null
+    _sum: SysdiagramsSumAggregateOutputType | null
+    _min: SysdiagramsMinAggregateOutputType | null
+    _max: SysdiagramsMaxAggregateOutputType | null
+  }
+
+  export type SysdiagramsAvgAggregateOutputType = {
+    principal_id: number | null
+    diagram_id: number | null
+    version: number | null
+  }
+
+  export type SysdiagramsSumAggregateOutputType = {
+    principal_id: number | null
+    diagram_id: number | null
+    version: number | null
+  }
+
+  export type SysdiagramsMinAggregateOutputType = {
+    name: string | null
+    principal_id: number | null
+    diagram_id: number | null
+    version: number | null
+    definition: Buffer | null
+  }
+
+  export type SysdiagramsMaxAggregateOutputType = {
+    name: string | null
+    principal_id: number | null
+    diagram_id: number | null
+    version: number | null
+    definition: Buffer | null
+  }
+
+  export type SysdiagramsCountAggregateOutputType = {
+    name: number
+    principal_id: number
+    diagram_id: number
+    version: number
+    definition: number
+    _all: number
+  }
+
+
+  export type SysdiagramsAvgAggregateInputType = {
+    principal_id?: true
+    diagram_id?: true
+    version?: true
+  }
+
+  export type SysdiagramsSumAggregateInputType = {
+    principal_id?: true
+    diagram_id?: true
+    version?: true
+  }
+
+  export type SysdiagramsMinAggregateInputType = {
+    name?: true
+    principal_id?: true
+    diagram_id?: true
+    version?: true
+    definition?: true
+  }
+
+  export type SysdiagramsMaxAggregateInputType = {
+    name?: true
+    principal_id?: true
+    diagram_id?: true
+    version?: true
+    definition?: true
+  }
+
+  export type SysdiagramsCountAggregateInputType = {
+    name?: true
+    principal_id?: true
+    diagram_id?: true
+    version?: true
+    definition?: true
+    _all?: true
+  }
+
+  export type SysdiagramsAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which sysdiagrams to aggregate.
+     */
+    where?: sysdiagramsWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of sysdiagrams to fetch.
+     */
+    orderBy?: sysdiagramsOrderByWithRelationInput | sysdiagramsOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: sysdiagramsWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` sysdiagrams from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` sysdiagrams.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned sysdiagrams
+    **/
+    _count?: true | SysdiagramsCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: SysdiagramsAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: SysdiagramsSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: SysdiagramsMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: SysdiagramsMaxAggregateInputType
+  }
+
+  export type GetSysdiagramsAggregateType<T extends SysdiagramsAggregateArgs> = {
+        [P in keyof T & keyof AggregateSysdiagrams]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateSysdiagrams[P]>
+      : GetScalarType<T[P], AggregateSysdiagrams[P]>
+  }
+
+
+
+
+  export type sysdiagramsGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: sysdiagramsWhereInput
+    orderBy?: sysdiagramsOrderByWithAggregationInput | sysdiagramsOrderByWithAggregationInput[]
+    by: SysdiagramsScalarFieldEnum[] | SysdiagramsScalarFieldEnum
+    having?: sysdiagramsScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: SysdiagramsCountAggregateInputType | true
+    _avg?: SysdiagramsAvgAggregateInputType
+    _sum?: SysdiagramsSumAggregateInputType
+    _min?: SysdiagramsMinAggregateInputType
+    _max?: SysdiagramsMaxAggregateInputType
+  }
+
+  export type SysdiagramsGroupByOutputType = {
+    name: string
+    principal_id: number
+    diagram_id: number
+    version: number | null
+    definition: Buffer | null
+    _count: SysdiagramsCountAggregateOutputType | null
+    _avg: SysdiagramsAvgAggregateOutputType | null
+    _sum: SysdiagramsSumAggregateOutputType | null
+    _min: SysdiagramsMinAggregateOutputType | null
+    _max: SysdiagramsMaxAggregateOutputType | null
+  }
+
+  type GetSysdiagramsGroupByPayload<T extends sysdiagramsGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<SysdiagramsGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof SysdiagramsGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], SysdiagramsGroupByOutputType[P]>
+            : GetScalarType<T[P], SysdiagramsGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type sysdiagramsSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    name?: boolean
+    principal_id?: boolean
+    diagram_id?: boolean
+    version?: boolean
+    definition?: boolean
+  }, ExtArgs["result"]["sysdiagrams"]>
+
+  export type sysdiagramsSelectScalar = {
+    name?: boolean
+    principal_id?: boolean
+    diagram_id?: boolean
+    version?: boolean
+    definition?: boolean
+  }
+
+
+
+  export type $sysdiagramsPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "sysdiagrams"
+    objects: {}
+    scalars: $Extensions.GetPayloadResult<{
+      name: string
+      principal_id: number
+      diagram_id: number
+      version: number | null
+      definition: Buffer | null
+    }, ExtArgs["result"]["sysdiagrams"]>
+    composites: {}
+  }
+
+
+  type sysdiagramsGetPayload<S extends boolean | null | undefined | sysdiagramsDefaultArgs> = $Result.GetResult<Prisma.$sysdiagramsPayload, S>
+
+  type sysdiagramsCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = 
+    Omit<sysdiagramsFindManyArgs, 'select' | 'include' | 'distinct'> & {
+      select?: SysdiagramsCountAggregateInputType | true
+    }
+
+  export interface sysdiagramsDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['sysdiagrams'], meta: { name: 'sysdiagrams' } }
+    /**
+     * Find zero or one Sysdiagrams that matches the filter.
+     * @param {sysdiagramsFindUniqueArgs} args - Arguments to find a Sysdiagrams
+     * @example
+     * // Get one Sysdiagrams
+     * const sysdiagrams = await prisma.sysdiagrams.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+    **/
+    findUnique<T extends sysdiagramsFindUniqueArgs<ExtArgs>>(
+      args: SelectSubset<T, sysdiagramsFindUniqueArgs<ExtArgs>>
+    ): Prisma__sysdiagramsClient<$Result.GetResult<Prisma.$sysdiagramsPayload<ExtArgs>, T, 'findUnique'> | null, null, ExtArgs>
+
+    /**
+     * Find one Sysdiagrams that matches the filter or throw an error with `error.code='P2025'` 
+     * if no matches were found.
+     * @param {sysdiagramsFindUniqueOrThrowArgs} args - Arguments to find a Sysdiagrams
+     * @example
+     * // Get one Sysdiagrams
+     * const sysdiagrams = await prisma.sysdiagrams.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+    **/
+    findUniqueOrThrow<T extends sysdiagramsFindUniqueOrThrowArgs<ExtArgs>>(
+      args?: SelectSubset<T, sysdiagramsFindUniqueOrThrowArgs<ExtArgs>>
+    ): Prisma__sysdiagramsClient<$Result.GetResult<Prisma.$sysdiagramsPayload<ExtArgs>, T, 'findUniqueOrThrow'>, never, ExtArgs>
+
+    /**
+     * Find the first Sysdiagrams that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {sysdiagramsFindFirstArgs} args - Arguments to find a Sysdiagrams
+     * @example
+     * // Get one Sysdiagrams
+     * const sysdiagrams = await prisma.sysdiagrams.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+    **/
+    findFirst<T extends sysdiagramsFindFirstArgs<ExtArgs>>(
+      args?: SelectSubset<T, sysdiagramsFindFirstArgs<ExtArgs>>
+    ): Prisma__sysdiagramsClient<$Result.GetResult<Prisma.$sysdiagramsPayload<ExtArgs>, T, 'findFirst'> | null, null, ExtArgs>
+
+    /**
+     * Find the first Sysdiagrams that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {sysdiagramsFindFirstOrThrowArgs} args - Arguments to find a Sysdiagrams
+     * @example
+     * // Get one Sysdiagrams
+     * const sysdiagrams = await prisma.sysdiagrams.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+    **/
+    findFirstOrThrow<T extends sysdiagramsFindFirstOrThrowArgs<ExtArgs>>(
+      args?: SelectSubset<T, sysdiagramsFindFirstOrThrowArgs<ExtArgs>>
+    ): Prisma__sysdiagramsClient<$Result.GetResult<Prisma.$sysdiagramsPayload<ExtArgs>, T, 'findFirstOrThrow'>, never, ExtArgs>
+
+    /**
+     * Find zero or more Sysdiagrams that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {sysdiagramsFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all Sysdiagrams
+     * const sysdiagrams = await prisma.sysdiagrams.findMany()
+     * 
+     * // Get first 10 Sysdiagrams
+     * const sysdiagrams = await prisma.sysdiagrams.findMany({ take: 10 })
+     * 
+     * // Only select the `name`
+     * const sysdiagramsWithNameOnly = await prisma.sysdiagrams.findMany({ select: { name: true } })
+     * 
+    **/
+    findMany<T extends sysdiagramsFindManyArgs<ExtArgs>>(
+      args?: SelectSubset<T, sysdiagramsFindManyArgs<ExtArgs>>
+    ): Prisma.PrismaPromise<$Result.GetResult<Prisma.$sysdiagramsPayload<ExtArgs>, T, 'findMany'>>
+
+    /**
+     * Create a Sysdiagrams.
+     * @param {sysdiagramsCreateArgs} args - Arguments to create a Sysdiagrams.
+     * @example
+     * // Create one Sysdiagrams
+     * const Sysdiagrams = await prisma.sysdiagrams.create({
+     *   data: {
+     *     // ... data to create a Sysdiagrams
+     *   }
+     * })
+     * 
+    **/
+    create<T extends sysdiagramsCreateArgs<ExtArgs>>(
+      args: SelectSubset<T, sysdiagramsCreateArgs<ExtArgs>>
+    ): Prisma__sysdiagramsClient<$Result.GetResult<Prisma.$sysdiagramsPayload<ExtArgs>, T, 'create'>, never, ExtArgs>
+
+    /**
+     * Create many Sysdiagrams.
+     * @param {sysdiagramsCreateManyArgs} args - Arguments to create many Sysdiagrams.
+     * @example
+     * // Create many Sysdiagrams
+     * const sysdiagrams = await prisma.sysdiagrams.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+    **/
+    createMany<T extends sysdiagramsCreateManyArgs<ExtArgs>>(
+      args?: SelectSubset<T, sysdiagramsCreateManyArgs<ExtArgs>>
+    ): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Delete a Sysdiagrams.
+     * @param {sysdiagramsDeleteArgs} args - Arguments to delete one Sysdiagrams.
+     * @example
+     * // Delete one Sysdiagrams
+     * const Sysdiagrams = await prisma.sysdiagrams.delete({
+     *   where: {
+     *     // ... filter to delete one Sysdiagrams
+     *   }
+     * })
+     * 
+    **/
+    delete<T extends sysdiagramsDeleteArgs<ExtArgs>>(
+      args: SelectSubset<T, sysdiagramsDeleteArgs<ExtArgs>>
+    ): Prisma__sysdiagramsClient<$Result.GetResult<Prisma.$sysdiagramsPayload<ExtArgs>, T, 'delete'>, never, ExtArgs>
+
+    /**
+     * Update one Sysdiagrams.
+     * @param {sysdiagramsUpdateArgs} args - Arguments to update one Sysdiagrams.
+     * @example
+     * // Update one Sysdiagrams
+     * const sysdiagrams = await prisma.sysdiagrams.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+    **/
+    update<T extends sysdiagramsUpdateArgs<ExtArgs>>(
+      args: SelectSubset<T, sysdiagramsUpdateArgs<ExtArgs>>
+    ): Prisma__sysdiagramsClient<$Result.GetResult<Prisma.$sysdiagramsPayload<ExtArgs>, T, 'update'>, never, ExtArgs>
+
+    /**
+     * Delete zero or more Sysdiagrams.
+     * @param {sysdiagramsDeleteManyArgs} args - Arguments to filter Sysdiagrams to delete.
+     * @example
+     * // Delete a few Sysdiagrams
+     * const { count } = await prisma.sysdiagrams.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+    **/
+    deleteMany<T extends sysdiagramsDeleteManyArgs<ExtArgs>>(
+      args?: SelectSubset<T, sysdiagramsDeleteManyArgs<ExtArgs>>
+    ): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Sysdiagrams.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {sysdiagramsUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many Sysdiagrams
+     * const sysdiagrams = await prisma.sysdiagrams.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+    **/
+    updateMany<T extends sysdiagramsUpdateManyArgs<ExtArgs>>(
+      args: SelectSubset<T, sysdiagramsUpdateManyArgs<ExtArgs>>
+    ): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create or update one Sysdiagrams.
+     * @param {sysdiagramsUpsertArgs} args - Arguments to update or create a Sysdiagrams.
+     * @example
+     * // Update or create a Sysdiagrams
+     * const sysdiagrams = await prisma.sysdiagrams.upsert({
+     *   create: {
+     *     // ... data to create a Sysdiagrams
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the Sysdiagrams we want to update
+     *   }
+     * })
+    **/
+    upsert<T extends sysdiagramsUpsertArgs<ExtArgs>>(
+      args: SelectSubset<T, sysdiagramsUpsertArgs<ExtArgs>>
+    ): Prisma__sysdiagramsClient<$Result.GetResult<Prisma.$sysdiagramsPayload<ExtArgs>, T, 'upsert'>, never, ExtArgs>
+
+    /**
+     * Count the number of Sysdiagrams.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {sysdiagramsCountArgs} args - Arguments to filter Sysdiagrams to count.
+     * @example
+     * // Count the number of Sysdiagrams
+     * const count = await prisma.sysdiagrams.count({
+     *   where: {
+     *     // ... the filter for the Sysdiagrams we want to count
+     *   }
+     * })
+    **/
+    count<T extends sysdiagramsCountArgs>(
+      args?: Subset<T, sysdiagramsCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], SysdiagramsCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a Sysdiagrams.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SysdiagramsAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends SysdiagramsAggregateArgs>(args: Subset<T, SysdiagramsAggregateArgs>): Prisma.PrismaPromise<GetSysdiagramsAggregateType<T>>
+
+    /**
+     * Group by Sysdiagrams.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {sysdiagramsGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends sysdiagramsGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: sysdiagramsGroupByArgs['orderBy'] }
+        : { orderBy?: sysdiagramsGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, sysdiagramsGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetSysdiagramsGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the sysdiagrams model
+   */
+  readonly fields: sysdiagramsFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for sysdiagrams.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__sysdiagramsClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: 'PrismaPromise';
+
+
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>;
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>;
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>;
+  }
+
+
+
+  /**
+   * Fields of the sysdiagrams model
+   */ 
+  interface sysdiagramsFieldRefs {
+    readonly name: FieldRef<"sysdiagrams", 'String'>
+    readonly principal_id: FieldRef<"sysdiagrams", 'Int'>
+    readonly diagram_id: FieldRef<"sysdiagrams", 'Int'>
+    readonly version: FieldRef<"sysdiagrams", 'Int'>
+    readonly definition: FieldRef<"sysdiagrams", 'Bytes'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * sysdiagrams findUnique
+   */
+  export type sysdiagramsFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the sysdiagrams
+     */
+    select?: sysdiagramsSelect<ExtArgs> | null
+    /**
+     * Filter, which sysdiagrams to fetch.
+     */
+    where: sysdiagramsWhereUniqueInput
+  }
+
+  /**
+   * sysdiagrams findUniqueOrThrow
+   */
+  export type sysdiagramsFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the sysdiagrams
+     */
+    select?: sysdiagramsSelect<ExtArgs> | null
+    /**
+     * Filter, which sysdiagrams to fetch.
+     */
+    where: sysdiagramsWhereUniqueInput
+  }
+
+  /**
+   * sysdiagrams findFirst
+   */
+  export type sysdiagramsFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the sysdiagrams
+     */
+    select?: sysdiagramsSelect<ExtArgs> | null
+    /**
+     * Filter, which sysdiagrams to fetch.
+     */
+    where?: sysdiagramsWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of sysdiagrams to fetch.
+     */
+    orderBy?: sysdiagramsOrderByWithRelationInput | sysdiagramsOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for sysdiagrams.
+     */
+    cursor?: sysdiagramsWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` sysdiagrams from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` sysdiagrams.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of sysdiagrams.
+     */
+    distinct?: SysdiagramsScalarFieldEnum | SysdiagramsScalarFieldEnum[]
+  }
+
+  /**
+   * sysdiagrams findFirstOrThrow
+   */
+  export type sysdiagramsFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the sysdiagrams
+     */
+    select?: sysdiagramsSelect<ExtArgs> | null
+    /**
+     * Filter, which sysdiagrams to fetch.
+     */
+    where?: sysdiagramsWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of sysdiagrams to fetch.
+     */
+    orderBy?: sysdiagramsOrderByWithRelationInput | sysdiagramsOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for sysdiagrams.
+     */
+    cursor?: sysdiagramsWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` sysdiagrams from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` sysdiagrams.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of sysdiagrams.
+     */
+    distinct?: SysdiagramsScalarFieldEnum | SysdiagramsScalarFieldEnum[]
+  }
+
+  /**
+   * sysdiagrams findMany
+   */
+  export type sysdiagramsFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the sysdiagrams
+     */
+    select?: sysdiagramsSelect<ExtArgs> | null
+    /**
+     * Filter, which sysdiagrams to fetch.
+     */
+    where?: sysdiagramsWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of sysdiagrams to fetch.
+     */
+    orderBy?: sysdiagramsOrderByWithRelationInput | sysdiagramsOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing sysdiagrams.
+     */
+    cursor?: sysdiagramsWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` sysdiagrams from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` sysdiagrams.
+     */
+    skip?: number
+    distinct?: SysdiagramsScalarFieldEnum | SysdiagramsScalarFieldEnum[]
+  }
+
+  /**
+   * sysdiagrams create
+   */
+  export type sysdiagramsCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the sysdiagrams
+     */
+    select?: sysdiagramsSelect<ExtArgs> | null
+    /**
+     * The data needed to create a sysdiagrams.
+     */
+    data: XOR<sysdiagramsCreateInput, sysdiagramsUncheckedCreateInput>
+  }
+
+  /**
+   * sysdiagrams createMany
+   */
+  export type sysdiagramsCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many sysdiagrams.
+     */
+    data: sysdiagramsCreateManyInput | sysdiagramsCreateManyInput[]
+  }
+
+  /**
+   * sysdiagrams update
+   */
+  export type sysdiagramsUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the sysdiagrams
+     */
+    select?: sysdiagramsSelect<ExtArgs> | null
+    /**
+     * The data needed to update a sysdiagrams.
+     */
+    data: XOR<sysdiagramsUpdateInput, sysdiagramsUncheckedUpdateInput>
+    /**
+     * Choose, which sysdiagrams to update.
+     */
+    where: sysdiagramsWhereUniqueInput
+  }
+
+  /**
+   * sysdiagrams updateMany
+   */
+  export type sysdiagramsUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update sysdiagrams.
+     */
+    data: XOR<sysdiagramsUpdateManyMutationInput, sysdiagramsUncheckedUpdateManyInput>
+    /**
+     * Filter which sysdiagrams to update
+     */
+    where?: sysdiagramsWhereInput
+  }
+
+  /**
+   * sysdiagrams upsert
+   */
+  export type sysdiagramsUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the sysdiagrams
+     */
+    select?: sysdiagramsSelect<ExtArgs> | null
+    /**
+     * The filter to search for the sysdiagrams to update in case it exists.
+     */
+    where: sysdiagramsWhereUniqueInput
+    /**
+     * In case the sysdiagrams found by the `where` argument doesn't exist, create a new sysdiagrams with this data.
+     */
+    create: XOR<sysdiagramsCreateInput, sysdiagramsUncheckedCreateInput>
+    /**
+     * In case the sysdiagrams was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<sysdiagramsUpdateInput, sysdiagramsUncheckedUpdateInput>
+  }
+
+  /**
+   * sysdiagrams delete
+   */
+  export type sysdiagramsDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the sysdiagrams
+     */
+    select?: sysdiagramsSelect<ExtArgs> | null
+    /**
+     * Filter which sysdiagrams to delete.
+     */
+    where: sysdiagramsWhereUniqueInput
+  }
+
+  /**
+   * sysdiagrams deleteMany
+   */
+  export type sysdiagramsDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which sysdiagrams to delete
+     */
+    where?: sysdiagramsWhereInput
+  }
+
+  /**
+   * sysdiagrams without action
+   */
+  export type sysdiagramsDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the sysdiagrams
+     */
+    select?: sysdiagramsSelect<ExtArgs> | null
+  }
+
+
+  /**
    * Enums
    */
 
@@ -21739,7 +23691,8 @@ export namespace Prisma {
     MealGroup: 'MealGroup',
     ID_Layout: 'ID_Layout',
     BackgroudPicture: 'BackgroudPicture',
-    Order: 'Order'
+    Order: 'Order',
+    VisibleInMenu: 'VisibleInMenu'
   };
 
   export type DBT_MealGroupsScalarFieldEnum = (typeof DBT_MealGroupsScalarFieldEnum)[keyof typeof DBT_MealGroupsScalarFieldEnum]
@@ -21756,8 +23709,8 @@ export namespace Prisma {
     IsCombo: 'IsCombo',
     Picture: 'Picture',
     PictureDescription: 'PictureDescription',
-    Dicountable: 'Dicountable',
-    Recipe: 'Recipe'
+    Recipe: 'Recipe',
+    Dicountable: 'Dicountable'
   };
 
   export type DBT_MealsScalarFieldEnum = (typeof DBT_MealsScalarFieldEnum)[keyof typeof DBT_MealsScalarFieldEnum]
@@ -21786,9 +23739,9 @@ export namespace Prisma {
     ID_User: 'ID_User',
     Time_Prepared: 'Time_Prepared',
     Time_Delivered: 'Time_Delivered',
-    Discountable: 'Discountable',
     ID_Payment: 'ID_Payment',
-    Note: 'Note'
+    Note: 'Note',
+    Discountable: 'Discountable'
   };
 
   export type DBT_OrderItemsScalarFieldEnum = (typeof DBT_OrderItemsScalarFieldEnum)[keyof typeof DBT_OrderItemsScalarFieldEnum]
@@ -21803,8 +23756,8 @@ export namespace Prisma {
     Canceled: 'Canceled',
     Price: 'Price',
     OrderClosed: 'OrderClosed',
-    ID_User: 'ID_User',
-    Note: 'Note'
+    Note: 'Note',
+    ID_User: 'ID_User'
   };
 
   export type DBT_OrdersScalarFieldEnum = (typeof DBT_OrdersScalarFieldEnum)[keyof typeof DBT_OrdersScalarFieldEnum]
@@ -21906,9 +23859,9 @@ export namespace Prisma {
     Taxes: 'Taxes',
     TimeOfPay: 'TimeOfPay',
     ID_User: 'ID_User',
-    DiscountPercent: 'DiscountPercent',
-    RealPayment: 'RealPayment',
     Vaucher: 'Vaucher',
+    RealPayment: 'RealPayment',
+    DiscountPercent: 'DiscountPercent',
     Deleted: 'Deleted'
   };
 
@@ -21952,6 +23905,27 @@ export namespace Prisma {
   };
 
   export type DBT_CustomerPaymentsScalarFieldEnum = (typeof DBT_CustomerPaymentsScalarFieldEnum)[keyof typeof DBT_CustomerPaymentsScalarFieldEnum]
+
+
+  export const DBT_UILayoutsScalarFieldEnum: {
+    id: 'id',
+    name: 'name',
+    viewName: 'viewName',
+    state: 'state'
+  };
+
+  export type DBT_UILayoutsScalarFieldEnum = (typeof DBT_UILayoutsScalarFieldEnum)[keyof typeof DBT_UILayoutsScalarFieldEnum]
+
+
+  export const SysdiagramsScalarFieldEnum: {
+    name: 'name',
+    principal_id: 'principal_id',
+    diagram_id: 'diagram_id',
+    version: 'version',
+    definition: 'definition'
+  };
+
+  export type SysdiagramsScalarFieldEnum = (typeof SysdiagramsScalarFieldEnum)[keyof typeof SysdiagramsScalarFieldEnum]
 
 
   export const SortOrder: {
@@ -22226,6 +24200,7 @@ export namespace Prisma {
     ID_Layout?: BigIntNullableFilter<"DBT_MealGroups"> | bigint | number | null
     BackgroudPicture?: BytesNullableFilter<"DBT_MealGroups"> | Buffer | null
     Order?: IntNullableFilter<"DBT_MealGroups"> | number | null
+    VisibleInMenu?: BoolFilter<"DBT_MealGroups"> | boolean
   }
 
   export type DBT_MealGroupsOrderByWithRelationInput = {
@@ -22235,6 +24210,7 @@ export namespace Prisma {
     ID_Layout?: SortOrderInput | SortOrder
     BackgroudPicture?: SortOrderInput | SortOrder
     Order?: SortOrderInput | SortOrder
+    VisibleInMenu?: SortOrder
   }
 
   export type DBT_MealGroupsWhereUniqueInput = Prisma.AtLeast<{
@@ -22247,6 +24223,7 @@ export namespace Prisma {
     ID_Layout?: BigIntNullableFilter<"DBT_MealGroups"> | bigint | number | null
     BackgroudPicture?: BytesNullableFilter<"DBT_MealGroups"> | Buffer | null
     Order?: IntNullableFilter<"DBT_MealGroups"> | number | null
+    VisibleInMenu?: BoolFilter<"DBT_MealGroups"> | boolean
   }, "ID">
 
   export type DBT_MealGroupsOrderByWithAggregationInput = {
@@ -22256,6 +24233,7 @@ export namespace Prisma {
     ID_Layout?: SortOrderInput | SortOrder
     BackgroudPicture?: SortOrderInput | SortOrder
     Order?: SortOrderInput | SortOrder
+    VisibleInMenu?: SortOrder
     _count?: DBT_MealGroupsCountOrderByAggregateInput
     _avg?: DBT_MealGroupsAvgOrderByAggregateInput
     _max?: DBT_MealGroupsMaxOrderByAggregateInput
@@ -22273,6 +24251,7 @@ export namespace Prisma {
     ID_Layout?: BigIntNullableWithAggregatesFilter<"DBT_MealGroups"> | bigint | number | null
     BackgroudPicture?: BytesNullableWithAggregatesFilter<"DBT_MealGroups"> | Buffer | null
     Order?: IntNullableWithAggregatesFilter<"DBT_MealGroups"> | number | null
+    VisibleInMenu?: BoolWithAggregatesFilter<"DBT_MealGroups"> | boolean
   }
 
   export type DBT_MealsWhereInput = {
@@ -22289,8 +24268,8 @@ export namespace Prisma {
     IsCombo?: BoolFilter<"DBT_Meals"> | boolean
     Picture?: BytesNullableFilter<"DBT_Meals"> | Buffer | null
     PictureDescription?: StringNullableFilter<"DBT_Meals"> | string | null
-    Dicountable?: DecimalNullableFilter<"DBT_Meals"> | Decimal | DecimalJsLike | number | string | null
     Recipe?: BytesNullableFilter<"DBT_Meals"> | Buffer | null
+    Dicountable?: DecimalNullableFilter<"DBT_Meals"> | Decimal | DecimalJsLike | number | string | null
   }
 
   export type DBT_MealsOrderByWithRelationInput = {
@@ -22304,8 +24283,8 @@ export namespace Prisma {
     IsCombo?: SortOrder
     Picture?: SortOrderInput | SortOrder
     PictureDescription?: SortOrderInput | SortOrder
-    Dicountable?: SortOrderInput | SortOrder
     Recipe?: SortOrderInput | SortOrder
+    Dicountable?: SortOrderInput | SortOrder
   }
 
   export type DBT_MealsWhereUniqueInput = Prisma.AtLeast<{
@@ -22322,8 +24301,8 @@ export namespace Prisma {
     IsCombo?: BoolFilter<"DBT_Meals"> | boolean
     Picture?: BytesNullableFilter<"DBT_Meals"> | Buffer | null
     PictureDescription?: StringNullableFilter<"DBT_Meals"> | string | null
-    Dicountable?: DecimalNullableFilter<"DBT_Meals"> | Decimal | DecimalJsLike | number | string | null
     Recipe?: BytesNullableFilter<"DBT_Meals"> | Buffer | null
+    Dicountable?: DecimalNullableFilter<"DBT_Meals"> | Decimal | DecimalJsLike | number | string | null
   }, "ID">
 
   export type DBT_MealsOrderByWithAggregationInput = {
@@ -22337,8 +24316,8 @@ export namespace Prisma {
     IsCombo?: SortOrder
     Picture?: SortOrderInput | SortOrder
     PictureDescription?: SortOrderInput | SortOrder
-    Dicountable?: SortOrderInput | SortOrder
     Recipe?: SortOrderInput | SortOrder
+    Dicountable?: SortOrderInput | SortOrder
     _count?: DBT_MealsCountOrderByAggregateInput
     _avg?: DBT_MealsAvgOrderByAggregateInput
     _max?: DBT_MealsMaxOrderByAggregateInput
@@ -22360,8 +24339,8 @@ export namespace Prisma {
     IsCombo?: BoolWithAggregatesFilter<"DBT_Meals"> | boolean
     Picture?: BytesNullableWithAggregatesFilter<"DBT_Meals"> | Buffer | null
     PictureDescription?: StringNullableWithAggregatesFilter<"DBT_Meals"> | string | null
-    Dicountable?: DecimalNullableWithAggregatesFilter<"DBT_Meals"> | Decimal | DecimalJsLike | number | string | null
     Recipe?: BytesNullableWithAggregatesFilter<"DBT_Meals"> | Buffer | null
+    Dicountable?: DecimalNullableWithAggregatesFilter<"DBT_Meals"> | Decimal | DecimalJsLike | number | string | null
   }
 
   export type DBT_MenuSetUpWhereInput = {
@@ -22437,9 +24416,9 @@ export namespace Prisma {
     ID_User?: BigIntNullableFilter<"DBT_OrderItems"> | bigint | number | null
     Time_Prepared?: DateTimeNullableFilter<"DBT_OrderItems"> | Date | string | null
     Time_Delivered?: DateTimeNullableFilter<"DBT_OrderItems"> | Date | string | null
-    Discountable?: DecimalNullableFilter<"DBT_OrderItems"> | Decimal | DecimalJsLike | number | string | null
     ID_Payment?: BigIntNullableFilter<"DBT_OrderItems"> | bigint | number | null
     Note?: StringNullableFilter<"DBT_OrderItems"> | string | null
+    Discountable?: DecimalNullableFilter<"DBT_OrderItems"> | Decimal | DecimalJsLike | number | string | null
   }
 
   export type DBT_OrderItemsOrderByWithRelationInput = {
@@ -22453,9 +24432,9 @@ export namespace Prisma {
     ID_User?: SortOrderInput | SortOrder
     Time_Prepared?: SortOrderInput | SortOrder
     Time_Delivered?: SortOrderInput | SortOrder
-    Discountable?: SortOrderInput | SortOrder
     ID_Payment?: SortOrderInput | SortOrder
     Note?: SortOrderInput | SortOrder
+    Discountable?: SortOrderInput | SortOrder
   }
 
   export type DBT_OrderItemsWhereUniqueInput = Prisma.AtLeast<{
@@ -22472,9 +24451,9 @@ export namespace Prisma {
     ID_User?: BigIntNullableFilter<"DBT_OrderItems"> | bigint | number | null
     Time_Prepared?: DateTimeNullableFilter<"DBT_OrderItems"> | Date | string | null
     Time_Delivered?: DateTimeNullableFilter<"DBT_OrderItems"> | Date | string | null
-    Discountable?: DecimalNullableFilter<"DBT_OrderItems"> | Decimal | DecimalJsLike | number | string | null
     ID_Payment?: BigIntNullableFilter<"DBT_OrderItems"> | bigint | number | null
     Note?: StringNullableFilter<"DBT_OrderItems"> | string | null
+    Discountable?: DecimalNullableFilter<"DBT_OrderItems"> | Decimal | DecimalJsLike | number | string | null
   }, "ID">
 
   export type DBT_OrderItemsOrderByWithAggregationInput = {
@@ -22488,9 +24467,9 @@ export namespace Prisma {
     ID_User?: SortOrderInput | SortOrder
     Time_Prepared?: SortOrderInput | SortOrder
     Time_Delivered?: SortOrderInput | SortOrder
-    Discountable?: SortOrderInput | SortOrder
     ID_Payment?: SortOrderInput | SortOrder
     Note?: SortOrderInput | SortOrder
+    Discountable?: SortOrderInput | SortOrder
     _count?: DBT_OrderItemsCountOrderByAggregateInput
     _avg?: DBT_OrderItemsAvgOrderByAggregateInput
     _max?: DBT_OrderItemsMaxOrderByAggregateInput
@@ -22512,9 +24491,9 @@ export namespace Prisma {
     ID_User?: BigIntNullableWithAggregatesFilter<"DBT_OrderItems"> | bigint | number | null
     Time_Prepared?: DateTimeNullableWithAggregatesFilter<"DBT_OrderItems"> | Date | string | null
     Time_Delivered?: DateTimeNullableWithAggregatesFilter<"DBT_OrderItems"> | Date | string | null
-    Discountable?: DecimalNullableWithAggregatesFilter<"DBT_OrderItems"> | Decimal | DecimalJsLike | number | string | null
     ID_Payment?: BigIntNullableWithAggregatesFilter<"DBT_OrderItems"> | bigint | number | null
     Note?: StringNullableWithAggregatesFilter<"DBT_OrderItems"> | string | null
+    Discountable?: DecimalNullableWithAggregatesFilter<"DBT_OrderItems"> | Decimal | DecimalJsLike | number | string | null
   }
 
   export type DBT_OrdersWhereInput = {
@@ -22529,8 +24508,8 @@ export namespace Prisma {
     Canceled?: BoolNullableFilter<"DBT_Orders"> | boolean | null
     Price?: DecimalNullableFilter<"DBT_Orders"> | Decimal | DecimalJsLike | number | string | null
     OrderClosed?: BoolNullableFilter<"DBT_Orders"> | boolean | null
-    ID_User?: BigIntNullableFilter<"DBT_Orders"> | bigint | number | null
     Note?: StringNullableFilter<"DBT_Orders"> | string | null
+    ID_User?: BigIntNullableFilter<"DBT_Orders"> | bigint | number | null
   }
 
   export type DBT_OrdersOrderByWithRelationInput = {
@@ -22542,8 +24521,8 @@ export namespace Prisma {
     Canceled?: SortOrderInput | SortOrder
     Price?: SortOrderInput | SortOrder
     OrderClosed?: SortOrderInput | SortOrder
-    ID_User?: SortOrderInput | SortOrder
     Note?: SortOrderInput | SortOrder
+    ID_User?: SortOrderInput | SortOrder
   }
 
   export type DBT_OrdersWhereUniqueInput = Prisma.AtLeast<{
@@ -22558,8 +24537,8 @@ export namespace Prisma {
     Canceled?: BoolNullableFilter<"DBT_Orders"> | boolean | null
     Price?: DecimalNullableFilter<"DBT_Orders"> | Decimal | DecimalJsLike | number | string | null
     OrderClosed?: BoolNullableFilter<"DBT_Orders"> | boolean | null
-    ID_User?: BigIntNullableFilter<"DBT_Orders"> | bigint | number | null
     Note?: StringNullableFilter<"DBT_Orders"> | string | null
+    ID_User?: BigIntNullableFilter<"DBT_Orders"> | bigint | number | null
   }, "ID">
 
   export type DBT_OrdersOrderByWithAggregationInput = {
@@ -22571,8 +24550,8 @@ export namespace Prisma {
     Canceled?: SortOrderInput | SortOrder
     Price?: SortOrderInput | SortOrder
     OrderClosed?: SortOrderInput | SortOrder
-    ID_User?: SortOrderInput | SortOrder
     Note?: SortOrderInput | SortOrder
+    ID_User?: SortOrderInput | SortOrder
     _count?: DBT_OrdersCountOrderByAggregateInput
     _avg?: DBT_OrdersAvgOrderByAggregateInput
     _max?: DBT_OrdersMaxOrderByAggregateInput
@@ -22592,8 +24571,8 @@ export namespace Prisma {
     Canceled?: BoolNullableWithAggregatesFilter<"DBT_Orders"> | boolean | null
     Price?: DecimalNullableWithAggregatesFilter<"DBT_Orders"> | Decimal | DecimalJsLike | number | string | null
     OrderClosed?: BoolNullableWithAggregatesFilter<"DBT_Orders"> | boolean | null
-    ID_User?: BigIntNullableWithAggregatesFilter<"DBT_Orders"> | bigint | number | null
     Note?: StringNullableWithAggregatesFilter<"DBT_Orders"> | string | null
+    ID_User?: BigIntNullableWithAggregatesFilter<"DBT_Orders"> | bigint | number | null
   }
 
   export type DBT_PaymentMethodsWhereInput = {
@@ -23019,9 +24998,9 @@ export namespace Prisma {
     Taxes?: DecimalNullableFilter<"DBT_Payments"> | Decimal | DecimalJsLike | number | string | null
     TimeOfPay?: DateTimeNullableFilter<"DBT_Payments"> | Date | string | null
     ID_User?: BigIntNullableFilter<"DBT_Payments"> | bigint | number | null
-    DiscountPercent?: DecimalFilter<"DBT_Payments"> | Decimal | DecimalJsLike | number | string
-    RealPayment?: DecimalNullableFilter<"DBT_Payments"> | Decimal | DecimalJsLike | number | string | null
     Vaucher?: StringNullableFilter<"DBT_Payments"> | string | null
+    RealPayment?: DecimalNullableFilter<"DBT_Payments"> | Decimal | DecimalJsLike | number | string | null
+    DiscountPercent?: DecimalFilter<"DBT_Payments"> | Decimal | DecimalJsLike | number | string
     Deleted?: BoolNullableFilter<"DBT_Payments"> | boolean | null
   }
 
@@ -23038,9 +25017,9 @@ export namespace Prisma {
     Taxes?: SortOrderInput | SortOrder
     TimeOfPay?: SortOrderInput | SortOrder
     ID_User?: SortOrderInput | SortOrder
-    DiscountPercent?: SortOrder
-    RealPayment?: SortOrderInput | SortOrder
     Vaucher?: SortOrderInput | SortOrder
+    RealPayment?: SortOrderInput | SortOrder
+    DiscountPercent?: SortOrder
     Deleted?: SortOrderInput | SortOrder
   }
 
@@ -23060,9 +25039,9 @@ export namespace Prisma {
     Taxes?: DecimalNullableFilter<"DBT_Payments"> | Decimal | DecimalJsLike | number | string | null
     TimeOfPay?: DateTimeNullableFilter<"DBT_Payments"> | Date | string | null
     ID_User?: BigIntNullableFilter<"DBT_Payments"> | bigint | number | null
-    DiscountPercent?: DecimalFilter<"DBT_Payments"> | Decimal | DecimalJsLike | number | string
-    RealPayment?: DecimalNullableFilter<"DBT_Payments"> | Decimal | DecimalJsLike | number | string | null
     Vaucher?: StringNullableFilter<"DBT_Payments"> | string | null
+    RealPayment?: DecimalNullableFilter<"DBT_Payments"> | Decimal | DecimalJsLike | number | string | null
+    DiscountPercent?: DecimalFilter<"DBT_Payments"> | Decimal | DecimalJsLike | number | string
     Deleted?: BoolNullableFilter<"DBT_Payments"> | boolean | null
   }, "ID">
 
@@ -23079,9 +25058,9 @@ export namespace Prisma {
     Taxes?: SortOrderInput | SortOrder
     TimeOfPay?: SortOrderInput | SortOrder
     ID_User?: SortOrderInput | SortOrder
-    DiscountPercent?: SortOrder
-    RealPayment?: SortOrderInput | SortOrder
     Vaucher?: SortOrderInput | SortOrder
+    RealPayment?: SortOrderInput | SortOrder
+    DiscountPercent?: SortOrder
     Deleted?: SortOrderInput | SortOrder
     _count?: DBT_PaymentsCountOrderByAggregateInput
     _avg?: DBT_PaymentsAvgOrderByAggregateInput
@@ -23106,9 +25085,9 @@ export namespace Prisma {
     Taxes?: DecimalNullableWithAggregatesFilter<"DBT_Payments"> | Decimal | DecimalJsLike | number | string | null
     TimeOfPay?: DateTimeNullableWithAggregatesFilter<"DBT_Payments"> | Date | string | null
     ID_User?: BigIntNullableWithAggregatesFilter<"DBT_Payments"> | bigint | number | null
-    DiscountPercent?: DecimalWithAggregatesFilter<"DBT_Payments"> | Decimal | DecimalJsLike | number | string
-    RealPayment?: DecimalNullableWithAggregatesFilter<"DBT_Payments"> | Decimal | DecimalJsLike | number | string | null
     Vaucher?: StringNullableWithAggregatesFilter<"DBT_Payments"> | string | null
+    RealPayment?: DecimalNullableWithAggregatesFilter<"DBT_Payments"> | Decimal | DecimalJsLike | number | string | null
+    DiscountPercent?: DecimalWithAggregatesFilter<"DBT_Payments"> | Decimal | DecimalJsLike | number | string
     Deleted?: BoolNullableWithAggregatesFilter<"DBT_Payments"> | boolean | null
   }
 
@@ -23301,6 +25280,110 @@ export namespace Prisma {
     Date?: DateTimeNullableWithAggregatesFilter<"DBT_CustomerPayments"> | Date | string | null
     Active?: BoolNullableWithAggregatesFilter<"DBT_CustomerPayments"> | boolean | null
     ID_User?: BigIntNullableWithAggregatesFilter<"DBT_CustomerPayments"> | bigint | number | null
+  }
+
+  export type DBT_UILayoutsWhereInput = {
+    AND?: DBT_UILayoutsWhereInput | DBT_UILayoutsWhereInput[]
+    OR?: DBT_UILayoutsWhereInput[]
+    NOT?: DBT_UILayoutsWhereInput | DBT_UILayoutsWhereInput[]
+    id?: BigIntFilter<"DBT_UILayouts"> | bigint | number
+    name?: StringNullableFilter<"DBT_UILayouts"> | string | null
+    viewName?: StringNullableFilter<"DBT_UILayouts"> | string | null
+    state?: StringNullableFilter<"DBT_UILayouts"> | string | null
+  }
+
+  export type DBT_UILayoutsOrderByWithRelationInput = {
+    id?: SortOrder
+    name?: SortOrderInput | SortOrder
+    viewName?: SortOrderInput | SortOrder
+    state?: SortOrderInput | SortOrder
+  }
+
+  export type DBT_UILayoutsWhereUniqueInput = Prisma.AtLeast<{
+    id?: bigint | number
+    AND?: DBT_UILayoutsWhereInput | DBT_UILayoutsWhereInput[]
+    OR?: DBT_UILayoutsWhereInput[]
+    NOT?: DBT_UILayoutsWhereInput | DBT_UILayoutsWhereInput[]
+    name?: StringNullableFilter<"DBT_UILayouts"> | string | null
+    viewName?: StringNullableFilter<"DBT_UILayouts"> | string | null
+    state?: StringNullableFilter<"DBT_UILayouts"> | string | null
+  }, "id">
+
+  export type DBT_UILayoutsOrderByWithAggregationInput = {
+    id?: SortOrder
+    name?: SortOrderInput | SortOrder
+    viewName?: SortOrderInput | SortOrder
+    state?: SortOrderInput | SortOrder
+    _count?: DBT_UILayoutsCountOrderByAggregateInput
+    _avg?: DBT_UILayoutsAvgOrderByAggregateInput
+    _max?: DBT_UILayoutsMaxOrderByAggregateInput
+    _min?: DBT_UILayoutsMinOrderByAggregateInput
+    _sum?: DBT_UILayoutsSumOrderByAggregateInput
+  }
+
+  export type DBT_UILayoutsScalarWhereWithAggregatesInput = {
+    AND?: DBT_UILayoutsScalarWhereWithAggregatesInput | DBT_UILayoutsScalarWhereWithAggregatesInput[]
+    OR?: DBT_UILayoutsScalarWhereWithAggregatesInput[]
+    NOT?: DBT_UILayoutsScalarWhereWithAggregatesInput | DBT_UILayoutsScalarWhereWithAggregatesInput[]
+    id?: BigIntWithAggregatesFilter<"DBT_UILayouts"> | bigint | number
+    name?: StringNullableWithAggregatesFilter<"DBT_UILayouts"> | string | null
+    viewName?: StringNullableWithAggregatesFilter<"DBT_UILayouts"> | string | null
+    state?: StringNullableWithAggregatesFilter<"DBT_UILayouts"> | string | null
+  }
+
+  export type sysdiagramsWhereInput = {
+    AND?: sysdiagramsWhereInput | sysdiagramsWhereInput[]
+    OR?: sysdiagramsWhereInput[]
+    NOT?: sysdiagramsWhereInput | sysdiagramsWhereInput[]
+    name?: StringFilter<"sysdiagrams"> | string
+    principal_id?: IntFilter<"sysdiagrams"> | number
+    diagram_id?: IntFilter<"sysdiagrams"> | number
+    version?: IntNullableFilter<"sysdiagrams"> | number | null
+    definition?: BytesNullableFilter<"sysdiagrams"> | Buffer | null
+  }
+
+  export type sysdiagramsOrderByWithRelationInput = {
+    name?: SortOrder
+    principal_id?: SortOrder
+    diagram_id?: SortOrder
+    version?: SortOrderInput | SortOrder
+    definition?: SortOrderInput | SortOrder
+  }
+
+  export type sysdiagramsWhereUniqueInput = Prisma.AtLeast<{
+    diagram_id?: number
+    principal_id_name?: sysdiagramsPrincipal_idNameCompoundUniqueInput
+    AND?: sysdiagramsWhereInput | sysdiagramsWhereInput[]
+    OR?: sysdiagramsWhereInput[]
+    NOT?: sysdiagramsWhereInput | sysdiagramsWhereInput[]
+    name?: StringFilter<"sysdiagrams"> | string
+    principal_id?: IntFilter<"sysdiagrams"> | number
+    version?: IntNullableFilter<"sysdiagrams"> | number | null
+    definition?: BytesNullableFilter<"sysdiagrams"> | Buffer | null
+  }, "diagram_id" | "principal_id_name">
+
+  export type sysdiagramsOrderByWithAggregationInput = {
+    name?: SortOrder
+    principal_id?: SortOrder
+    diagram_id?: SortOrder
+    version?: SortOrderInput | SortOrder
+    definition?: SortOrderInput | SortOrder
+    _count?: sysdiagramsCountOrderByAggregateInput
+    _avg?: sysdiagramsAvgOrderByAggregateInput
+    _max?: sysdiagramsMaxOrderByAggregateInput
+    _min?: sysdiagramsMinOrderByAggregateInput
+    _sum?: sysdiagramsSumOrderByAggregateInput
+  }
+
+  export type sysdiagramsScalarWhereWithAggregatesInput = {
+    AND?: sysdiagramsScalarWhereWithAggregatesInput | sysdiagramsScalarWhereWithAggregatesInput[]
+    OR?: sysdiagramsScalarWhereWithAggregatesInput[]
+    NOT?: sysdiagramsScalarWhereWithAggregatesInput | sysdiagramsScalarWhereWithAggregatesInput[]
+    name?: StringWithAggregatesFilter<"sysdiagrams"> | string
+    principal_id?: IntWithAggregatesFilter<"sysdiagrams"> | number
+    diagram_id?: IntWithAggregatesFilter<"sysdiagrams"> | number
+    version?: IntNullableWithAggregatesFilter<"sysdiagrams"> | number | null
+    definition?: BytesNullableWithAggregatesFilter<"sysdiagrams"> | Buffer | null
   }
 
   export type DBT_CustomerCreateInput = {
@@ -23503,6 +25586,7 @@ export namespace Prisma {
     ID_Layout?: bigint | number | null
     BackgroudPicture?: Buffer | null
     Order?: number | null
+    VisibleInMenu?: boolean
   }
 
   export type DBT_MealGroupsUncheckedCreateInput = {
@@ -23512,6 +25596,7 @@ export namespace Prisma {
     ID_Layout?: bigint | number | null
     BackgroudPicture?: Buffer | null
     Order?: number | null
+    VisibleInMenu?: boolean
   }
 
   export type DBT_MealGroupsUpdateInput = {
@@ -23521,6 +25606,7 @@ export namespace Prisma {
     ID_Layout?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     BackgroudPicture?: NullableBytesFieldUpdateOperationsInput | Buffer | null
     Order?: NullableIntFieldUpdateOperationsInput | number | null
+    VisibleInMenu?: BoolFieldUpdateOperationsInput | boolean
   }
 
   export type DBT_MealGroupsUncheckedUpdateInput = {
@@ -23530,6 +25616,7 @@ export namespace Prisma {
     ID_Layout?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     BackgroudPicture?: NullableBytesFieldUpdateOperationsInput | Buffer | null
     Order?: NullableIntFieldUpdateOperationsInput | number | null
+    VisibleInMenu?: BoolFieldUpdateOperationsInput | boolean
   }
 
   export type DBT_MealGroupsCreateManyInput = {
@@ -23538,6 +25625,7 @@ export namespace Prisma {
     ID_Layout?: bigint | number | null
     BackgroudPicture?: Buffer | null
     Order?: number | null
+    VisibleInMenu?: boolean
   }
 
   export type DBT_MealGroupsUpdateManyMutationInput = {
@@ -23547,6 +25635,7 @@ export namespace Prisma {
     ID_Layout?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     BackgroudPicture?: NullableBytesFieldUpdateOperationsInput | Buffer | null
     Order?: NullableIntFieldUpdateOperationsInput | number | null
+    VisibleInMenu?: BoolFieldUpdateOperationsInput | boolean
   }
 
   export type DBT_MealGroupsUncheckedUpdateManyInput = {
@@ -23556,6 +25645,7 @@ export namespace Prisma {
     ID_Layout?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     BackgroudPicture?: NullableBytesFieldUpdateOperationsInput | Buffer | null
     Order?: NullableIntFieldUpdateOperationsInput | number | null
+    VisibleInMenu?: BoolFieldUpdateOperationsInput | boolean
   }
 
   export type DBT_MealsCreateInput = {
@@ -23569,8 +25659,8 @@ export namespace Prisma {
     IsCombo?: boolean
     Picture?: Buffer | null
     PictureDescription?: string | null
-    Dicountable?: Decimal | DecimalJsLike | number | string | null
     Recipe?: Buffer | null
+    Dicountable?: Decimal | DecimalJsLike | number | string | null
   }
 
   export type DBT_MealsUncheckedCreateInput = {
@@ -23584,8 +25674,8 @@ export namespace Prisma {
     IsCombo?: boolean
     Picture?: Buffer | null
     PictureDescription?: string | null
-    Dicountable?: Decimal | DecimalJsLike | number | string | null
     Recipe?: Buffer | null
+    Dicountable?: Decimal | DecimalJsLike | number | string | null
   }
 
   export type DBT_MealsUpdateInput = {
@@ -23599,8 +25689,8 @@ export namespace Prisma {
     IsCombo?: BoolFieldUpdateOperationsInput | boolean
     Picture?: NullableBytesFieldUpdateOperationsInput | Buffer | null
     PictureDescription?: NullableStringFieldUpdateOperationsInput | string | null
-    Dicountable?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     Recipe?: NullableBytesFieldUpdateOperationsInput | Buffer | null
+    Dicountable?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
   }
 
   export type DBT_MealsUncheckedUpdateInput = {
@@ -23614,8 +25704,8 @@ export namespace Prisma {
     IsCombo?: BoolFieldUpdateOperationsInput | boolean
     Picture?: NullableBytesFieldUpdateOperationsInput | Buffer | null
     PictureDescription?: NullableStringFieldUpdateOperationsInput | string | null
-    Dicountable?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     Recipe?: NullableBytesFieldUpdateOperationsInput | Buffer | null
+    Dicountable?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
   }
 
   export type DBT_MealsCreateManyInput = {
@@ -23628,8 +25718,8 @@ export namespace Prisma {
     IsCombo?: boolean
     Picture?: Buffer | null
     PictureDescription?: string | null
-    Dicountable?: Decimal | DecimalJsLike | number | string | null
     Recipe?: Buffer | null
+    Dicountable?: Decimal | DecimalJsLike | number | string | null
   }
 
   export type DBT_MealsUpdateManyMutationInput = {
@@ -23643,8 +25733,8 @@ export namespace Prisma {
     IsCombo?: BoolFieldUpdateOperationsInput | boolean
     Picture?: NullableBytesFieldUpdateOperationsInput | Buffer | null
     PictureDescription?: NullableStringFieldUpdateOperationsInput | string | null
-    Dicountable?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     Recipe?: NullableBytesFieldUpdateOperationsInput | Buffer | null
+    Dicountable?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
   }
 
   export type DBT_MealsUncheckedUpdateManyInput = {
@@ -23658,8 +25748,8 @@ export namespace Prisma {
     IsCombo?: BoolFieldUpdateOperationsInput | boolean
     Picture?: NullableBytesFieldUpdateOperationsInput | Buffer | null
     PictureDescription?: NullableStringFieldUpdateOperationsInput | string | null
-    Dicountable?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     Recipe?: NullableBytesFieldUpdateOperationsInput | Buffer | null
+    Dicountable?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
   }
 
   export type DBT_MenuSetUpCreateInput = {
@@ -23735,9 +25825,9 @@ export namespace Prisma {
     ID_User?: bigint | number | null
     Time_Prepared?: Date | string | null
     Time_Delivered?: Date | string | null
-    Discountable?: Decimal | DecimalJsLike | number | string | null
     ID_Payment?: bigint | number | null
     Note?: string | null
+    Discountable?: Decimal | DecimalJsLike | number | string | null
   }
 
   export type DBT_OrderItemsUncheckedCreateInput = {
@@ -23751,9 +25841,9 @@ export namespace Prisma {
     ID_User?: bigint | number | null
     Time_Prepared?: Date | string | null
     Time_Delivered?: Date | string | null
-    Discountable?: Decimal | DecimalJsLike | number | string | null
     ID_Payment?: bigint | number | null
     Note?: string | null
+    Discountable?: Decimal | DecimalJsLike | number | string | null
   }
 
   export type DBT_OrderItemsUpdateInput = {
@@ -23767,9 +25857,9 @@ export namespace Prisma {
     ID_User?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     Time_Prepared?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     Time_Delivered?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    Discountable?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     ID_Payment?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     Note?: NullableStringFieldUpdateOperationsInput | string | null
+    Discountable?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
   }
 
   export type DBT_OrderItemsUncheckedUpdateInput = {
@@ -23783,9 +25873,9 @@ export namespace Prisma {
     ID_User?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     Time_Prepared?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     Time_Delivered?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    Discountable?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     ID_Payment?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     Note?: NullableStringFieldUpdateOperationsInput | string | null
+    Discountable?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
   }
 
   export type DBT_OrderItemsCreateManyInput = {
@@ -23798,9 +25888,9 @@ export namespace Prisma {
     ID_User?: bigint | number | null
     Time_Prepared?: Date | string | null
     Time_Delivered?: Date | string | null
-    Discountable?: Decimal | DecimalJsLike | number | string | null
     ID_Payment?: bigint | number | null
     Note?: string | null
+    Discountable?: Decimal | DecimalJsLike | number | string | null
   }
 
   export type DBT_OrderItemsUpdateManyMutationInput = {
@@ -23814,9 +25904,9 @@ export namespace Prisma {
     ID_User?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     Time_Prepared?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     Time_Delivered?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    Discountable?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     ID_Payment?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     Note?: NullableStringFieldUpdateOperationsInput | string | null
+    Discountable?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
   }
 
   export type DBT_OrderItemsUncheckedUpdateManyInput = {
@@ -23830,9 +25920,9 @@ export namespace Prisma {
     ID_User?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     Time_Prepared?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     Time_Delivered?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    Discountable?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     ID_Payment?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     Note?: NullableStringFieldUpdateOperationsInput | string | null
+    Discountable?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
   }
 
   export type DBT_OrdersCreateInput = {
@@ -23844,8 +25934,8 @@ export namespace Prisma {
     Canceled?: boolean | null
     Price?: Decimal | DecimalJsLike | number | string | null
     OrderClosed?: boolean | null
-    ID_User?: bigint | number | null
     Note?: string | null
+    ID_User?: bigint | number | null
   }
 
   export type DBT_OrdersUncheckedCreateInput = {
@@ -23857,8 +25947,8 @@ export namespace Prisma {
     Canceled?: boolean | null
     Price?: Decimal | DecimalJsLike | number | string | null
     OrderClosed?: boolean | null
-    ID_User?: bigint | number | null
     Note?: string | null
+    ID_User?: bigint | number | null
   }
 
   export type DBT_OrdersUpdateInput = {
@@ -23870,8 +25960,8 @@ export namespace Prisma {
     Canceled?: NullableBoolFieldUpdateOperationsInput | boolean | null
     Price?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     OrderClosed?: NullableBoolFieldUpdateOperationsInput | boolean | null
-    ID_User?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     Note?: NullableStringFieldUpdateOperationsInput | string | null
+    ID_User?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
   }
 
   export type DBT_OrdersUncheckedUpdateInput = {
@@ -23883,8 +25973,8 @@ export namespace Prisma {
     Canceled?: NullableBoolFieldUpdateOperationsInput | boolean | null
     Price?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     OrderClosed?: NullableBoolFieldUpdateOperationsInput | boolean | null
-    ID_User?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     Note?: NullableStringFieldUpdateOperationsInput | string | null
+    ID_User?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
   }
 
   export type DBT_OrdersCreateManyInput = {
@@ -23895,8 +25985,8 @@ export namespace Prisma {
     Canceled?: boolean | null
     Price?: Decimal | DecimalJsLike | number | string | null
     OrderClosed?: boolean | null
-    ID_User?: bigint | number | null
     Note?: string | null
+    ID_User?: bigint | number | null
   }
 
   export type DBT_OrdersUpdateManyMutationInput = {
@@ -23908,8 +25998,8 @@ export namespace Prisma {
     Canceled?: NullableBoolFieldUpdateOperationsInput | boolean | null
     Price?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     OrderClosed?: NullableBoolFieldUpdateOperationsInput | boolean | null
-    ID_User?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     Note?: NullableStringFieldUpdateOperationsInput | string | null
+    ID_User?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
   }
 
   export type DBT_OrdersUncheckedUpdateManyInput = {
@@ -23921,8 +26011,8 @@ export namespace Prisma {
     Canceled?: NullableBoolFieldUpdateOperationsInput | boolean | null
     Price?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     OrderClosed?: NullableBoolFieldUpdateOperationsInput | boolean | null
-    ID_User?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     Note?: NullableStringFieldUpdateOperationsInput | string | null
+    ID_User?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
   }
 
   export type DBT_PaymentMethodsCreateInput = {
@@ -24344,9 +26434,9 @@ export namespace Prisma {
     Taxes?: Decimal | DecimalJsLike | number | string | null
     TimeOfPay?: Date | string | null
     ID_User?: bigint | number | null
-    DiscountPercent?: Decimal | DecimalJsLike | number | string
-    RealPayment?: Decimal | DecimalJsLike | number | string | null
     Vaucher?: string | null
+    RealPayment?: Decimal | DecimalJsLike | number | string | null
+    DiscountPercent?: Decimal | DecimalJsLike | number | string
     Deleted?: boolean | null
   }
 
@@ -24363,9 +26453,9 @@ export namespace Prisma {
     Taxes?: Decimal | DecimalJsLike | number | string | null
     TimeOfPay?: Date | string | null
     ID_User?: bigint | number | null
-    DiscountPercent?: Decimal | DecimalJsLike | number | string
-    RealPayment?: Decimal | DecimalJsLike | number | string | null
     Vaucher?: string | null
+    RealPayment?: Decimal | DecimalJsLike | number | string | null
+    DiscountPercent?: Decimal | DecimalJsLike | number | string
     Deleted?: boolean | null
   }
 
@@ -24382,9 +26472,9 @@ export namespace Prisma {
     Taxes?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     TimeOfPay?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     ID_User?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
-    DiscountPercent?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
-    RealPayment?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     Vaucher?: NullableStringFieldUpdateOperationsInput | string | null
+    RealPayment?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    DiscountPercent?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     Deleted?: NullableBoolFieldUpdateOperationsInput | boolean | null
   }
 
@@ -24401,9 +26491,9 @@ export namespace Prisma {
     Taxes?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     TimeOfPay?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     ID_User?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
-    DiscountPercent?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
-    RealPayment?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     Vaucher?: NullableStringFieldUpdateOperationsInput | string | null
+    RealPayment?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    DiscountPercent?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     Deleted?: NullableBoolFieldUpdateOperationsInput | boolean | null
   }
 
@@ -24419,9 +26509,9 @@ export namespace Prisma {
     Taxes?: Decimal | DecimalJsLike | number | string | null
     TimeOfPay?: Date | string | null
     ID_User?: bigint | number | null
-    DiscountPercent?: Decimal | DecimalJsLike | number | string
-    RealPayment?: Decimal | DecimalJsLike | number | string | null
     Vaucher?: string | null
+    RealPayment?: Decimal | DecimalJsLike | number | string | null
+    DiscountPercent?: Decimal | DecimalJsLike | number | string
     Deleted?: boolean | null
   }
 
@@ -24438,9 +26528,9 @@ export namespace Prisma {
     Taxes?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     TimeOfPay?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     ID_User?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
-    DiscountPercent?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
-    RealPayment?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     Vaucher?: NullableStringFieldUpdateOperationsInput | string | null
+    RealPayment?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    DiscountPercent?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     Deleted?: NullableBoolFieldUpdateOperationsInput | boolean | null
   }
 
@@ -24457,9 +26547,9 @@ export namespace Prisma {
     Taxes?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     TimeOfPay?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     ID_User?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
-    DiscountPercent?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
-    RealPayment?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     Vaucher?: NullableStringFieldUpdateOperationsInput | string | null
+    RealPayment?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    DiscountPercent?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     Deleted?: NullableBoolFieldUpdateOperationsInput | boolean | null
   }
 
@@ -24646,6 +26736,106 @@ export namespace Prisma {
     Date?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     Active?: NullableBoolFieldUpdateOperationsInput | boolean | null
     ID_User?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  }
+
+  export type DBT_UILayoutsCreateInput = {
+    id?: bigint | number
+    name?: string | null
+    viewName?: string | null
+    state?: string | null
+  }
+
+  export type DBT_UILayoutsUncheckedCreateInput = {
+    id?: bigint | number
+    name?: string | null
+    viewName?: string | null
+    state?: string | null
+  }
+
+  export type DBT_UILayoutsUpdateInput = {
+    id?: BigIntFieldUpdateOperationsInput | bigint | number
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    viewName?: NullableStringFieldUpdateOperationsInput | string | null
+    state?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type DBT_UILayoutsUncheckedUpdateInput = {
+    id?: BigIntFieldUpdateOperationsInput | bigint | number
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    viewName?: NullableStringFieldUpdateOperationsInput | string | null
+    state?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type DBT_UILayoutsCreateManyInput = {
+    name?: string | null
+    viewName?: string | null
+    state?: string | null
+  }
+
+  export type DBT_UILayoutsUpdateManyMutationInput = {
+    id?: BigIntFieldUpdateOperationsInput | bigint | number
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    viewName?: NullableStringFieldUpdateOperationsInput | string | null
+    state?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type DBT_UILayoutsUncheckedUpdateManyInput = {
+    id?: BigIntFieldUpdateOperationsInput | bigint | number
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    viewName?: NullableStringFieldUpdateOperationsInput | string | null
+    state?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type sysdiagramsCreateInput = {
+    name: string
+    principal_id: number
+    version?: number | null
+    definition?: Buffer | null
+  }
+
+  export type sysdiagramsUncheckedCreateInput = {
+    name: string
+    principal_id: number
+    diagram_id?: number
+    version?: number | null
+    definition?: Buffer | null
+  }
+
+  export type sysdiagramsUpdateInput = {
+    name?: StringFieldUpdateOperationsInput | string
+    principal_id?: IntFieldUpdateOperationsInput | number
+    version?: NullableIntFieldUpdateOperationsInput | number | null
+    definition?: NullableBytesFieldUpdateOperationsInput | Buffer | null
+  }
+
+  export type sysdiagramsUncheckedUpdateInput = {
+    name?: StringFieldUpdateOperationsInput | string
+    principal_id?: IntFieldUpdateOperationsInput | number
+    diagram_id?: IntFieldUpdateOperationsInput | number
+    version?: NullableIntFieldUpdateOperationsInput | number | null
+    definition?: NullableBytesFieldUpdateOperationsInput | Buffer | null
+  }
+
+  export type sysdiagramsCreateManyInput = {
+    name: string
+    principal_id: number
+    version?: number | null
+    definition?: Buffer | null
+  }
+
+  export type sysdiagramsUpdateManyMutationInput = {
+    name?: StringFieldUpdateOperationsInput | string
+    principal_id?: IntFieldUpdateOperationsInput | number
+    version?: NullableIntFieldUpdateOperationsInput | number | null
+    definition?: NullableBytesFieldUpdateOperationsInput | Buffer | null
+  }
+
+  export type sysdiagramsUncheckedUpdateManyInput = {
+    name?: StringFieldUpdateOperationsInput | string
+    principal_id?: IntFieldUpdateOperationsInput | number
+    diagram_id?: IntFieldUpdateOperationsInput | number
+    version?: NullableIntFieldUpdateOperationsInput | number | null
+    definition?: NullableBytesFieldUpdateOperationsInput | Buffer | null
   }
 
   export type BigIntFilter<$PrismaModel = never> = {
@@ -24920,6 +27110,7 @@ export namespace Prisma {
     ID_Layout?: SortOrder
     BackgroudPicture?: SortOrder
     Order?: SortOrder
+    VisibleInMenu?: SortOrder
   }
 
   export type DBT_MealGroupsAvgOrderByAggregateInput = {
@@ -24935,6 +27126,7 @@ export namespace Prisma {
     ID_Layout?: SortOrder
     BackgroudPicture?: SortOrder
     Order?: SortOrder
+    VisibleInMenu?: SortOrder
   }
 
   export type DBT_MealGroupsMinOrderByAggregateInput = {
@@ -24944,6 +27136,7 @@ export namespace Prisma {
     ID_Layout?: SortOrder
     BackgroudPicture?: SortOrder
     Order?: SortOrder
+    VisibleInMenu?: SortOrder
   }
 
   export type DBT_MealGroupsSumOrderByAggregateInput = {
@@ -24995,8 +27188,8 @@ export namespace Prisma {
     IsCombo?: SortOrder
     Picture?: SortOrder
     PictureDescription?: SortOrder
-    Dicountable?: SortOrder
     Recipe?: SortOrder
+    Dicountable?: SortOrder
   }
 
   export type DBT_MealsAvgOrderByAggregateInput = {
@@ -25016,8 +27209,8 @@ export namespace Prisma {
     IsCombo?: SortOrder
     Picture?: SortOrder
     PictureDescription?: SortOrder
-    Dicountable?: SortOrder
     Recipe?: SortOrder
+    Dicountable?: SortOrder
   }
 
   export type DBT_MealsMinOrderByAggregateInput = {
@@ -25031,8 +27224,8 @@ export namespace Prisma {
     IsCombo?: SortOrder
     Picture?: SortOrder
     PictureDescription?: SortOrder
-    Dicountable?: SortOrder
     Recipe?: SortOrder
+    Dicountable?: SortOrder
   }
 
   export type DBT_MealsSumOrderByAggregateInput = {
@@ -25100,9 +27293,9 @@ export namespace Prisma {
     ID_User?: SortOrder
     Time_Prepared?: SortOrder
     Time_Delivered?: SortOrder
-    Discountable?: SortOrder
     ID_Payment?: SortOrder
     Note?: SortOrder
+    Discountable?: SortOrder
   }
 
   export type DBT_OrderItemsAvgOrderByAggregateInput = {
@@ -25112,8 +27305,8 @@ export namespace Prisma {
     ID_Variant?: SortOrder
     Price?: SortOrder
     ID_User?: SortOrder
-    Discountable?: SortOrder
     ID_Payment?: SortOrder
+    Discountable?: SortOrder
   }
 
   export type DBT_OrderItemsMaxOrderByAggregateInput = {
@@ -25127,9 +27320,9 @@ export namespace Prisma {
     ID_User?: SortOrder
     Time_Prepared?: SortOrder
     Time_Delivered?: SortOrder
-    Discountable?: SortOrder
     ID_Payment?: SortOrder
     Note?: SortOrder
+    Discountable?: SortOrder
   }
 
   export type DBT_OrderItemsMinOrderByAggregateInput = {
@@ -25143,9 +27336,9 @@ export namespace Prisma {
     ID_User?: SortOrder
     Time_Prepared?: SortOrder
     Time_Delivered?: SortOrder
-    Discountable?: SortOrder
     ID_Payment?: SortOrder
     Note?: SortOrder
+    Discountable?: SortOrder
   }
 
   export type DBT_OrderItemsSumOrderByAggregateInput = {
@@ -25155,8 +27348,8 @@ export namespace Prisma {
     ID_Variant?: SortOrder
     Price?: SortOrder
     ID_User?: SortOrder
-    Discountable?: SortOrder
     ID_Payment?: SortOrder
+    Discountable?: SortOrder
   }
 
   export type DateTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
@@ -25182,8 +27375,8 @@ export namespace Prisma {
     Canceled?: SortOrder
     Price?: SortOrder
     OrderClosed?: SortOrder
-    ID_User?: SortOrder
     Note?: SortOrder
+    ID_User?: SortOrder
   }
 
   export type DBT_OrdersAvgOrderByAggregateInput = {
@@ -25203,8 +27396,8 @@ export namespace Prisma {
     Canceled?: SortOrder
     Price?: SortOrder
     OrderClosed?: SortOrder
-    ID_User?: SortOrder
     Note?: SortOrder
+    ID_User?: SortOrder
   }
 
   export type DBT_OrdersMinOrderByAggregateInput = {
@@ -25216,8 +27409,8 @@ export namespace Prisma {
     Canceled?: SortOrder
     Price?: SortOrder
     OrderClosed?: SortOrder
-    ID_User?: SortOrder
     Note?: SortOrder
+    ID_User?: SortOrder
   }
 
   export type DBT_OrdersSumOrderByAggregateInput = {
@@ -25515,9 +27708,9 @@ export namespace Prisma {
     Taxes?: SortOrder
     TimeOfPay?: SortOrder
     ID_User?: SortOrder
-    DiscountPercent?: SortOrder
-    RealPayment?: SortOrder
     Vaucher?: SortOrder
+    RealPayment?: SortOrder
+    DiscountPercent?: SortOrder
     Deleted?: SortOrder
   }
 
@@ -25530,8 +27723,8 @@ export namespace Prisma {
     ItemsCost?: SortOrder
     Taxes?: SortOrder
     ID_User?: SortOrder
-    DiscountPercent?: SortOrder
     RealPayment?: SortOrder
+    DiscountPercent?: SortOrder
   }
 
   export type DBT_PaymentsMaxOrderByAggregateInput = {
@@ -25547,9 +27740,9 @@ export namespace Prisma {
     Taxes?: SortOrder
     TimeOfPay?: SortOrder
     ID_User?: SortOrder
-    DiscountPercent?: SortOrder
-    RealPayment?: SortOrder
     Vaucher?: SortOrder
+    RealPayment?: SortOrder
+    DiscountPercent?: SortOrder
     Deleted?: SortOrder
   }
 
@@ -25566,9 +27759,9 @@ export namespace Prisma {
     Taxes?: SortOrder
     TimeOfPay?: SortOrder
     ID_User?: SortOrder
-    DiscountPercent?: SortOrder
-    RealPayment?: SortOrder
     Vaucher?: SortOrder
+    RealPayment?: SortOrder
+    DiscountPercent?: SortOrder
     Deleted?: SortOrder
   }
 
@@ -25581,8 +27774,8 @@ export namespace Prisma {
     ItemsCost?: SortOrder
     Taxes?: SortOrder
     ID_User?: SortOrder
-    DiscountPercent?: SortOrder
     RealPayment?: SortOrder
+    DiscountPercent?: SortOrder
   }
 
   export type DecimalWithAggregatesFilter<$PrismaModel = never> = {
@@ -25730,6 +27923,134 @@ export namespace Prisma {
     ID_User?: SortOrder
   }
 
+  export type DBT_UILayoutsCountOrderByAggregateInput = {
+    id?: SortOrder
+    name?: SortOrder
+    viewName?: SortOrder
+    state?: SortOrder
+  }
+
+  export type DBT_UILayoutsAvgOrderByAggregateInput = {
+    id?: SortOrder
+  }
+
+  export type DBT_UILayoutsMaxOrderByAggregateInput = {
+    id?: SortOrder
+    name?: SortOrder
+    viewName?: SortOrder
+    state?: SortOrder
+  }
+
+  export type DBT_UILayoutsMinOrderByAggregateInput = {
+    id?: SortOrder
+    name?: SortOrder
+    viewName?: SortOrder
+    state?: SortOrder
+  }
+
+  export type DBT_UILayoutsSumOrderByAggregateInput = {
+    id?: SortOrder
+  }
+
+  export type StringFilter<$PrismaModel = never> = {
+    equals?: string | StringFieldRefInput<$PrismaModel>
+    in?: string[]
+    notIn?: string[]
+    lt?: string | StringFieldRefInput<$PrismaModel>
+    lte?: string | StringFieldRefInput<$PrismaModel>
+    gt?: string | StringFieldRefInput<$PrismaModel>
+    gte?: string | StringFieldRefInput<$PrismaModel>
+    contains?: string | StringFieldRefInput<$PrismaModel>
+    startsWith?: string | StringFieldRefInput<$PrismaModel>
+    endsWith?: string | StringFieldRefInput<$PrismaModel>
+    not?: NestedStringFilter<$PrismaModel> | string
+  }
+
+  export type IntFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel>
+    in?: number[]
+    notIn?: number[]
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntFilter<$PrismaModel> | number
+  }
+
+  export type sysdiagramsPrincipal_idNameCompoundUniqueInput = {
+    principal_id: number
+    name: string
+  }
+
+  export type sysdiagramsCountOrderByAggregateInput = {
+    name?: SortOrder
+    principal_id?: SortOrder
+    diagram_id?: SortOrder
+    version?: SortOrder
+    definition?: SortOrder
+  }
+
+  export type sysdiagramsAvgOrderByAggregateInput = {
+    principal_id?: SortOrder
+    diagram_id?: SortOrder
+    version?: SortOrder
+  }
+
+  export type sysdiagramsMaxOrderByAggregateInput = {
+    name?: SortOrder
+    principal_id?: SortOrder
+    diagram_id?: SortOrder
+    version?: SortOrder
+    definition?: SortOrder
+  }
+
+  export type sysdiagramsMinOrderByAggregateInput = {
+    name?: SortOrder
+    principal_id?: SortOrder
+    diagram_id?: SortOrder
+    version?: SortOrder
+    definition?: SortOrder
+  }
+
+  export type sysdiagramsSumOrderByAggregateInput = {
+    principal_id?: SortOrder
+    diagram_id?: SortOrder
+    version?: SortOrder
+  }
+
+  export type StringWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: string | StringFieldRefInput<$PrismaModel>
+    in?: string[]
+    notIn?: string[]
+    lt?: string | StringFieldRefInput<$PrismaModel>
+    lte?: string | StringFieldRefInput<$PrismaModel>
+    gt?: string | StringFieldRefInput<$PrismaModel>
+    gte?: string | StringFieldRefInput<$PrismaModel>
+    contains?: string | StringFieldRefInput<$PrismaModel>
+    startsWith?: string | StringFieldRefInput<$PrismaModel>
+    endsWith?: string | StringFieldRefInput<$PrismaModel>
+    not?: NestedStringWithAggregatesFilter<$PrismaModel> | string
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedStringFilter<$PrismaModel>
+    _max?: NestedStringFilter<$PrismaModel>
+  }
+
+  export type IntWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel>
+    in?: number[]
+    notIn?: number[]
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntWithAggregatesFilter<$PrismaModel> | number
+    _count?: NestedIntFilter<$PrismaModel>
+    _avg?: NestedFloatFilter<$PrismaModel>
+    _sum?: NestedIntFilter<$PrismaModel>
+    _min?: NestedIntFilter<$PrismaModel>
+    _max?: NestedIntFilter<$PrismaModel>
+  }
+
   export type BigIntFieldUpdateOperationsInput = {
     set?: bigint | number
     increment?: bigint | number
@@ -25788,6 +28109,18 @@ export namespace Prisma {
     decrement?: Decimal | DecimalJsLike | number | string
     multiply?: Decimal | DecimalJsLike | number | string
     divide?: Decimal | DecimalJsLike | number | string
+  }
+
+  export type StringFieldUpdateOperationsInput = {
+    set?: string
+  }
+
+  export type IntFieldUpdateOperationsInput = {
+    set?: number
+    increment?: number
+    decrement?: number
+    multiply?: number
+    divide?: number
   }
 
   export type NestedBigIntFilter<$PrismaModel = never> = {
@@ -26057,6 +28390,53 @@ export namespace Prisma {
     _max?: NestedDecimalFilter<$PrismaModel>
   }
 
+  export type NestedStringFilter<$PrismaModel = never> = {
+    equals?: string | StringFieldRefInput<$PrismaModel>
+    in?: string[]
+    notIn?: string[]
+    lt?: string | StringFieldRefInput<$PrismaModel>
+    lte?: string | StringFieldRefInput<$PrismaModel>
+    gt?: string | StringFieldRefInput<$PrismaModel>
+    gte?: string | StringFieldRefInput<$PrismaModel>
+    contains?: string | StringFieldRefInput<$PrismaModel>
+    startsWith?: string | StringFieldRefInput<$PrismaModel>
+    endsWith?: string | StringFieldRefInput<$PrismaModel>
+    not?: NestedStringFilter<$PrismaModel> | string
+  }
+
+  export type NestedStringWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: string | StringFieldRefInput<$PrismaModel>
+    in?: string[]
+    notIn?: string[]
+    lt?: string | StringFieldRefInput<$PrismaModel>
+    lte?: string | StringFieldRefInput<$PrismaModel>
+    gt?: string | StringFieldRefInput<$PrismaModel>
+    gte?: string | StringFieldRefInput<$PrismaModel>
+    contains?: string | StringFieldRefInput<$PrismaModel>
+    startsWith?: string | StringFieldRefInput<$PrismaModel>
+    endsWith?: string | StringFieldRefInput<$PrismaModel>
+    not?: NestedStringWithAggregatesFilter<$PrismaModel> | string
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedStringFilter<$PrismaModel>
+    _max?: NestedStringFilter<$PrismaModel>
+  }
+
+  export type NestedIntWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel>
+    in?: number[]
+    notIn?: number[]
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntWithAggregatesFilter<$PrismaModel> | number
+    _count?: NestedIntFilter<$PrismaModel>
+    _avg?: NestedFloatFilter<$PrismaModel>
+    _sum?: NestedIntFilter<$PrismaModel>
+    _min?: NestedIntFilter<$PrismaModel>
+    _max?: NestedIntFilter<$PrismaModel>
+  }
+
 
 
   /**
@@ -26146,6 +28526,14 @@ export namespace Prisma {
      * @deprecated Use DBT_CustomerPaymentsDefaultArgs instead
      */
     export type DBT_CustomerPaymentsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = DBT_CustomerPaymentsDefaultArgs<ExtArgs>
+    /**
+     * @deprecated Use DBT_UILayoutsDefaultArgs instead
+     */
+    export type DBT_UILayoutsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = DBT_UILayoutsDefaultArgs<ExtArgs>
+    /**
+     * @deprecated Use sysdiagramsDefaultArgs instead
+     */
+    export type sysdiagramsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = sysdiagramsDefaultArgs<ExtArgs>
 
   /**
    * Batch Payload for updateMany & deleteMany & createMany

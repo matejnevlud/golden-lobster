@@ -154,7 +154,8 @@ exports.Prisma.DBT_MealGroupsScalarFieldEnum = {
   MealGroup: 'MealGroup',
   ID_Layout: 'ID_Layout',
   BackgroudPicture: 'BackgroudPicture',
-  Order: 'Order'
+  Order: 'Order',
+  VisibleInMenu: 'VisibleInMenu'
 };
 
 exports.Prisma.DBT_MealsScalarFieldEnum = {
@@ -168,8 +169,8 @@ exports.Prisma.DBT_MealsScalarFieldEnum = {
   IsCombo: 'IsCombo',
   Picture: 'Picture',
   PictureDescription: 'PictureDescription',
-  Dicountable: 'Dicountable',
-  Recipe: 'Recipe'
+  Recipe: 'Recipe',
+  Dicountable: 'Dicountable'
 };
 
 exports.Prisma.DBT_MenuSetUpScalarFieldEnum = {
@@ -192,9 +193,9 @@ exports.Prisma.DBT_OrderItemsScalarFieldEnum = {
   ID_User: 'ID_User',
   Time_Prepared: 'Time_Prepared',
   Time_Delivered: 'Time_Delivered',
-  Discountable: 'Discountable',
   ID_Payment: 'ID_Payment',
-  Note: 'Note'
+  Note: 'Note',
+  Discountable: 'Discountable'
 };
 
 exports.Prisma.DBT_OrdersScalarFieldEnum = {
@@ -206,8 +207,8 @@ exports.Prisma.DBT_OrdersScalarFieldEnum = {
   Canceled: 'Canceled',
   Price: 'Price',
   OrderClosed: 'OrderClosed',
-  ID_User: 'ID_User',
-  Note: 'Note'
+  Note: 'Note',
+  ID_User: 'ID_User'
 };
 
 exports.Prisma.DBT_PaymentMethodsScalarFieldEnum = {
@@ -282,9 +283,9 @@ exports.Prisma.DBT_PaymentsScalarFieldEnum = {
   Taxes: 'Taxes',
   TimeOfPay: 'TimeOfPay',
   ID_User: 'ID_User',
-  DiscountPercent: 'DiscountPercent',
-  RealPayment: 'RealPayment',
   Vaucher: 'Vaucher',
+  RealPayment: 'RealPayment',
+  DiscountPercent: 'DiscountPercent',
   Deleted: 'Deleted'
 };
 
@@ -313,6 +314,21 @@ exports.Prisma.DBT_CustomerPaymentsScalarFieldEnum = {
   Date: 'Date',
   Active: 'Active',
   ID_User: 'ID_User'
+};
+
+exports.Prisma.DBT_UILayoutsScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  viewName: 'viewName',
+  state: 'state'
+};
+
+exports.Prisma.SysdiagramsScalarFieldEnum = {
+  name: 'name',
+  principal_id: 'principal_id',
+  diagram_id: 'diagram_id',
+  version: 'version',
+  definition: 'definition'
 };
 
 exports.Prisma.SortOrder = {
@@ -347,7 +363,9 @@ exports.Prisma.ModelName = {
   DBT_PaymentTaxes: 'DBT_PaymentTaxes',
   DBT_CashWithdrawals: 'DBT_CashWithdrawals',
   DBT_CustomerPaymentPayments: 'DBT_CustomerPaymentPayments',
-  DBT_CustomerPayments: 'DBT_CustomerPayments'
+  DBT_CustomerPayments: 'DBT_CustomerPayments',
+  DBT_UILayouts: 'DBT_UILayouts',
+  sysdiagrams: 'sysdiagrams'
 };
 
 /**

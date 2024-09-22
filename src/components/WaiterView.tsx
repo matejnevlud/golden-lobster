@@ -2,8 +2,8 @@
 
 import { XMLParser } from "fast-xml-parser";
 import { parseBasic } from "@/utils/xmlParser";
-import { useEffect, useMemo, useRef, useState } from "react";
-import { DataGrid, getGridDateOperators, GridFilterOperator, GridRenderCellParams } from "@mui/x-data-grid";
+import React, { useEffect, useMemo, useRef, useState } from "react";
+import { DataGrid, getGridDateOperators, GridFilterOperator, GridRenderCellParams, useGridApiRef } from "@mui/x-data-grid";
 import { Alert, Box, Button, ButtonGroup, CardHeader, Checkbox, CircularProgress, FormControl, FormControlLabel, FormGroup, IconButton, InputAdornment, InputLabel, LinearProgress, MenuItem, Modal, Select, TextField, ToggleButton, ToggleButtonGroup, Typography } from "@mui/material";
 import {
     changeOrderItemVariant,
@@ -33,6 +33,8 @@ import OpenInFullIcon from '@mui/icons-material/OpenInFull';
 import { useIdleTimer } from 'react-idle-timer/legacy'
 import { Snackbar } from "@mui/base";
 import { GridFilterInputDate } from "@mui/x-data-grid/components/panel/filterPanel/GridFilterInputDate";
+import KitchenView from "@/components/KitchenView";
+import { getLayoutFooter, LayoutDataGrid, LayoutFooter } from "@/components/LayoutFooter";
 
 const getSavedColumnWidth = (table: string, field: string) => {
     return localStorage.getItem(`${table}_${field}`) != null ? parseInt(localStorage.getItem(`${table}_${field}`)) : undefined;
@@ -465,34 +467,24 @@ export default function WaiterView(props) {
     const [orderTaxesSum, setOrderTaxesSum] = useState(0);
     const [orderTotalSum, setOrderTotalSum] = useState(0);
     const [orderRealPaymentSum, setOrderRealPaymentSum] = useState(0);
-    const orderInitialState = useMemo(() => {
-        const defaultState = {
-            sorting: {
-                sortModel: [
-                    { field: 'OrderClosed', sort: 'asc' },
-                    { field: 'DateTime', sort: 'desc' },
-                ],
-            },
-            columns: {
-                columnVisibilityModel: {
-                    id: false,
-                    OrderName: false,
-                    ID_Table: false,
-                    Canceled: false,
-                    OrderClosed: false,
-                }
+
+    const orderInitialState = {
+        sorting: {
+            sortModel: [
+                { field: 'OrderClosed', sort: 'asc' },
+                { field: 'DateTime', sort: 'desc' },
+            ],
+        },
+        columns: {
+            columnVisibilityModel: {
+                id: false,
+                OrderName: false,
+                ID_Table: false,
+                Canceled: false,
+                OrderClosed: false,
             }
-        };
-
-        const stateJSON = localStorage.getItem("orderState");
-        if (!stateJSON) return defaultState;
-
-        try {
-            return JSON.parse(stateJSON);
-        } catch {
-            return defaultState;
         }
-    }, [])
+    };
 
     const todayFilterOperator: GridFilterOperator<any, Date, any>[] = [
         {
@@ -502,7 +494,6 @@ export default function WaiterView(props) {
 
                 return (value) => {
                     const today = new Date();
-                    console.log(value.toDateString(), today.toDateString())
                     return value.toDateString() === today.toDateString();
                 };
             },
@@ -510,12 +501,14 @@ export default function WaiterView(props) {
         },
         ...getGridDateOperators()
     ];
+
+    const ordergridRef = useRef(null);
     const renderOrdersList = () => {
         const cols = [
-            { field: 'id', headerName: 'ID', width: getSavedColumnWidth('order', 'id') },
-            { field: 'OrderName', headerName: 'Order Name', width: getSavedColumnWidth('order', 'OrderName') },
+            { field: 'id', headerName: 'ID' },
+            { field: 'OrderName', headerName: 'Order Name' },
             {
-                field: 'ID_Order', headerName: 'Order', width: getSavedColumnWidth('order', 'ID_Order'), type: 'number',
+                field: 'ID_Order', headerName: 'Order', type: 'number',
                 renderCell: (params) => (
                     <div>
                         <b>{params.row.id}</b>
@@ -525,27 +518,27 @@ export default function WaiterView(props) {
                 ),
             },
 
-            { field: 'ID_Table', headerName: 'ID_Table', width: getSavedColumnWidth('order', 'ID_Table') },
-            { field: 'Table', headerName: 'Table', width: getSavedColumnWidth('order', 'Table'), type: 'singleSelect', valueOptions: tables.map((table) => table.TableName) },
-            { field: 'Note', headerName: 'Note', width: getSavedColumnWidth('order', 'Note'), type: 'text' },
+            { field: 'ID_Table', headerName: 'ID_Table' },
+            { field: 'Table', headerName: 'Table', type: 'singleSelect', valueOptions: tables.map((table) => table.TableName) },
+            { field: 'Note', headerName: 'Note', type: 'text' },
             {
                 field: 'DateTime',
                 headerName: 'Created At',
-                width: getSavedColumnWidth('order', 'DateTime'),
                 type: 'date',
                 valueFormatter: convertDate,
                 filterOperators: todayFilterOperator,
             },
-            { field: 'ItemsCost', headerName: 'ItemsCost', width: getSavedColumnWidth('order', 'ItemsCost'), type: 'number', valueFormatter: val => val.toFixed(3) },
-            { field: 'Taxes', headerName: 'Taxes', width: getSavedColumnWidth('order', 'Taxes'), type: 'number', valueFormatter: val => val.toFixed(3) },
-            { field: 'Total', headerName: 'Total', width: getSavedColumnWidth('order', 'Total'), type: 'number', valueFormatter: val => val.toFixed(3) },
-            { field: 'RealPayment', headerName: 'RealPayment', width: getSavedColumnWidth('order', 'RealPayment'), type: 'number', valueFormatter: val => val.toFixed(3) },
-            { field: 'Status', headerName: 'Status', width: getSavedColumnWidth('order', 'Status'), type: 'singleSelect', valueOptions: ['Active', 'Closed', 'Canceled'] },
+            { field: 'ItemsCost', headerName: 'ItemsCost', type: 'number', valueFormatter: val => val.toFixed(3) },
+            { field: 'Taxes', headerName: 'Taxes', type: 'number', valueFormatter: val => val.toFixed(3) },
+            { field: 'Total', headerName: 'Total', type: 'number', valueFormatter: val => val.toFixed(3) },
+            { field: 'RealPayment', headerName: 'RealPayment', type: 'number', valueFormatter: val => val.toFixed(3) },
+            { field: 'Status', headerName: 'Status', type: 'singleSelect', valueOptions: ['Active', 'Closed', 'Canceled'] },
         ]
 
         const rows = orders.map((order) => ({
             OrderName: order.OrderName,
             id: parseInt(order.ID),
+            ID_Order: parseInt(order.ID),
             ID_Table: parseInt(order.ID_Table),
             Table: tables.find((table) => table.ID == order.ID_Table)?.TableName,
             ID_Customer: parseInt(order.ID_Customer),
@@ -613,8 +606,9 @@ export default function WaiterView(props) {
                 </div>
 
                 {isRefreshing && <LinearProgress />}
-                <DataGrid
+                <LayoutDataGrid
                     key={'ordergrid'}
+                    viewName={'ordergrid'}
                     isRowSelectable={() => false}
                     getRowHeight={() => 'auto'}
                     getEstimatedRowHeight={() => 72}
@@ -625,11 +619,7 @@ export default function WaiterView(props) {
                         overflowX: 'scroll'
                     }}
                     initialState={orderInitialState}
-                    onColumnWidthChange={(params) => {
-                        localStorage.setItem(`order_${params.colDef.field}`, params.width.toString())
-                    }}
                     onStateChange={(state) => {
-                        localStorage.setItem("orderState", JSON.stringify(state))
 
                         // using visible rows to calculate sum
                         const visibleRowsLookup = state.filter.filteredRowsLookup
@@ -1284,36 +1274,25 @@ export default function WaiterView(props) {
             </Modal>
         )
     }
-    const orderDetailInitialState = useMemo(() => {
-        const defaultState = {
-            sorting: {
-                sortModel: [
-                    { field: 'Time', sort: 'desc' },
-                ],
-            },
-            columns: {
-                columnVisibilityModel: {
-                    id: false,
-                    ID_Order: false,
-                    ID_Meal: false,
-                    Variant: false,
-                    ID_Variant: false,
-                    TimeOfOrder: false,
-                    Time_Prepared: false,
-                    Time_Delivered: false,
-                }
+    const orderDetailInitialState = {
+        sorting: {
+            sortModel: [
+                { field: 'Time', sort: 'desc' },
+            ],
+        },
+        columns: {
+            columnVisibilityModel: {
+                id: false,
+                ID_Order: false,
+                ID_Meal: false,
+                Variant: false,
+                ID_Variant: false,
+                TimeOfOrder: false,
+                Time_Prepared: false,
+                Time_Delivered: false,
             }
-        };
-
-        const stateJSON = localStorage.getItem("orderDetailState");
-        if (!stateJSON) return defaultState;
-
-        try {
-            return JSON.parse(stateJSON);
-        } catch {
-            return defaultState;
         }
-    }, [])
+    };
 
     const canUserPrepareFood = () => {
         return currentUser.Role == 1
@@ -1323,12 +1302,14 @@ export default function WaiterView(props) {
         return currentUser.Role == 2
     }
 
+    const orderDetailRef = useGridApiRef();
+
     const renderOrderDetail = () => {
         const currentOrderItem = orderItems.find((orderItem) => orderItem.ID == selectedOrderItemId);
 
         const orderItemCols = [
             {
-                field: 'Button_kitchen', headerName: 'Kitchen', width: getSavedColumnWidth('orderdetail', 'Button_kitchen'),
+                field: 'Button_kitchen', headerName: 'Kitchen',
                 renderCell: (params) => (
                     <IconButton size="large" aria-label="kitchen" disabled={!!params.row.Time_Prepared || !canUserPrepareFood()} color={'error'} onClick={async (e) => {
                         e.stopPropagation();
@@ -1344,11 +1325,11 @@ export default function WaiterView(props) {
                 valueGetter: (value, row) => !!row.Time_Prepared,
             },
 
-            { field: 'id', headerName: 'ID', width: getSavedColumnWidth('orderdetail', 'id') },
-            { field: 'ID_Order', headerName: 'ID_Order', width: getSavedColumnWidth('orderdetail', 'ID_Order') },
-            { field: 'ID_Meal', headerName: 'ID_Meal', width: getSavedColumnWidth('orderdetail', 'ID_Meal') },
+            { field: 'id', headerName: 'ID' },
+            { field: 'ID_Order', headerName: 'ID_Order' },
+            { field: 'ID_Meal', headerName: 'ID_Meal' },
             {
-                field: 'Meal', headerName: 'Meal', width: getSavedColumnWidth('orderdetail', 'Meal'),
+                field: 'Meal', headerName: 'Meal',
                 renderCell: (params) => (
                     <div>
                         <b>{params.row.Meal}</b>
@@ -1357,14 +1338,13 @@ export default function WaiterView(props) {
                     </div>
                 ),
             },
-            { field: 'ID_Variant', headerName: 'ID_Variant', width: getSavedColumnWidth('orderdetail', 'ID_Variant') },
-            { field: 'Variant', headerName: 'Variant', width: getSavedColumnWidth('orderdetail', 'Variant') },
+            { field: 'ID_Variant', headerName: 'ID_Variant' },
+            { field: 'Variant', headerName: 'Variant' },
 
 
             {
                 field: 'Time',
                 headerName: 'Time',
-                width: getSavedColumnWidth('orderdetail', 'Time'),
                 valueGetter: (value, row) => row.TimeOfOrder,
                 type: 'date',
                 renderCell: (params) => (
@@ -1380,16 +1360,16 @@ export default function WaiterView(props) {
                 valueFormatter: convertDate,
 
             },
-            { field: 'TimeOfOrder', headerName: 'Ordered', width: getSavedColumnWidth('orderdetail', 'TimeOfOrder'), type: 'date', valueFormatter: convertDate },
-            { field: 'Time_Prepared', headerName: 'Prep', width: getSavedColumnWidth('orderdetail', 'Time_Prepared'), type: 'date', valueFormatter: convertDate },
-            { field: 'Time_Delivered', headerName: 'Deliver', width: getSavedColumnWidth('orderdetail', 'Time_Delivered'), type: 'date', valueFormatter: convertDate },
-            { field: 'Note', headerName: 'Note', width: getSavedColumnWidth('orderdetail', 'Note') },
+            { field: 'TimeOfOrder', headerName: 'Ordered', type: 'date', valueFormatter: convertDate },
+            { field: 'Time_Prepared', headerName: 'Prep', type: 'date', valueFormatter: convertDate },
+            { field: 'Time_Delivered', headerName: 'Deliver', type: 'date', valueFormatter: convertDate },
+            { field: 'Note', headerName: 'Note' },
 
-            { field: 'Price', headerName: 'Price', width: getSavedColumnWidth('orderdetail', 'Price'), type: 'number' },
-            { field: 'Status', headerName: 'Status', width: getSavedColumnWidth('orderdetail', 'Status'), valueOptions: ['Paid', 'Canceled'], type: 'singleSelect' },
+            { field: 'Price', headerName: 'Price', type: 'number' },
+            { field: 'Status', headerName: 'Status', valueOptions: ['Paid', 'Canceled'], type: 'singleSelect' },
 
             {
-                field: 'Button_waiter', headerName: 'Waiter', width: getSavedColumnWidth('orderdetail', 'Button_waiter'),
+                field: 'Button_waiter', headerName: 'Waiter',
                 renderCell: (params) => (
                     <IconButton size="large" aria-label="waiter" disabled={!!params.row.Time_Delivered || !canUserDeliverFood()} color={'error'} onClick={async (e) => {
                         e.stopPropagation();
@@ -1444,8 +1424,9 @@ export default function WaiterView(props) {
                 </div>
 
                 {isRefreshing && <LinearProgress />}
-                <DataGrid
+                <LayoutDataGrid
                     key={'orderDetial'}
+                    viewName={'orderDetial'}
                     isRowSelectable={() => false}
                     getRowHeight={() => 'auto'} getEstimatedRowHeight={() => 72}
                     sx={{
@@ -1455,12 +1436,6 @@ export default function WaiterView(props) {
                     }}
                     style={{ flex: 1, overflow: 'scroll' }}
                     initialState={orderDetailInitialState}
-                    onColumnWidthChange={(params) => {
-                        localStorage.setItem(`orderdetail_${params.colDef.field}`, params.width.toString())
-                    }}
-                    onStateChange={(state) => {
-                        localStorage.setItem("orderDetailState", JSON.stringify(state));
-                    }}
                     rows={rows} columns={orderItemCols} onRowClick={({ id, row }) => {
                         if (isOrderClosedOrCanceled()) return;
                         setSelectedOrderItemId(id);
@@ -1997,15 +1972,20 @@ export default function WaiterView(props) {
 
     const [cumulatedBillsSum, setCumulatedBillsSum] = useState(0);
     const [cumulatedBillsRealPaymentSum, setCumulatedBillsRealPaymentSum] = useState(0);
-    function CustomFooterStatusComponent(
-        props: any,
-    ) {
-        return (
-            <Box sx={{ p: 1, display: 'flex' }}>
-                Status {"OK"}
-            </Box>
-        );
-    }
+
+
+
+    const cumulatedBillInitialState = {
+        sorting: {
+            sortModel: [
+                { field: 'TimeOfPay', sort: 'desc' },
+            ],
+        },
+        columns: {
+
+
+        }
+    };
 
     const renderCumulatedBills = () => {
 
@@ -2023,21 +2003,21 @@ export default function WaiterView(props) {
 
 
         const cols = [
-            { field: 'id', headerName: 'ID', width: getSavedColumnWidth('cumulatedbills', 'ID') },
-            { field: 'TimeOfPay', headerName: 'Time', width: getSavedColumnWidth('cumulatedbills', 'TimeOfPay'), type: 'date', valueFormatter: convertDate, filterOperators: todayFilterOperator },
-            { field: 'TotalAmount', headerName: 'Total', width: getSavedColumnWidth('cumulatedbills', 'TotalAmount'), type: 'number' },
+            { field: 'id', headerName: 'ID' },
+            { field: 'TimeOfPay', headerName: 'Time', type: 'date', valueFormatter: convertDate, filterOperators: todayFilterOperator },
+            { field: 'TotalAmount', headerName: 'Total', type: 'number' },
             {
-                field: 'isPaid', headerName: 'Paid', width: getSavedColumnWidth('cumulatedbills', 'isPaid'), type: 'boolean',
+                field: 'isPaid', headerName: 'Paid', type: 'boolean',
                 renderCell: (params) => (
                     <div>{params.row.isPaid ? '✅' : '❌'}</div>
                 ),
             },
-            /*{ field: 'RealPayment', headerName: 'Real Payment', width: getSavedColumnWidth('cumulatedbills', 'RealPayment') },
-            { field: 'Discount', headerName: 'Discount', width: getSavedColumnWidth('cumulatedbills', 'Discount') },
-            { field: 'Taxes', headerName: 'Taxes', width: getSavedColumnWidth('cumulatedbills', 'Taxes') },
-            { field: 'ID_PaymentMethod', headerName: 'Payment Method', width: getSavedColumnWidth('cumulatedbills', 'ID_PaymentMethod') },
-            { field: 'ID_User', headerName: 'User', width: getSavedColumnWidth('cumulatedbills', 'ID_User') },
-            { field: 'Printed', headerName: 'Printed', width: getSavedColumnWidth('cumulatedbills', 'Printed') },*/
+            /*{ field: 'RealPayment', headerName: 'Real Payment' },
+            { field: 'Discount', headerName: 'Discount' },
+            { field: 'Taxes', headerName: 'Taxes' },
+            { field: 'ID_PaymentMethod', headerName: 'Payment Method' },
+            { field: 'ID_User', headerName: 'User' },
+            { field: 'Printed', headerName: 'Printed' },*/
         ]
 
         const rows = paymentsByCustomer.map((payment) => ({
@@ -2093,8 +2073,9 @@ export default function WaiterView(props) {
 
 
                 {isRefreshing && <LinearProgress />}
-                <DataGrid
+                <LayoutDataGrid
                     key={'cumulatedbills'}
+                    viewName={'cumulatedbills'}
                     isRowSelectable={() => false}
                     getRowHeight={() => 'auto'} getEstimatedRowHeight={() => 72}
                     sx={{
@@ -2103,16 +2084,10 @@ export default function WaiterView(props) {
                         '&.MuiDataGrid-root--densityComfortable .MuiDataGrid-cell': { py: '22px' },
                     }}
                     style={{ flex: 1, overflow: 'scroll' }}
-                    initialState={orderDetailInitialState}
-                    onColumnWidthChange={(params) => {
-                        localStorage.setItem(`cumulatedbills_${params.colDef.field}`, params.width.toString())
-                    }}
+                    initialState={cumulatedBillInitialState}
                     onStateChange={(state) => {
-                        localStorage.setItem("comulatedbillsState", JSON.stringify(state));
-
                         // using visible rows to calculate sum
                         const visibleRowsLookup = state.filter.filteredRowsLookup
-                        console.log('visibleRowsLookup', visibleRowsLookup)
                         if (!visibleRowsLookup) return;
 
                         const visibleItems = [];
@@ -2121,10 +2096,9 @@ export default function WaiterView(props) {
                                 visibleItems.push(parseInt(id));
                             }
                         }
-                        console.log('visibleItems', visibleItems)
+
                         const paymentsFiltered = paymentsByCustomer.filter((row) => visibleItems.includes(row.ID));
 
-                        console.log('paymentsFiltered', paymentsFiltered)
 
                         const sum = paymentsFiltered.reduce((acc, payment) => acc + parseFloat(payment.TotalAmount), 0);
                         setCumulatedBillsSum(sum);
@@ -2430,217 +2404,6 @@ export default function WaiterView(props) {
     }
 
 
-    const kitchenViewRef = useRef(null);
-    const kitchenViewInitialState = useMemo(() => {
-        const defaultState = {
-            sorting: {
-                sortModel: [
-                    { field: 'ID_Order', sort: 'desc' },
-                ],
-            },
-            columns: {
-                columnVisibilityModel: {
-                    id: false,
-                    ID_Meal: false,
-                    OrderName: false,
-                    ID_Variant: false,
-                    Time: false,
-                    Time_Prepared: false,
-                    Time_Delivered: false,
-                    Price: false,
-                    Status: false,
-                    Button_waiter: false,
-                    OrderStatus: false
-                }
-            }
-        };
-
-        const stateJSON = localStorage.getItem("kitchenViewState");
-        if (!stateJSON) return defaultState;
-
-        try {
-            return JSON.parse(stateJSON);
-        } catch {
-            return defaultState;
-        }
-    }, [])
-
-
-    useEffect(() => {
-        //if(showKitchenView) setTimeout(() => { kitchenViewRef.current.restoreState(kitchenViewInitialState) }, 100);
-    }, [showKitchenView]);
-    const renderKitchenView = () => {
-
-
-        const kitchenViewCols = [
-            {
-                field: 'Button_kitchen', headerName: 'Kitchen', width: getSavedColumnWidth('kitchenview', 'Button_kitchen'),
-                renderCell: (params) => (
-                    <IconButton size="large" aria-label="kitchen" disabled={!!params.row.Time_Prepared || !canUserPrepareFood()} color={'error'} onClick={async (e) => {
-                        e.stopPropagation();
-                        if (isOrderClosedOrCanceled()) return;
-
-                        const oi = await DB_prepareOrderItem(params.row.id);
-                        setOrderItems(orderItems.map((orderItem) => orderItem.ID == oi.ID ? oi : orderItem));
-                    }}>
-                        <RestaurantIcon />
-                    </IconButton>
-                ),
-                type: 'boolean',
-                valueGetter: (value, row) => !!row.Time_Prepared,
-            },
-
-            { field: 'id', headerName: 'ID', width: getSavedColumnWidth('kitchenview', 'id') },
-            { field: 'OrderName', headerName: 'Order Name', width: getSavedColumnWidth('kitchenview', 'OrderName') },
-            {
-                field: 'ID_Order', headerName: 'Order', width: getSavedColumnWidth('kitchenview', 'ID_Order'), type: 'number',
-                renderCell: (params) => (
-                    <div>
-                        <b>{params.row.id}</b>
-                        <br />
-                        <span>{params.row.OrderName ?? '-'}</span>
-                    </div>
-                ),
-            },
-            { field: 'ID_Meal', headerName: 'ID_Meal', width: getSavedColumnWidth('kitchenview', 'ID_Meal') },
-            {
-                field: 'Meal', headerName: 'Meal', width: getSavedColumnWidth('kitchenview', 'Meal'),
-                renderCell: (params) => (
-                    <div>
-                        <b>{params.row.Meal}</b>
-                        <br />
-                        <span>{params.row.Variant}</span>
-                    </div>
-                ),
-            },
-            { field: 'Is_Kitchen', headerName: 'Is Kitchen', width: getSavedColumnWidth('kitchenview', 'Is_Kitchen'), type: 'boolean' },
-            { field: 'ID_Variant', headerName: 'ID_Variant', width: getSavedColumnWidth('kitchenview', 'ID_Variant') },
-            { field: 'Variant', headerName: 'Variant', width: getSavedColumnWidth('kitchenview', 'Variant') },
-
-
-            {
-                field: 'Time',
-                headerName: 'Time',
-                width: getSavedColumnWidth('kitchenview', 'Time'),
-                valueGetter: (value, row) => row.TimeOfOrder,
-                type: 'date',
-                renderCell: (params) => (
-                    <div>
-                        <span>Ordered: {convertDate(params.row.TimeOfOrder)}</span>
-                        <br />
-                        <span>Prepared: {convertDate(params.row.Time_Prepared)}</span>
-                        <br />
-                        <span>Delivered: {convertDate(params.row.Time_Delivered)}</span>
-                    </div>
-                ),
-
-                valueFormatter: convertDate,
-
-            },
-            { field: 'TimeOfOrder', headerName: 'Time of Order', width: getSavedColumnWidth('kitchenview', 'TimeOfOrder'), type: 'date', valueFormatter: convertDate },
-            { field: 'Time_Prepared', headerName: 'Prep', width: getSavedColumnWidth('kitchenview', 'Time_Prepared'), type: 'date', valueFormatter: convertDate },
-            { field: 'Time_Delivered', headerName: 'Deliver', width: getSavedColumnWidth('kitchenview', 'Time_Delivered'), type: 'date', valueFormatter: convertDate },
-            { field: 'Note', headerName: 'Note', width: getSavedColumnWidth('kitchenview', 'Note') },
-
-            { field: 'Price', headerName: 'Price', width: getSavedColumnWidth('kitchenview', 'Price'), type: 'number' },
-            { field: 'Status', headerName: 'Status', width: getSavedColumnWidth('kitchenview', 'Status'), valueOptions: ['Paid', 'Canceled'], type: 'singleSelect' },
-
-            {
-                field: 'Button_waiter', headerName: 'Waiter', width: getSavedColumnWidth('kitchenview', 'Button_waiter'),
-                renderCell: (params) => (
-                    <IconButton size="large" aria-label="waiter" disabled={!!params.row.Time_Delivered || !canUserDeliverFood()} color={'error'} onClick={async (e) => {
-                        e.stopPropagation();
-                        if (isOrderClosedOrCanceled()) return;
-
-                        const oi = await DB_deliverOrderItem(params.row.id);
-                        setOrderItems(orderItems.map((orderItem) => orderItem.ID == oi.ID ? oi : orderItem));
-                    }}>
-                        <TableBarIcon />
-                    </IconButton>
-                ),
-                type: 'boolean',
-                valueGetter: (value, row) => !!row.Time_Delivered,
-
-            },
-
-            { field: 'OrderStatus', headerName: 'Order Status', width: getSavedColumnWidth('kitchenview', 'orderStatus'), type: 'singleSelect', valueOptions: ['Active', 'Closed', 'Canceled'] },
-
-
-        ]
-
-        const rows = orderItems
-            .filter((orderItem) => !orderItem.Time_Prepared)
-            .map((orderItem) => ({
-                id: parseInt(orderItem.ID),
-                ID_Order: parseInt(orderItem.ID_Order),
-                ID_Meal: parseInt(orderItem.ID_Meal),
-                Meal: meals.find((meal) => meal.ID == orderItem.ID_Meal)?.Meal,
-                ID_Variant: parseInt(orderItem.ID_Variant),
-                Variant: variants.find((variant) => variant.ID == orderItem.ID_Variant)?.MealVariant,
-                TimeOfOrder: orderItem.TimeOfOrder,
-                Price: orderItem.Price,
-                Canceled: orderItem.Canceled,
-                ID_Payment: orderItem.ID_Payment,
-
-                Time_Prepared: orderItem.Time_Prepared,
-                Time_Delivered: orderItem.Time_Delivered,
-
-                Note: orderItem.Note,
-
-                Status: orderItem.ID_Payment ? 'Paid' : orderItem.Canceled ? 'Canceled' : '',
-
-                Is_Kitchen: meals.find((meal) => meal.ID == orderItem.ID_Meal)?.Kitchen,
-                OrderName: orders.find((order) => order.ID == orderItem.ID_Order)?.OrderName,
-                OrderStatus: (() => {
-                    const order = orders.find((order) => order.ID == orderItem.ID_Order);
-                    if (!order) return 'Active';
-                    return order.Closed ? 'Closed' : order.Canceled ? 'Canceled' : 'Active';
-                })(),
-            }));
-
-        return (
-            <div style={{ display: 'flex', flexDirection: 'column', height: '100vh' }}>
-
-                <div className="flex items-center me-4 ms-4">
-
-                    <Button variant={"contained"} className="p-4" onClick={() => {
-                        setShowKitchenView(false)
-                    }}>Back</Button>
-                    <CardHeader title={"Kitchen View"} className="flex-1" />
-                </div>
-
-                {isRefreshing && <LinearProgress />}
-                <DataGrid
-                    key={'kitchenView'}
-                    apiRef={kitchenViewRef}
-                    isRowSelectable={() => false}
-                    getRowHeight={() => 'auto'}
-                    getEstimatedRowHeight={() => 72}
-                    sx={{
-                        '&.MuiDataGrid-root--densityCompact .MuiDataGrid-cell': { py: '8px' },
-                        '&.MuiDataGrid-root--densityStandard .MuiDataGrid-cell': { py: '15px' },
-                        '&.MuiDataGrid-root--densityComfortable .MuiDataGrid-cell': { py: '22px' },
-                    }}
-                    style={{ flex: 1, overflow: 'scroll' }}
-                    onColumnWidthChange={(params) => {
-                        localStorage.setItem(`kitchenview_${params.colDef.field}`, params.width.toString())
-                    }}
-
-                    initialState={kitchenViewInitialState}
-                    onStateChange={(state) => {
-                        localStorage.setItem("kitchenViewState", JSON.stringify(state));
-                    }}
-                    rows={rows}
-                    columns={kitchenViewCols}
-                    onRowClick={({ id, row }) => {
-
-                    }}
-                    getRowClassName={(params) => params.row.Status == 'Canceled' ? 'bg-red-200' : params.row.Status == 'Paid' ? 'bg-green-200' : ''}
-                />
-            </div>
-        )
-    }
-
 
     if (!currentUser)
         return (
@@ -2687,7 +2450,11 @@ export default function WaiterView(props) {
         </div>,
         <div key="orderlistdetail" style={{ backgroundColor: 'white', width: "calc(100vw - 62.5vh - 6vh" }}>
             <div style={{ width: '100%' }}>
-                {showKitchenView ? renderKitchenView() : showCumulatedBills ? renderCumulatedBills() : selectedOrderId ? renderOrderDetail() : renderOrdersList()}
+                {showKitchenView ? <KitchenView {...{ canUserPrepareFood, canUserDeliverFood, isOrderClosedOrCanceled, orderItems, setOrderItems, meals, variants, orders, isRefreshing, setShowKitchenView }}/> :
+                    showCumulatedBills ? renderCumulatedBills() :
+                        selectedOrderId ? renderOrderDetail() :
+                            renderOrdersList()
+                }
             </div>
         </div>,
 

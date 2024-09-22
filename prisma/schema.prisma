@@ -6,9 +6,9 @@ generator client {
 
 datasource db {
   provider = "sqlserver"
-  //url      = "sqlserver://bicodigital.a.pinggy.link:18627;database=GoldenLobster_1;user=prisma;password=prisma;trustServerCertificate=true;connectionLimit=20;poolTimeout=20"
-  url      = "sqlserver://host.docker.internal:1433;database=GoldenLobster_1;user=prisma;password=prisma;trustServerCertificate=true;connectionLimit=20;poolTimeout=20"
-  //url      = "sqlserver://127.0.0.1:1433;database=GoldenLobster_1;user=sa;password=Manzes1997;trustServerCertificate=true;connectionLimit=20;poolTimeout=20"
+  //url      = "sqlserver://bicodigital.a.pinggy.link:18627;database=GoldenLobster_1;user=prisma;password=prisma;trustServerCertificate=true;connectionLimit=20;poolTimeout=20" // REMOTE PINGGY ROMAN
+  url      = "sqlserver://host.docker.internal:1433;database=GoldenLobster_1;user=prisma;password=prisma;trustServerCertificate=true;connectionLimit=20;poolTimeout=20" // DOCKER ROMAN
+  //url      = "sqlserver://127.0.0.1:1433;database=GoldenLobster_1;user=sa;password=Manzes1997;trustServerCertificate=true;connectionLimit=20;poolTimeout=20" // DOCKER AZURE MATEJ
 }
 
 model DBT_Customer {
@@ -46,6 +46,7 @@ model DBT_MealGroups {
   ID_Layout        BigInt?
   BackgroudPicture Bytes?  @db.Image
   Order            Int?
+  VisibleInMenu    Boolean @default(false, map: "DF_DBT_MealGroups_VisibleInMenu")
 }
 
 model DBT_Meals {
@@ -59,8 +60,8 @@ model DBT_Meals {
   IsCombo            Boolean  @default(false, map: "DF_DBT_Meals_IsCombo")
   Picture            Bytes?
   PictureDescription String?  @db.VarChar(Max)
-  Dicountable        Decimal? @default(1, map: "DF_DBT_Meals_Dicountable") @db.Decimal(18, 2)
   Recipe             Bytes?
+  Dicountable        Decimal? @default(1, map: "DF_DBT_Meals_Dicountable") @db.Decimal(18, 2)
 }
 
 model DBT_MenuSetUp {
@@ -79,13 +80,13 @@ model DBT_OrderItems {
   ID_Meal        BigInt?
   ID_Variant     BigInt?
   Price          Decimal?  @db.Decimal(18, 3)
-  TimeOfOrder    DateTime? @default(now(), map: "DF__DBT_Order__TimeO__4D94879B") @db.DateTime
+  TimeOfOrder    DateTime? @default(now(), map: "DF_DBT_OrderItems_TimeOfOrder") @db.DateTime
   ID_User        BigInt?
   Time_Prepared  DateTime? @db.DateTime
   Time_Delivered DateTime? @db.DateTime
-  Discountable   Decimal?  @default(1, map: "DF_DBT_OrderItems_Discountable") @db.Decimal(18, 2)
   ID_Payment     BigInt?
   Note           String?   @db.NVarChar(Max)
+  Discountable   Decimal?  @default(1, map: "DF_DBT_OrderItems_Discountable") @db.Decimal(18, 2)
 }
 
 model DBT_Orders {
@@ -93,12 +94,12 @@ model DBT_Orders {
   ID_Table    BigInt?
   OrderName   String?   @db.VarChar(Max)
   ID_Customer BigInt?
-  DateTime    DateTime? @default(now(), map: "DF__DBT_Order__DateT__5070F446") @db.DateTime
+  DateTime    DateTime? @default(now(), map: "DF_DBT_Orders_DateTime") @db.DateTime
   Canceled    Boolean?  @default(false, map: "DF_DBT_Orders_Canceled")
   Price       Decimal?  @db.Decimal(18, 3)
   OrderClosed Boolean?  @default(false, map: "DF_DBT_Orders_OrderClosed")
-  ID_User     BigInt?
   Note        String?   @db.NVarChar(Max)
+  ID_User     BigInt?
 }
 
 model DBT_PaymentMethods {
@@ -173,10 +174,10 @@ model DBT_Payments {
   Taxes            Decimal?  @db.Decimal(18, 3)
   TimeOfPay        DateTime? @default(now(), map: "DF_DBT_Payments_TimeOfPay") @db.DateTime
   ID_User          BigInt?
-  DiscountPercent  Decimal   @default(0, map: "DF_DBT_Payments_DiscountPercent") @db.Decimal(18, 3)
-  RealPayment      Decimal?  @db.Decimal(18, 3)
   Vaucher          String?   @db.VarChar(50)
-  Deleted          Boolean?  @default(false, map: "DF__DBT_Payme__Delet__14270015")
+  RealPayment      Decimal?  @db.Decimal(18, 3)
+  DiscountPercent  Decimal   @default(0, map: "DF_DBT_Payments_DiscountPercent") @db.Decimal(18, 3)
+  Deleted          Boolean?  @default(false, map: "DF_DBT_Payments_Deleted")
 }
 
 model DBT_PaymentTaxes {
@@ -213,4 +214,21 @@ model DBT_CustomerPayments {
   Date        DateTime? @db.DateTime
   Active      Boolean?  @default(true, map: "DF_DBT_CustomerPayments_Active")
   ID_User     BigInt?
+}
+
+model DBT_UILayouts {
+  id       BigInt  @id(map: "PK__DBT_UILa__3213E83F22A31156") @default(autoincrement())
+  name     String? @db.VarChar(Max)
+  viewName String? @db.VarChar(Max)
+  state    String? @db.Text
+}
+
+model sysdiagrams {
+  name         String @db.NVarChar(128)
+  principal_id Int
+  diagram_id   Int    @id(map: "PK__sysdiagr__C2B05B6116E4C24C") @default(autoincrement())
+  version      Int?
+  definition   Bytes?
+
+  @@unique([principal_id, name], map: "UK_principal_name")
 }

@@ -169,6 +169,35 @@ export async function getMealsInGroups() {
     return result;
 }
 
+
+export async function getUILayouts(layoutName: string) {
+    var result = await prisma.dBT_UILayouts.findMany({ where: { viewName: layoutName } });
+    result = convertUint8ArraysToBase64(result);
+    return result;
+}
+
+export async function createUILayout(viewName: string, name: string, state: string) {
+    console.log('Inserting new layout', viewName, name, state);
+    const result = await prisma.dBT_UILayouts.create({
+        data: {
+            viewName,
+            name,
+            state
+        }
+    });
+    return result;
+}
+
+export async function saveUILayout(id: number, state: string) {
+    const result = await prisma.dBT_UILayouts.update({
+        where: { id },
+        data: {
+            state
+        }
+    });
+    return result;
+}
+
 export async function getVariants(langID?: number) {
     var result = await prisma.dBT_Variants.findMany({ where: { Active: true } });
 
