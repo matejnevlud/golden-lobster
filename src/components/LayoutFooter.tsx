@@ -5,6 +5,7 @@ import { DataGrid, GridFooter, GridFooterContainer, useGridApiRef } from "@mui/x
 import { GridApiCommunity } from "@mui/x-data-grid/models/api/gridApiCommunity";
 import { Box, Button, FormControl, InputLabel, MenuItem, Select, SelectChangeEvent, TextField } from "@mui/material";
 import { createUILayout, getUILayouts, saveUILayout } from "@/db";
+import { DataGridPro } from "@mui/x-data-grid-pro";
 
 
 // @ts-ignore
@@ -143,7 +144,9 @@ export const LayoutDataGrid = (props: any) => {
     function refresh() {
         setRandomKey(Math.random());
     }
-    return <DataGrid key={randomKey} apiRef={apiRef}
+    return <DataGridPro
+                    pagination={true}
+                    key={randomKey} apiRef={apiRef}
                      slots={{ footer: LayoutFooter }}
                      slotProps={{ footer: { viewName: props.viewName, refresh, ref: apiRef } }}
                      {...props} />

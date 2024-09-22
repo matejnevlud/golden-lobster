@@ -1,6 +1,7 @@
 import { getAllData, getWaiterData } from "@/db";
 import WaiterView from "@/components/WaiterView";
 import { Inter } from "next/font/google";
+import MuiXLicense from "@/components/MuiXLicense";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -23,6 +24,7 @@ export default async function Menu() {
                 <iframe src="/" width="800" height="1280" style={{ height: '100vh', width: '62.5vh' }}/>
                 <WaiterView {...allData} {...waiterData} />
             </div>
+            <MuiXLicense />
             </body>
         </html>
     );

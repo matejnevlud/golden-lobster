@@ -35,6 +35,7 @@ import { Snackbar } from "@mui/base";
 import { GridFilterInputDate } from "@mui/x-data-grid/components/panel/filterPanel/GridFilterInputDate";
 import KitchenView from "@/components/KitchenView";
 import { LayoutDataGrid, LayoutFooter } from "@/components/LayoutFooter";
+import { DataGridPro } from "@mui/x-data-grid-pro";
 
 const getSavedColumnWidth = (table: string, field: string) => {
     return localStorage.getItem(`${table}_${field}`) != null ? parseInt(localStorage.getItem(`${table}_${field}`)) : undefined;
@@ -641,7 +642,8 @@ export default function WaiterView(props) {
                 </div>
 
                 {isRefreshing && <LinearProgress />}
-                <DataGrid
+                <DataGridPro
+                    pagination
                     apiRef={ordergridRef}
                     key={'ordergrid' + randomKey}
                     viewName={'ordergrid'}

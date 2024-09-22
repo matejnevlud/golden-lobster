@@ -5,20 +5,18 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="42a16207-629e-4e0c-9512-37544dcc1cdf" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/src/components/CumulatedBillsView.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/components/KitchenView.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/components/LayoutFooter.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/components/MuiXLicense.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/generated/prisma-client/edge.js" beforeDir="false" afterPath="$PROJECT_DIR$/generated/prisma-client/edge.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/generated/prisma-client/index-browser.js" beforeDir="false" afterPath="$PROJECT_DIR$/generated/prisma-client/index-browser.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/generated/prisma-client/index.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/generated/prisma-client/index.d.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/generated/prisma-client/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/generated/prisma-client/index.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/generated/prisma-client/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/generated/prisma-client/package.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/generated/prisma-client/schema.prisma" beforeDir="false" afterPath="$PROJECT_DIR$/generated/prisma-client/schema.prisma" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/generated/prisma-client/wasm.js" beforeDir="false" afterPath="$PROJECT_DIR$/generated/prisma-client/wasm.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/prisma/schema.prisma" beforeDir="false" afterPath="$PROJECT_DIR$/prisma/schema.prisma" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/waiter/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/waiter/page.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/LayoutFooter.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/LayoutFooter.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/WaiterView.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/WaiterView.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/db.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/db.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -65,14 +63,14 @@
     &quot;Node.js.db.ts.executor&quot;: &quot;Debug&quot;,
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
     &quot;git-widget-placeholder&quot;: &quot;main&quot;,
-    &quot;last_opened_file_path&quot;: &quot;/Users/matejnevlud/github/golden-lobster/src/app/waiter&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/Users/matejnevlud/github/golden-lobster&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
     &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
     &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
     &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
     &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
     &quot;npm.dev.executor&quot;: &quot;Debug&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.pluginManager&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.keymap&quot;,
     &quot;ts.external.directory.path&quot;: &quot;/Users/matejnevlud/github/golden-lobster/node_modules/typescript/lib&quot;,
     &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   },
@@ -177,7 +175,11 @@
       <workItem from="1726496980097" duration="11057000" />
       <workItem from="1726646543208" duration="10000" />
       <workItem from="1726938517442" duration="182000" />
-      <workItem from="1726939910647" duration="23220000" />
+      <workItem from="1726939910647" duration="23541000" />
+      <workItem from="1727020437959" duration="124000" />
+      <workItem from="1727020569799" duration="223000" />
+      <workItem from="1727020810636" duration="5854000" />
+      <workItem from="1727032014101" duration="769000" />
     </task>
     <servers />
   </component>
