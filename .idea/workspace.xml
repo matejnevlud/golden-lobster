@@ -5,12 +5,17 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="42a16207-629e-4e0c-9512-37544dcc1cdf" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/prisma/schema.prisma" beforeDir="false" afterPath="$PROJECT_DIR$/prisma/schema.prisma" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/prisma/schema_azure.prisma" beforeDir="false" afterPath="$PROJECT_DIR$/prisma/schema_azure.prisma" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/prisma/schema_docker.prisma" beforeDir="false" afterPath="$PROJECT_DIR$/prisma/schema_docker.prisma" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/prisma/schema_neon.prisma" beforeDir="false" afterPath="$PROJECT_DIR$/prisma/schema_neon.prisma" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/prisma/schema_pinggy.prisma" beforeDir="false" afterPath="$PROJECT_DIR$/prisma/schema_pinggy.prisma" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/generated/prisma-client-vercel/edge.js" beforeDir="false" afterPath="$PROJECT_DIR$/generated/prisma-client-vercel/edge.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/generated/prisma-client-vercel/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/generated/prisma-client-vercel/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/generated/prisma-client-vercel/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/generated/prisma-client-vercel/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/generated/prisma-client-vercel/runtime/index-browser.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/generated/prisma-client-vercel/runtime/index-browser.d.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/generated/prisma-client-vercel/runtime/library.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/generated/prisma-client-vercel/runtime/library.d.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/generated/prisma-client-vercel/schema.prisma" beforeDir="false" afterPath="$PROJECT_DIR$/generated/prisma-client-vercel/schema.prisma" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/generated/prisma-client/edge.js" beforeDir="false" afterPath="$PROJECT_DIR$/generated/prisma-client/edge.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/generated/prisma-client/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/generated/prisma-client/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/generated/prisma-client/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/generated/prisma-client/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/generated/prisma-client/schema.prisma" beforeDir="false" afterPath="$PROJECT_DIR$/generated/prisma-client/schema.prisma" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -65,7 +70,7 @@
     "nodejs_package_manager_path": "npm",
     "npm.dev.executor": "Debug",
     "settings.editor.selected.configurable": "database.data.views.appearance",
-    "ts.external.directory.path": "/Users/matejnevlud/github/golden-lobster/node_modules/typescript/lib",
+    "ts.external.directory.path": "/Users/matejnevlud/Applications/WebStorm.app/Contents/plugins/javascript-plugin/jsLanguageServicesImpl/external",
     "vue.rearranger.settings.migration": "true"
   },
   "keyToStringList": {
@@ -177,7 +182,7 @@
       <workItem from="1727032014101" duration="1063000" />
       <workItem from="1727192181372" duration="8996000" />
       <workItem from="1727205570213" duration="1607000" />
-      <workItem from="1727207195543" duration="1730000" />
+      <workItem from="1727207195543" duration="2023000" />
     </task>
     <servers />
   </component>
