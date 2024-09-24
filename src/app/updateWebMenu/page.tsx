@@ -1,19 +1,11 @@
 import { Inter } from "next/font/google";
-import {uploadToNeon} from "@/utils/updateVercel";
+import UploadComponent from "@/app/updateWebMenu/UploadComponent";
 export const fetchCache = 'force-no-store';
 
 const inter = Inter({ subsets: ["latin"] });
 
 
 export default async function UpdateWebMenu() {
-
-    let statusOfUpload = false;
-    try {
-        statusOfUpload = await uploadToNeon();
-    } catch (error) {
-        console.error(error);
-    }
-
 
     return (
         <html lang="en">
@@ -22,8 +14,7 @@ export default async function UpdateWebMenu() {
             </head>
             <body className={inter.className}>
                 <main className="min-h-screen min-w-full">
-                    <h1>Uploaded menu to web - {statusOfUpload ? 'OK' : 'FAILED'}</h1>
-                    <pre>{JSON.stringify(statusOfUpload, null, 2)}</pre>
+                    <UploadComponent />
                 </main>
             </body>
         </html>
