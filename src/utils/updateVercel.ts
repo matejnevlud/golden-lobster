@@ -1,7 +1,6 @@
 'use server';
-import { PrismaClient } from '../../generated/prisma-client-azure'
+import { PrismaClient } from '../../generated/prisma-client'
 import { PrismaClient as PrismaClientVercel } from '../../generated/prisma-client-vercel'
-import {ALL_DATA} from "@/db";
 
 
 export async function uploadToNeon () {
@@ -20,6 +19,16 @@ export async function uploadToNeon () {
     const variants = await prisma.dBT_Variants.findMany();
     const menuSetUp = await prisma.dBT_MenuSetUp.findMany();
     const translations = await prisma.dBT_Translations.findMany();
+
+    if (!languages || !layouts || !meals || !mealGroups || !mealsInGroups || !variants || !menuSetUp || !translations) {
+        console.log('No data in ORIG')
+        return false;
+    }
+    
+    if (languages.length === 0 ) {
+        console.log('Empty Data in ORIG')
+        return false;
+    }
 
     console.log('Got all data from ORIG')
 
