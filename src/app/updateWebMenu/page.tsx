@@ -1,10 +1,11 @@
 import { Inter } from "next/font/google";
 import {uploadToNeon} from "@/utils/updateVercel";
+export const fetchCache = 'force-no-store';
 
 const inter = Inter({ subsets: ["latin"] });
 
 
-export default async function Menu() {
+export default async function UpdateWebMenu() {
 
     let statusOfUpload = false;
     try {
@@ -12,8 +13,6 @@ export default async function Menu() {
     } catch (error) {
         console.error(error);
     }
-
-
 
 
     return (
