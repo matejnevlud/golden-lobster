@@ -19,7 +19,7 @@ import {
     DBT_PaymentTaxes,
     DBT_CustomerPayments, DBT_CustomerPaymentPayments,
     Prisma
-} from '../generated/prisma-client'
+} from '../generated/prisma-client-vercel'
 
 
 
