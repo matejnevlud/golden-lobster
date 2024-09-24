@@ -1,0 +1,220 @@
+generator client {
+  provider      = "prisma-client-js"
+  output        = "../generated/prisma-client"
+  binaryTargets = ["native", "debian-openssl-1.1.x", "linux-musl-openssl-3.0.x", "linux-musl-arm64-openssl-3.0.x", "rhel-openssl-3.0.x"]
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = "postgres://default:mWC7n1ZiDJNV@ep-dark-surf-a2sed0d3-pooler.eu-central-1.aws.neon.tech:5432/verceldb?sslmode=require&pgbouncer=true&connect_timeout=15"
+  directUrl = "postgres://default:mWC7n1ZiDJNV@ep-dark-surf-a2sed0d3.eu-central-1.aws.neon.tech:5432/verceldb?sslmode=require"
+}
+
+model DBT_CashInventories {
+  ID        BigInt    @id @default(autoincrement())
+  Inventory Decimal?  @db.Decimal(18, 3)
+  DateTime  DateTime? @default(now()) @db.Timestamp(6)
+}
+
+model DBT_CashWithdrawals {
+  ID             BigInt    @id @default(autoincrement())
+  CashWithdrawal Decimal?  @db.Decimal(18, 3)
+  DateTime       DateTime? @default(now()) @db.Timestamp(6)
+}
+
+model DBT_Customer {
+  ID       BigInt   @id @default(autoincrement())
+  Active   Boolean? @default(true)
+  Customer String?
+  Name     String?
+  Surname  String?
+  PhoneNr  String?
+  Email    String?
+  Discount Decimal? @db.Decimal(18, 2)
+}
+
+model DBT_CustomerPaymentPayments {
+  ID                BigInt  @id @default(autoincrement())
+  ID_CutomerPayment BigInt?
+  ID_Payments       BigInt?
+}
+
+model DBT_CustomerPayments {
+  ID          BigInt    @id @default(autoincrement())
+  ID_Customer BigInt?
+  Payment     Decimal?  @db.Decimal(18, 3)
+  Date        DateTime? @db.Timestamp(6)
+  Active      Boolean?  @default(true)
+  ID_User     BigInt?
+}
+
+model DBT_Languages {
+  ID          BigInt   @id @default(autoincrement())
+  Active      Boolean? @default(true)
+  Language    String?
+  DisplayText String?
+  Flag        Bytes?
+}
+
+model DBT_Layouts {
+  ID      BigInt   @id @default(autoincrement())
+  Active  Boolean? @default(true)
+  Type    String?
+  Name    String?
+  Xml     String?  @db.Xml
+  TextBox String?
+}
+
+model DBT_MealGroups {
+  ID               BigInt   @id @default(autoincrement())
+  Active           Boolean? @default(true)
+  MealGroup        String?
+  ID_Layout        BigInt?
+  BackgroudPicture Bytes?
+  Order            Int?
+  VisibleInMenu    Boolean? @default(false)
+}
+
+model DBT_Meals {
+  ID                 BigInt   @id @default(autoincrement())
+  Active             Boolean? @default(true)
+  Kitchen            Boolean? @default(true)
+  Available          Boolean? @default(true)
+  Meal               String?
+  MealDescription    String?
+  Price              Decimal? @db.Decimal(18, 3)
+  IsCombo            Boolean? @default(false)
+  Picture            Bytes?
+  PictureDescription String?
+  Recipe             Bytes?
+  Dicountable        Decimal? @default(1) @db.Decimal(18, 2)
+}
+
+model DBT_MealsInGroups {
+  ID       BigInt  @id @default(autoincrement())
+  ID_Group BigInt?
+  ID_Meal  BigInt?
+  Order    Int?
+}
+
+model DBT_MenuSetUp {
+  ID              BigInt   @id @default(autoincrement())
+  Active          Boolean? @default(true)
+  LogoImage       Bytes?
+  BackgroundColor BigInt?
+  HeaderText      String?
+  FooterText      String?
+}
+
+model DBT_OrderItems {
+  ID             BigInt    @id @default(autoincrement())
+  ID_Order       BigInt?
+  Canceled       Boolean?  @default(false)
+  ID_Meal        BigInt?
+  ID_Variant     BigInt?
+  Price          Decimal?  @db.Decimal(18, 3)
+  TimeOfOrder    DateTime? @default(now()) @db.Timestamp(6)
+  ID_User        BigInt?
+  Time_Prepared  DateTime? @db.Timestamp(6)
+  Time_Delivered DateTime? @db.Timestamp(6)
+  ID_Payment     BigInt?
+  Note           String?
+  Discountable   Decimal?  @default(1) @db.Decimal(18, 2)
+}
+
+model DBT_Orders {
+  ID          BigInt    @id @default(autoincrement())
+  ID_Table    BigInt?
+  OrderName   String?
+  ID_Customer BigInt?
+  DateTime    DateTime? @default(now()) @db.Timestamp(6)
+  Canceled    Boolean?  @default(false)
+  Price       Decimal?  @db.Decimal(18, 3)
+  OrderClosed Boolean?  @default(false)
+  Note        String?
+  ID_User     BigInt?
+}
+
+model DBT_PaymentDetail {
+  ID           BigInt  @id
+  ID_Payments  BigInt?
+  ID_OrderItem BigInt?
+}
+
+model DBT_PaymentMethods {
+  ID            BigInt   @id @default(autoincrement())
+  Active        Boolean? @default(true)
+  PaymentMethod String?
+}
+
+model DBT_PaymentTaxes {
+  ID          BigInt  @id @default(autoincrement())
+  ID_Payments BigInt?
+  ID_Tax      BigInt?
+}
+
+model DBT_Payments {
+  ID               BigInt    @id @default(autoincrement())
+  TotalAmount      Decimal?  @db.Decimal(18, 3)
+  ID_PaymentMethod BigInt?
+  Discount         Decimal?  @db.Decimal(18, 3)
+  ID_Customer      BigInt?
+  Closed           Boolean?
+  Reported         Boolean?  @default(true)
+  Printed          Boolean?  @default(false)
+  ItemsCost        Decimal?  @db.Decimal(18, 3)
+  Taxes            Decimal?  @db.Decimal(18, 3)
+  TimeOfPay        DateTime? @default(now()) @db.Timestamp(6)
+  ID_User          BigInt?
+  Vaucher          String?   @db.VarChar(50)
+  RealPayment      Decimal?  @db.Decimal(18, 3)
+  DiscountPercent  Decimal?  @default(0) @db.Decimal(18, 3)
+  Deleted          Boolean?  @default(false)
+}
+
+model DBT_Tables {
+  ID        BigInt   @id @default(autoincrement())
+  Active    Boolean? @default(true)
+  TableName String?
+  Col       Int?     @db.SmallInt
+}
+
+model DBT_Taxes {
+  ID             BigInt   @id @default(autoincrement())
+  Active         Boolean? @default(true)
+  ByDefault      Boolean? @default(true)
+  TaxName        String?
+  TaxDescription String?
+  Percentage     Decimal? @db.Decimal(18, 2)
+  Value          Decimal? @db.Decimal(18, 2)
+}
+
+model DBT_Translations {
+  ID          BigInt  @id @default(autoincrement())
+  ID_Language BigInt?
+  Text        String?
+  Translation String?
+}
+
+model DBT_UILayouts {
+  ID       BigInt  @id @default(autoincrement())
+  Name     String?
+  ViewName String?
+  State    String?
+}
+
+model DBT_Users {
+  ID       BigInt   @id @default(autoincrement())
+  Active   Boolean? @default(true)
+  Name     String?
+  Password String?
+  Role     BigInt?
+}
+
+model DBT_Variants {
+  ID          BigInt   @id @default(autoincrement())
+  Active      Boolean? @default(true)
+  Available   Boolean? @default(true)
+  ID_Meal     BigInt?
+  MealVariant String?
+}
