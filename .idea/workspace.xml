@@ -5,17 +5,44 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="42a16207-629e-4e0c-9512-37544dcc1cdf" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/generated/prisma-client-azure/default.d.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/generated/prisma-client-azure/default.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/generated/prisma-client-azure/edge.d.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/generated/prisma-client-azure/edge.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/generated/prisma-client-azure/index-browser.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/generated/prisma-client-azure/index.d.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/generated/prisma-client-azure/index.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/generated/prisma-client-azure/libquery_engine-darwin-arm64.dylib.node" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/generated/prisma-client-azure/libquery_engine-debian-openssl-1.1.x.so.node" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/generated/prisma-client-azure/libquery_engine-linux-musl-arm64-openssl-3.0.x.so.node" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/generated/prisma-client-azure/libquery_engine-linux-musl-openssl-3.0.x.so.node" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/generated/prisma-client-azure/libquery_engine-rhel-openssl-3.0.x.so.node" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/generated/prisma-client-azure/package.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/generated/prisma-client-azure/runtime/edge-esm.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/generated/prisma-client-azure/runtime/edge.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/generated/prisma-client-azure/runtime/index-browser.d.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/generated/prisma-client-azure/runtime/index-browser.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/generated/prisma-client-azure/runtime/library.d.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/generated/prisma-client-azure/runtime/library.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/generated/prisma-client-azure/runtime/react-native.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/generated/prisma-client-azure/runtime/wasm.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/generated/prisma-client-azure/schema.prisma" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/generated/prisma-client-azure/wasm.d.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/generated/prisma-client-azure/wasm.js" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/generated/prisma-client-vercel/edge.js" beforeDir="false" afterPath="$PROJECT_DIR$/generated/prisma-client-vercel/edge.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/generated/prisma-client-vercel/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/generated/prisma-client-vercel/index.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/generated/prisma-client-vercel/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/generated/prisma-client-vercel/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/generated/prisma-client-vercel/runtime/index-browser.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/generated/prisma-client-vercel/runtime/index-browser.d.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/generated/prisma-client-vercel/runtime/library.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/generated/prisma-client-vercel/runtime/library.d.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/generated/prisma-client-vercel/schema.prisma" beforeDir="false" afterPath="$PROJECT_DIR$/generated/prisma-client-vercel/schema.prisma" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/generated/prisma-client/edge.js" beforeDir="false" afterPath="$PROJECT_DIR$/generated/prisma-client/edge.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/generated/prisma-client/index-browser.js" beforeDir="false" afterPath="$PROJECT_DIR$/generated/prisma-client/index-browser.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/generated/prisma-client/index.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/generated/prisma-client/index.d.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/generated/prisma-client/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/generated/prisma-client/index.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/generated/prisma-client/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/generated/prisma-client/package.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/generated/prisma-client/schema.prisma" beforeDir="false" afterPath="$PROJECT_DIR$/generated/prisma-client/schema.prisma" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/generated/prisma-client/wasm.js" beforeDir="false" afterPath="$PROJECT_DIR$/generated/prisma-client/wasm.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/prisma/schema.prisma" beforeDir="false" afterPath="$PROJECT_DIR$/prisma/schema.prisma" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/utils/updateVercel.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/utils/updateVercel.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -70,7 +97,7 @@
     "nodejs_package_manager_path": "npm",
     "npm.dev.executor": "Debug",
     "settings.editor.selected.configurable": "database.data.views.appearance",
-    "ts.external.directory.path": "/Users/matejnevlud/Applications/WebStorm.app/Contents/plugins/javascript-plugin/jsLanguageServicesImpl/external",
+    "ts.external.directory.path": "/Users/matejnevlud/github/golden-lobster/node_modules/typescript/lib",
     "vue.rearranger.settings.migration": "true"
   },
   "keyToStringList": {
