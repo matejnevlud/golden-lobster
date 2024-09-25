@@ -4,11 +4,13 @@ import { XMLParser } from "fast-xml-parser";
 import { parseBasic, vh, vw } from "@/utils/xmlParser";
 import Image from "next/image";
 import { base64DataUri, numberToRGBAString } from "@/utils/utils";
-import { useState } from "react";
+import {useEffect, useState} from "react";
 import { useLocalStorage } from 'usehooks-ts'
 import Cookies from 'js-cookie'
 import Workspace from "@/components/Workspace";
 import dynamic from "next/dynamic";
+import {CircularProgress} from "@mui/material";
+import {getAllData} from "@/db";
 
 export type InteractiveMenuProps = {
     languages: DBT_Languages[]
@@ -30,19 +32,38 @@ export type InteractiveMenuProps = {
 }
 
 
-function InteractiveMenu(props: InteractiveMenuProps) {
+function InteractiveMenu() {
 
-    const { languages, mealsInGroups } = props;
-    const { translatedData } = props;
 
     const [reloadClickCounter, setReloadClickCounter] = useState(0);
 
+    const [loading, setLoading] = useState(true);
 
-    const [mealGroups, setMealGroups] = useState<DBT_MealGroups[]>(props.mealGroups);
-    const [meals, setMeals] = useState<DBT_Meals[]>(props.meals);
-    const [variants, setVariants] = useState<DBT_Variants[]>(props.variants);
-    const [menuSetUp, setMenuSetUp] = useState<DBT_MenuSetUp>(props.menuSetUp);
-    const [layouts, setLayouts] = useState<DBT_Layouts[]>(props.layouts);
+    useEffect(() => {
+        console.log('fetching data');
+        getAllData().then((data) => {
+            setLanguages(data.languages);
+            setMealsInGroups(data.mealsInGroups);
+            setTranslatedData(data.translatedData);
+            setMealGroups(data.mealGroups);
+            setMeals(data.meals);
+            setVariants(data.variants);
+            setMenuSetUp(data.menuSetUp);
+            setLayouts(data.layouts);
+            setLoading(false);
+        }).catch((err) => {
+            console.error(err);
+        });
+    }, []);
+
+    const [languages, setLanguages] = useState<DBT_Languages[]>([]);
+    const [mealsInGroups, setMealsInGroups] = useState<DBT_MealsInGroups[]>([]);
+    const [translatedData, setTranslatedData] = useState<{ [key: number]: { mealGroups: DBT_MealGroups[]; meals: DBT_Meals[]; variants: DBT_Variants[]; menuSetUp: DBT_MenuSetUp; layouts: DBT_Layouts[]; }; }>([]);
+    const [mealGroups, setMealGroups] = useState<DBT_MealGroups[]>([]);
+    const [meals, setMeals] = useState<DBT_Meals[]>([]);
+    const [variants, setVariants] = useState<DBT_Variants[]>([]);
+    const [menuSetUp, setMenuSetUp] = useState<DBT_MenuSetUp>({});
+    const [layouts, setLayouts] = useState<DBT_Layouts[]>([]);
 
     const headLayout = layouts.find((layout) => layout.Type === "Head" && layout.Active);
 
@@ -216,8 +237,24 @@ function InteractiveMenu(props: InteractiveMenuProps) {
         );
     }
 
+
+
+    if (loading) {
+        return (
+            <div className="min-w-full min-h-screen flex flex-col items-center justify-center bg-black">
+                <img className=" preload-me pb-4"
+                     src="https://golden-lobster.com/wp-content/uploads/2024/07/logo-web-transparent.png"
+                     srcSet="https://golden-lobster.com/wp-content/uploads/2024/07/logo-web-transparent.png 185w"
+                     width="140" height="140"  alt="Golden Lobster"/>
+                <h1 className="pb-4 text-white">Loading menu...</h1>
+                <CircularProgress size="4rem" />
+            </div>
+        );
+    }
+
     return (
-        <div className="min-w-full min-h-screen" style={{ backgroundColor: numberToRGBAString(menuSetUp.BackgroundColor) }}>
+        <div className="min-w-full min-h-screen"
+             style={{backgroundColor: numberToRGBAString(menuSetUp.BackgroundColor)}}>
             {renderBG()}
             {renderPopUpWindow(jsonObj.Head?.PopUpWindow)}
             {renderLogo(jsonObj.Head?.Logo)}
