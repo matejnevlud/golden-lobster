@@ -1,5 +1,5 @@
 'use server';
-import { PrismaClient } from '../../generated/prisma-client'
+import { PrismaClient } from "@prisma/client";
 import { PrismaClient as PrismaClientVercel } from '../../generated/prisma-client-vercel'
 
 
