@@ -6,12 +6,9 @@
   <component name="ChangeListManager">
     <list default="true" id="40d176b6-b89c-456e-9352-b7000e0f81ab" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/prisma/schema_azure.prisma" beforeDir="false" afterPath="$PROJECT_DIR$/prisma/schema_azure.prisma" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/prisma/schema_docker.prisma" beforeDir="false" afterPath="$PROJECT_DIR$/prisma/schema_docker.prisma" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/prisma/schema_pinggy.prisma" beforeDir="false" afterPath="$PROJECT_DIR$/prisma/schema_pinggy.prisma" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/updateWebMenu/UploadComponent.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/updateWebMenu/UploadComponent.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/db.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/db.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/utils/updateVercel.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/favicon.ico" beforeDir="false" afterPath="$PROJECT_DIR$/public/icon/favicon.ico" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/page.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/InteractiveMenu.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/InteractiveMenu.tsx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -47,6 +44,7 @@
 }]]></component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/public/icon" />
       <recent name="$PROJECT_DIR$/public" />
     </key>
   </component>
@@ -65,7 +63,7 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1727268861831</updated>
-      <workItem from="1727268863970" duration="193000" />
+      <workItem from="1727268863970" duration="1168000" />
     </task>
     <servers />
   </component>

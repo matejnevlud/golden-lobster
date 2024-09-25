@@ -5,7 +5,6 @@ import { parseBasic, vh, vw } from "@/utils/xmlParser";
 import Image from "next/image";
 import { base64DataUri, numberToRGBAString } from "@/utils/utils";
 import {useEffect, useState} from "react";
-import { useLocalStorage } from 'usehooks-ts'
 import Cookies from 'js-cookie'
 import Workspace from "@/components/Workspace";
 import dynamic from "next/dynamic";
@@ -34,18 +33,24 @@ export type InteractiveMenuProps = {
 
 function InteractiveMenu() {
 
-
+    const [isWaiter, setIsWaiter] = useState(false);
     const [reloadClickCounter, setReloadClickCounter] = useState(0);
 
     const [loading, setLoading] = useState(true);
 
+
+
     useEffect(() => {
         console.log('fetching data');
         getAllData().then((data) => {
+            let _isWaiter = typeof localStorage.getItem('currentUser') === 'string';
+            setIsWaiter(_isWaiter);
+            console.log('isWaiter', _isWaiter)
+            console.log('mealGroups', data.mealGroups)
             setLanguages(data.languages);
             setMealsInGroups(data.mealsInGroups);
             setTranslatedData(data.translatedData);
-            setMealGroups(data.mealGroups);
+            setMealGroups(data.mealGroups.filter((mg) => mg.VisibleInMenu && !_isWaiter));
             setMeals(data.meals);
             setVariants(data.variants);
             setMenuSetUp(data.menuSetUp);
