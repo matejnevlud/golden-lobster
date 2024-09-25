@@ -9,7 +9,7 @@
     "lint": "next lint",
     "buildAndStart": "npm run schemasDockerVercel && next build && next start",
     "schemasDockerVercel": "npx prisma generate --schema prisma/schema_docker.prisma && npx prisma generate --schema prisma/schema_vercel.prisma",
-    "schemasVercelVercel": "npx prisma generate --schema prisma/schema.prisma && npx prisma generate --schema prisma/schema_vercel.prisma"
+    "schemasVercelVercel": "npx prisma generate --schema prisma/schema_vercel_nodemodules.prisma && npx prisma generate --schema prisma/schema_vercel.prisma"
   },
   "dependencies": {
     "@emotion/react": "^11.11.4",
