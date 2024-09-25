@@ -5,12 +5,13 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="40d176b6-b89c-456e-9352-b7000e0f81ab" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/public/favicon.ico" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/prisma/schema.prisma" beforeDir="false" afterPath="$PROJECT_DIR$/prisma/schema.prisma" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/page.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/prisma/schema_azure.prisma" beforeDir="false" afterPath="$PROJECT_DIR$/prisma/schema_azure.prisma" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/prisma/schema_docker.prisma" beforeDir="false" afterPath="$PROJECT_DIR$/prisma/schema_docker.prisma" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/prisma/schema_pinggy.prisma" beforeDir="false" afterPath="$PROJECT_DIR$/prisma/schema_pinggy.prisma" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/updateWebMenu/UploadComponent.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/updateWebMenu/UploadComponent.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/db.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/db.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/utils/updateVercel.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/utils/updateVercel.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/utils/updateVercel.ts" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -20,14 +21,28 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
+  <component name="ProjectColorInfo"><![CDATA[{
+  "customColor": "",
+  "associatedIndex": 1
+}]]></component>
+  <component name="ProjectId" id="2mZ0b4kuWZDG8wOjYJKPU3IpxzB" />
   <component name="ProjectLevelVcsManager">
     <ConfirmationsSetting value="2" id="Add" />
   </component>
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
+    "RunOnceActivity.ShowReadmeOnStart": "true",
     "git-widget-placeholder": "vercel",
+    "node.js.detected.package.eslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
     "node.js.selected.package.tslint": "(autodetect)",
-    "ts.external.directory.path": "/Users/matejnevlud/github/golden-lobster/node_modules/typescript/lib"
+    "nodejs_package_manager_path": "npm",
+    "ts.external.directory.path": "/Users/matejnevlud/github/golden-lobster/node_modules/typescript/lib",
+    "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
   <component name="RecentsManager">
@@ -35,7 +50,26 @@
       <recent name="$PROJECT_DIR$/public" />
     </key>
   </component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-js-predefined-d6986cc7102b-5c90d61e3bab-JavaScript-WS-242.22855.79" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="40d176b6-b89c-456e-9352-b7000e0f81ab" name="Changes" comment="" />
+      <created>1727268861831</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1727268861831</updated>
+      <workItem from="1727268863970" duration="193000" />
+    </task>
     <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
   </component>
 </project>
