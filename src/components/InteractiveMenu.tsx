@@ -39,8 +39,22 @@ function InteractiveMenu() {
     const [loading, setLoading] = useState(true);
 
 
+    window.addEventListener('storage', function (event) {
+        //console.log('storage event', event)
+        if (event.key === 'currentUser') {
+            fetchData();
+        }
+
+    });
 
     useEffect(() => {
+
+        fetchData();
+    }, []);
+
+    function fetchData() {
+        setLoading(true);
+
         console.log('fetching data');
         getAllData().then((data) => {
             let _isWaiter = typeof localStorage.getItem('currentUser') === 'string';
@@ -50,7 +64,7 @@ function InteractiveMenu() {
             setLanguages(data.languages);
             setMealsInGroups(data.mealsInGroups);
             setTranslatedData(data.translatedData);
-            setMealGroups(data.mealGroups.filter((mg) => mg.VisibleInMenu && !_isWaiter));
+            setMealGroups(data.mealGroups.filter((mg) => mg.VisibleInMenu || _isWaiter));
             setMeals(data.meals);
             setVariants(data.variants);
             setMenuSetUp(data.menuSetUp);
@@ -59,7 +73,7 @@ function InteractiveMenu() {
         }).catch((err) => {
             console.error(err);
         });
-    }, []);
+    }
 
     const [languages, setLanguages] = useState<DBT_Languages[]>([]);
     const [mealsInGroups, setMealsInGroups] = useState<DBT_MealsInGroups[]>([]);
