@@ -1,6 +1,7 @@
 'use client'
+import { uploadToNeon } from "@/db";
 import dynamic from "next/dynamic";
-import {uploadToNeon} from "@/utils/updateVercel";
+
 import {useEffect, useState} from "react";
 
 

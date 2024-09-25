@@ -7,6 +7,7 @@ const {
   makeStrictEnum,
   Public,
   getRuntime,
+  skip
 } = require('./runtime/index-browser.js')
 
 
@@ -16,12 +17,12 @@ exports.Prisma = Prisma
 exports.$Enums = {}
 
 /**
- * Prisma Client JS version: 5.14.0
- * Query Engine version: e9771e62de70f79a5e1c604a2d7c8e2a0a874b48
+ * Prisma Client JS version: 5.20.0
+ * Query Engine version: 06fc58a368dc7be9fbbbe894adf8d445d208c284
  */
 Prisma.prismaVersion = {
-  client: "5.14.0",
-  engine: "e9771e62de70f79a5e1c604a2d7c8e2a0a874b48"
+  client: "5.20.0",
+  engine: "06fc58a368dc7be9fbbbe894adf8d445d208c284"
 }
 
 Prisma.PrismaClientKnownRequestError = () => {
@@ -108,6 +109,8 @@ Prisma.NullTypes = {
   AnyNull: objectEnumValues.classes.AnyNull
 }
 
+
+
 /**
  * Enums
  */
@@ -116,9 +119,20 @@ exports.Prisma.TransactionIsolationLevel = makeStrictEnum({
   ReadUncommitted: 'ReadUncommitted',
   ReadCommitted: 'ReadCommitted',
   RepeatableRead: 'RepeatableRead',
-  Serializable: 'Serializable',
-  Snapshot: 'Snapshot'
+  Serializable: 'Serializable'
 });
+
+exports.Prisma.DBT_CashInventoriesScalarFieldEnum = {
+  ID: 'ID',
+  Inventory: 'Inventory',
+  DateTime: 'DateTime'
+};
+
+exports.Prisma.DBT_CashWithdrawalsScalarFieldEnum = {
+  ID: 'ID',
+  CashWithdrawal: 'CashWithdrawal',
+  DateTime: 'DateTime'
+};
 
 exports.Prisma.DBT_CustomerScalarFieldEnum = {
   ID: 'ID',
@@ -129,6 +143,21 @@ exports.Prisma.DBT_CustomerScalarFieldEnum = {
   PhoneNr: 'PhoneNr',
   Email: 'Email',
   Discount: 'Discount'
+};
+
+exports.Prisma.DBT_CustomerPaymentPaymentsScalarFieldEnum = {
+  ID: 'ID',
+  ID_CutomerPayment: 'ID_CutomerPayment',
+  ID_Payments: 'ID_Payments'
+};
+
+exports.Prisma.DBT_CustomerPaymentsScalarFieldEnum = {
+  ID: 'ID',
+  ID_Customer: 'ID_Customer',
+  Payment: 'Payment',
+  Date: 'Date',
+  Active: 'Active',
+  ID_User: 'ID_User'
 };
 
 exports.Prisma.DBT_LanguagesScalarFieldEnum = {
@@ -173,6 +202,13 @@ exports.Prisma.DBT_MealsScalarFieldEnum = {
   Dicountable: 'Dicountable'
 };
 
+exports.Prisma.DBT_MealsInGroupsScalarFieldEnum = {
+  ID: 'ID',
+  ID_Group: 'ID_Group',
+  ID_Meal: 'ID_Meal',
+  Order: 'Order'
+};
+
 exports.Prisma.DBT_MenuSetUpScalarFieldEnum = {
   ID: 'ID',
   Active: 'Active',
@@ -211,10 +247,41 @@ exports.Prisma.DBT_OrdersScalarFieldEnum = {
   ID_User: 'ID_User'
 };
 
+exports.Prisma.DBT_PaymentDetailScalarFieldEnum = {
+  ID: 'ID',
+  ID_Payments: 'ID_Payments',
+  ID_OrderItem: 'ID_OrderItem'
+};
+
 exports.Prisma.DBT_PaymentMethodsScalarFieldEnum = {
   ID: 'ID',
   Active: 'Active',
   PaymentMethod: 'PaymentMethod'
+};
+
+exports.Prisma.DBT_PaymentTaxesScalarFieldEnum = {
+  ID: 'ID',
+  ID_Payments: 'ID_Payments',
+  ID_Tax: 'ID_Tax'
+};
+
+exports.Prisma.DBT_PaymentsScalarFieldEnum = {
+  ID: 'ID',
+  TotalAmount: 'TotalAmount',
+  ID_PaymentMethod: 'ID_PaymentMethod',
+  Discount: 'Discount',
+  ID_Customer: 'ID_Customer',
+  Closed: 'Closed',
+  Reported: 'Reported',
+  Printed: 'Printed',
+  ItemsCost: 'ItemsCost',
+  Taxes: 'Taxes',
+  TimeOfPay: 'TimeOfPay',
+  ID_User: 'ID_User',
+  Vaucher: 'Vaucher',
+  RealPayment: 'RealPayment',
+  DiscountPercent: 'DiscountPercent',
+  Deleted: 'Deleted'
 };
 
 exports.Prisma.DBT_TablesScalarFieldEnum = {
@@ -241,6 +308,13 @@ exports.Prisma.DBT_TranslationsScalarFieldEnum = {
   Translation: 'Translation'
 };
 
+exports.Prisma.DBT_UILayoutsScalarFieldEnum = {
+  ID: 'ID',
+  Name: 'Name',
+  ViewName: 'ViewName',
+  State: 'State'
+};
+
 exports.Prisma.DBT_UsersScalarFieldEnum = {
   ID: 'ID',
   Active: 'Active',
@@ -249,86 +323,12 @@ exports.Prisma.DBT_UsersScalarFieldEnum = {
   Role: 'Role'
 };
 
-exports.Prisma.DBT_MealsInGroupsScalarFieldEnum = {
-  ID: 'ID',
-  ID_Group: 'ID_Group',
-  ID_Meal: 'ID_Meal',
-  Order: 'Order'
-};
-
 exports.Prisma.DBT_VariantsScalarFieldEnum = {
   ID: 'ID',
   Active: 'Active',
   Available: 'Available',
   ID_Meal: 'ID_Meal',
   MealVariant: 'MealVariant'
-};
-
-exports.Prisma.DBT_PaymentDetailScalarFieldEnum = {
-  ID: 'ID',
-  ID_Payments: 'ID_Payments',
-  ID_OrderItem: 'ID_OrderItem'
-};
-
-exports.Prisma.DBT_PaymentsScalarFieldEnum = {
-  ID: 'ID',
-  TotalAmount: 'TotalAmount',
-  ID_PaymentMethod: 'ID_PaymentMethod',
-  Discount: 'Discount',
-  ID_Customer: 'ID_Customer',
-  Closed: 'Closed',
-  Reported: 'Reported',
-  Printed: 'Printed',
-  ItemsCost: 'ItemsCost',
-  Taxes: 'Taxes',
-  TimeOfPay: 'TimeOfPay',
-  ID_User: 'ID_User',
-  Vaucher: 'Vaucher',
-  RealPayment: 'RealPayment',
-  DiscountPercent: 'DiscountPercent',
-  Deleted: 'Deleted'
-};
-
-exports.Prisma.DBT_PaymentTaxesScalarFieldEnum = {
-  ID: 'ID',
-  ID_Payments: 'ID_Payments',
-  ID_Tax: 'ID_Tax'
-};
-
-exports.Prisma.DBT_CashWithdrawalsScalarFieldEnum = {
-  ID: 'ID',
-  CashWithdrawal: 'CashWithdrawal',
-  DateTime: 'DateTime'
-};
-
-exports.Prisma.DBT_CustomerPaymentPaymentsScalarFieldEnum = {
-  ID: 'ID',
-  ID_CutomerPayment: 'ID_CutomerPayment',
-  ID_Payments: 'ID_Payments'
-};
-
-exports.Prisma.DBT_CustomerPaymentsScalarFieldEnum = {
-  ID: 'ID',
-  ID_Customer: 'ID_Customer',
-  Payment: 'Payment',
-  Date: 'Date',
-  Active: 'Active',
-  ID_User: 'ID_User'
-};
-
-exports.Prisma.DBT_UILayoutsScalarFieldEnum = {
-  id: 'id',
-  name: 'name',
-  viewName: 'viewName',
-  state: 'state'
-};
-
-exports.Prisma.SysdiagramsScalarFieldEnum = {
-  name: 'name',
-  principal_id: 'principal_id',
-  diagram_id: 'diagram_id',
-  version: 'version',
-  definition: 'definition'
 };
 
 exports.Prisma.SortOrder = {
@@ -341,31 +341,36 @@ exports.Prisma.NullsOrder = {
   last: 'last'
 };
 
+exports.Prisma.QueryMode = {
+  default: 'default',
+  insensitive: 'insensitive'
+};
+
 
 exports.Prisma.ModelName = {
+  DBT_CashInventories: 'DBT_CashInventories',
+  DBT_CashWithdrawals: 'DBT_CashWithdrawals',
   DBT_Customer: 'DBT_Customer',
+  DBT_CustomerPaymentPayments: 'DBT_CustomerPaymentPayments',
+  DBT_CustomerPayments: 'DBT_CustomerPayments',
   DBT_Languages: 'DBT_Languages',
   DBT_Layouts: 'DBT_Layouts',
   DBT_MealGroups: 'DBT_MealGroups',
   DBT_Meals: 'DBT_Meals',
+  DBT_MealsInGroups: 'DBT_MealsInGroups',
   DBT_MenuSetUp: 'DBT_MenuSetUp',
   DBT_OrderItems: 'DBT_OrderItems',
   DBT_Orders: 'DBT_Orders',
+  DBT_PaymentDetail: 'DBT_PaymentDetail',
   DBT_PaymentMethods: 'DBT_PaymentMethods',
+  DBT_PaymentTaxes: 'DBT_PaymentTaxes',
+  DBT_Payments: 'DBT_Payments',
   DBT_Tables: 'DBT_Tables',
   DBT_Taxes: 'DBT_Taxes',
   DBT_Translations: 'DBT_Translations',
-  DBT_Users: 'DBT_Users',
-  DBT_MealsInGroups: 'DBT_MealsInGroups',
-  DBT_Variants: 'DBT_Variants',
-  DBT_PaymentDetail: 'DBT_PaymentDetail',
-  DBT_Payments: 'DBT_Payments',
-  DBT_PaymentTaxes: 'DBT_PaymentTaxes',
-  DBT_CashWithdrawals: 'DBT_CashWithdrawals',
-  DBT_CustomerPaymentPayments: 'DBT_CustomerPaymentPayments',
-  DBT_CustomerPayments: 'DBT_CustomerPayments',
   DBT_UILayouts: 'DBT_UILayouts',
-  sysdiagrams: 'sysdiagrams'
+  DBT_Users: 'DBT_Users',
+  DBT_Variants: 'DBT_Variants'
 };
 
 /**
