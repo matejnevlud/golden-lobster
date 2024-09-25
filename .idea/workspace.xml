@@ -4,10 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="42a16207-629e-4e0c-9512-37544dcc1cdf" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/page.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/InteractiveMenu.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/InteractiveMenu.tsx" afterDir="false" />
+    <list default="true" id="40d176b6-b89c-456e-9352-b7000e0f81ab" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/src/db.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/db.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -15,175 +12,19 @@
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
-  <component name="FileTemplateManagerImpl">
-    <option name="RECENT_TEMPLATES">
-      <list>
-        <option value="TypeScript File" />
-        <option value="TypeScript JSX File" />
-      </list>
-    </option>
-  </component>
-  <component name="FormatOnSaveOptions">
-    <option name="myRunOnSave" value="false" />
-    <option name="myAllFileTypesSelected" value="true" />
-    <option name="mySelectedFileTypes">
-      <set />
-    </option>
-  </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
-  <component name="HighlightingSettingsPerFile">
-    <setting file="file://$PROJECT_DIR$/src/components/WaiterView.tsx" root0="SKIP_HIGHLIGHTING" />
-  </component>
-  <component name="ProjectColorInfo">{
-  &quot;associatedIndex&quot;: 1
-}</component>
-  <component name="ProjectId" id="2gyRgnZLaUZ5WJWAopx0r08LKTp" />
   <component name="ProjectLevelVcsManager">
     <ConfirmationsSetting value="2" id="Add" />
   </component>
-  <component name="ProjectViewState">
-    <option name="autoscrollFromSource" value="true" />
-    <option name="hideEmptyMiddlePackages" value="true" />
-    <option name="showLibraryContents" value="true" />
-  </component>
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
-    "ASKED_ADD_EXTERNAL_FILES": "true",
-    "ASKED_SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "Node.js.db.ts.executor": "Debug",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "git-widget-placeholder": "main",
-    "last_opened_file_path": "/Users/matejnevlud/github/golden-lobster/prisma",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "npm.dev.executor": "Debug",
-    "settings.editor.selected.configurable": "preferences.keymap",
-    "ts.external.directory.path": "/Users/matejnevlud/github/golden-lobster/node_modules/typescript/lib",
-    "vue.rearranger.settings.migration": "true"
-  },
-  &quot;keyToStringList&quot;: {
-    &quot;com.intellij.ide.scratch.ScratchImplUtil$2/New Scratch File&quot;: [
-      &quot;TEXT&quot;,
-      &quot;XML&quot;
-    ]
+    "git-widget-placeholder": "vercel",
+    "ts.external.directory.path": "/Users/matejnevlud/github/golden-lobster/node_modules/typescript/lib"
   }
-}</component>
-  <component name="RecentsManager">
-    <key name="CopyFile.RECENT_KEYS">
-      <recent name="$PROJECT_DIR$/prisma" />
-      <recent name="$PROJECT_DIR$/src/app/updateWebMenu" />
-      <recent name="$PROJECT_DIR$" />
-      <recent name="$PROJECT_DIR$/src/app/waiter" />
-      <recent name="$PROJECT_DIR$/src/components" />
-    </key>
-    <key name="MoveFile.RECENT_KEYS">
-      <recent name="$PROJECT_DIR$/src/components" />
-      <recent name="$PROJECT_DIR$/src" />
-    </key>
-  </component>
-  <component name="RunManager" selected="npm.dev">
-    <configuration name="Unnamed" type="NodeJSConfigurationType" nameIsGenerated="true" working-dir="$PROJECT_DIR$">
-      <method v="2" />
-    </configuration>
-    <configuration name="dev" type="js.build_tools.npm" nameIsGenerated="true">
-      <package-json value="$PROJECT_DIR$/package.json" />
-      <command value="run" />
-      <scripts>
-        <script value="dev" />
-      </scripts>
-      <node-interpreter value="project" />
-      <envs />
-      <method v="2" />
-    </configuration>
-    <list>
-      <item itemvalue="Node.js.Unnamed" />
-      <item itemvalue="npm.dev" />
-    </list>
-  </component>
-  <component name="SharedIndexes">
-    <attachedChunks>
-      <set>
-        <option value="bundled-js-predefined-d6986cc7102b-5c90d61e3bab-JavaScript-WS-242.22855.79" />
-      </set>
-    </attachedChunks>
-  </component>
-  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+}]]></component>
   <component name="TaskManager">
-    <task active="true" id="Default" summary="Default task">
-      <changelist id="42a16207-629e-4e0c-9512-37544dcc1cdf" name="Changes" comment="" />
-      <created>1716667945143</created>
-      <option name="number" value="Default" />
-      <option name="presentableId" value="Default" />
-      <updated>1716667945143</updated>
-      <workItem from="1716667946199" duration="1771000" />
-      <workItem from="1716669784765" duration="4668000" />
-      <workItem from="1716737468416" duration="1944000" />
-      <workItem from="1716798935971" duration="70000" />
-      <workItem from="1716799013947" duration="1793000" />
-      <workItem from="1716839885841" duration="6891000" />
-      <workItem from="1717250956891" duration="823000" />
-      <workItem from="1717345503727" duration="1993000" />
-      <workItem from="1717348015729" duration="3095000" />
-      <workItem from="1717357551704" duration="20345000" />
-      <workItem from="1717481552561" duration="7000" />
-      <workItem from="1718260446334" duration="2327000" />
-      <workItem from="1718543234833" duration="73000" />
-      <workItem from="1718543318763" duration="14694000" />
-      <workItem from="1718618008533" duration="16494000" />
-      <workItem from="1718786808929" duration="2363000" />
-      <workItem from="1718790274930" duration="2555000" />
-      <workItem from="1718986486650" duration="7363000" />
-      <workItem from="1719314893792" duration="104000" />
-      <workItem from="1719516589165" duration="3105000" />
-      <workItem from="1719663699317" duration="14926000" />
-      <workItem from="1719754799157" duration="4667000" />
-      <workItem from="1720035724529" duration="41000" />
-      <workItem from="1720435128038" duration="4823000" />
-      <workItem from="1720462827536" duration="7379000" />
-      <workItem from="1720599829684" duration="28853000" />
-      <workItem from="1720805763096" duration="31686000" />
-      <workItem from="1721109445962" duration="397000" />
-      <workItem from="1721153771660" duration="6909000" />
-      <workItem from="1721333589271" duration="1400000" />
-      <workItem from="1721471644778" duration="14532000" />
-      <workItem from="1721814860490" duration="10613000" />
-      <workItem from="1722025109224" duration="2322000" />
-      <workItem from="1722059413445" duration="5528000" />
-      <workItem from="1722239783487" duration="3930000" />
-      <workItem from="1722247078102" duration="4911000" />
-      <workItem from="1722375055723" duration="886000" />
-      <workItem from="1722429334756" duration="2034000" />
-      <workItem from="1722755440397" duration="155000" />
-      <workItem from="1722755606506" duration="6740000" />
-      <workItem from="1723445187207" duration="6000" />
-      <workItem from="1724745410111" duration="914000" />
-      <workItem from="1724834954326" duration="893000" />
-      <workItem from="1725118397290" duration="7722000" />
-      <workItem from="1725439106891" duration="288000" />
-      <workItem from="1726496980097" duration="11057000" />
-      <workItem from="1726646543208" duration="10000" />
-      <workItem from="1726938517442" duration="182000" />
-      <workItem from="1726939910647" duration="23541000" />
-      <workItem from="1727020437959" duration="124000" />
-      <workItem from="1727020569799" duration="223000" />
-      <workItem from="1727020810636" duration="5854000" />
-      <workItem from="1727032014101" duration="1063000" />
-      <workItem from="1727192181372" duration="8996000" />
-      <workItem from="1727205570213" duration="1607000" />
-      <workItem from="1727207195543" duration="2023000" />
-      <workItem from="1727254681176" duration="1257000" />
-    </task>
     <servers />
-  </component>
-  <component name="TypeScriptGeneratedFilesManager">
-    <option name="version" value="3" />
-  </component>
-  <component name="VcsManagerConfiguration">
-    <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
   </component>
 </project>
