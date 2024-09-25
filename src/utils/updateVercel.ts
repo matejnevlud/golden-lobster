@@ -7,7 +7,7 @@ export async function uploadToNeon () {
     const prisma = new PrismaClient();
     const prismaVercel = new PrismaClientVercel();
 
-
+    console.error('Connected to prisma and prismaVercel')
 
 
     // get all data from prisma
@@ -20,17 +20,8 @@ export async function uploadToNeon () {
     const menuSetUp = await prisma.dBT_MenuSetUp.findMany();
     const translations = await prisma.dBT_Translations.findMany();
 
-    if (!languages || !layouts || !meals || !mealGroups || !mealsInGroups || !variants || !menuSetUp || !translations) {
-        console.log('No data in ORIG')
-        return false;
-    }
-    
-    if (languages.length === 0 ) {
-        console.log('Empty Data in ORIG')
-        return false;
-    }
 
-    console.log('Got all data from ORIG')
+    console.error('Got all data from ORIG')
 
 
     // try to delete all data from prismaVercel and reset auto increment eg TRUNCATE TABLE someTable RESTART IDENTITY;
@@ -44,7 +35,7 @@ export async function uploadToNeon () {
     await prismaVercel.$queryRaw`TRUNCATE TABLE "DBT_Translations" RESTART IDENTITY CASCADE`;
 
 
-    console.log('Deleted all data in REMOT')
+    console.error('Deleted all data in REMOT')
 
 
 
@@ -60,7 +51,7 @@ export async function uploadToNeon () {
         prismaVercel.dBT_Translations.createMany({ data: translations }),
     ]);
 
-    console.log('Moved all data to REMOT')
+    console.error('Moved all data to REMOT')
 
     return true;
 

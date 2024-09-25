@@ -7,7 +7,7 @@ const inter = Inter({ subsets: ["latin"] });
 
 export default async function Menu() {
 
-    const allData = await getAllData();
+
 
 
     return (
@@ -17,7 +17,7 @@ export default async function Menu() {
             </head>
             <body className={inter.className}>
                 <main className="min-h-screen min-w-full">
-                    <InteractiveMenu {...allData} />
+                    <InteractiveMenu  />
                 </main>
             </body>
         </html>
