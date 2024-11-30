@@ -23,3 +23,15 @@ datasource db {
 docker run --hostname=96c77158bca0 --mac-address=02:42:ac:11:00:02 --env=YARN_VERSION=1.22.19 --env=PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin --env=NODE_VERSION=18.20.3 --network=bridge --workdir=/usr/src/app -p 3000:3000 --restart=always --runtime=runc -d ghcr.io/matejnevlud/golden-lobster:latest
 
 ```
+
+
+
+## Export DB od Romana do macos dockeru
+1. TeamViewer
+2. Create scripts -> Schema and Data
+3. Docker mssql
+4. Otevřit vysledny soubor v VSCODE
+5. Odstranit "GO" příkazy
+4. Table plus -> import SQL DUMP
+5. Vybrat encoding (unicode, utf8, utf16)
+6. LETS GO
