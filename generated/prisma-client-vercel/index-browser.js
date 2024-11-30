@@ -331,6 +331,22 @@ exports.Prisma.DBT_VariantsScalarFieldEnum = {
   MealVariant: 'MealVariant'
 };
 
+exports.Prisma.ExpensesScalarFieldEnum = {
+  id: 'id',
+  date_time: 'date_time',
+  business: 'business',
+  description: 'description',
+  price: 'price',
+  payment_type: 'payment_type',
+  vat: 'vat',
+  category1: 'category1',
+  category2: 'category2',
+  note1: 'note1',
+  note2: 'note2',
+  photos: 'photos',
+  created_at: 'created_at'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -370,7 +386,8 @@ exports.Prisma.ModelName = {
   DBT_Translations: 'DBT_Translations',
   DBT_UILayouts: 'DBT_UILayouts',
   DBT_Users: 'DBT_Users',
-  DBT_Variants: 'DBT_Variants'
+  DBT_Variants: 'DBT_Variants',
+  expenses: 'expenses'
 };
 
 /**

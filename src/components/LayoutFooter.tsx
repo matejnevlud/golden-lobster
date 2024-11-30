@@ -3,9 +3,11 @@
 import React, { forwardRef, useEffect } from "react";
 import { DataGrid, GridFooter, GridFooterContainer, useGridApiRef } from "@mui/x-data-grid";
 import { GridApiCommunity } from "@mui/x-data-grid/models/api/gridApiCommunity";
-import { Box, Button, FormControl, InputLabel, MenuItem, Select, SelectChangeEvent, TextField } from "@mui/material";
+import {Box, Button, FormControl, IconButton, InputLabel, MenuItem, NativeSelect, Select, SelectChangeEvent, TextField} from "@mui/material";
 import { createUILayout, getUILayouts, saveUILayout } from "@/db";
 import { DataGridPro } from "@mui/x-data-grid-pro";
+import RefreshIcon from "@mui/icons-material/Refresh";
+import {Autorenew, RestorePage} from "@mui/icons-material";
 
 
 // @ts-ignore
@@ -20,7 +22,25 @@ export const LayoutFooter = forwardRef((props, ref: React.MutableRefObject<GridA
     const [savedLayouts, setSavedLayouts] = React.useState([]);
     // get data using getUILayouts
     useEffect(() => {
+
         (async () => {
+
+            // subscribe to state layout change
+            ref.current?.subscribeEvent('columnVisibilityModelChange', () => {
+                console.log('columnVisibilityModelChange')
+            })
+            ref.current?.subscribeEvent('columnWidthChange', () => {
+                console.log('columnWidthChange')
+            })
+            ref.current?.subscribeEvent('filterModelChange', () => {
+                console.log('filterModelChange')
+            })
+            ref.current?.subscribeEvent('sortModelChange', () => {
+                console.log('sortModelChange')
+            })
+
+
+
             const data = await getUILayouts(viewName);
             setSavedLayouts(data);
             let lastClickedLayoutId = localStorage.getItem('lastClickedLayoutId_' + viewName);
@@ -35,6 +55,8 @@ export const LayoutFooter = forwardRef((props, ref: React.MutableRefObject<GridA
     }, []);
 
 
+    // on ref change
+
     const handleChange = (event: SelectChangeEvent) => {
         setLayoutId(event.target.value);
         localStorage.setItem('lastClickedLayoutId_' + viewName, event.target.value);
@@ -42,6 +64,7 @@ export const LayoutFooter = forwardRef((props, ref: React.MutableRefObject<GridA
         const layout = savedLayouts.find((layout: any) => layout.id === event.target.value);
         applyLayout(event.target.value, layout?.state);
     };
+
 
     const applyLayout = async (id: number | string, state?: string) => {
         console.log('Applying layout', id)
@@ -109,21 +132,23 @@ export const LayoutFooter = forwardRef((props, ref: React.MutableRefObject<GridA
     return (
         <GridFooterContainer>
             <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                <FormControl sx={{ m: 1, minWidth: 120 }} size="small">
-                    <InputLabel id="demo-select-small-label">Layout</InputLabel>
+                <IconButton sx={{marginLeft: '10px'}}  size={'large'} color={'primary'} onClick={refresh}><Autorenew /></IconButton>
+                <FormControl sx={{ m: 1, minWidth: 160 }} size="small">
+
                     <Select
-                        labelId="demo-select-small-label"
+                        native
                         id="demo-select-small"
                         value={layoutId}
-                        label="Layout"
                         onChange={handleChange}
+
                     >
-                        <MenuItem value="">
-                            <em>None / NEW</em>
-                        </MenuItem>
-                        {savedLayouts.map((layout: any) => <MenuItem key={layout.id} value={layout.id}>{layout.name}</MenuItem>)}
+                        <option aria-label={"None / NEW"} value="">
+                            <em>No layout</em>
+                        </option>
+                        {savedLayouts.map((layout: any) => <option key={layout.id} value={layout.id}>{layout.name}</option>)}
                     </Select>
                 </FormControl>
+
                 {layoutId !== '' && <Button sx={{marginRight: '10px'}} onClick={onSave}>{'Save'}</Button>}
                 <TextField size="small" label="Layout name" variant="outlined" value={newLayoutName} onChange={(e) => setNewLayoutName(e.target.value)} />
                 <Button onClick={onCreate}>{'Create new'}</Button>

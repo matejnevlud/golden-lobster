@@ -17,4 +17,6 @@ EXPOSE 3000
 
 #ENV NODE_ENV=production
 # # build the app and then run it
+# set DATABASE_URL to
+ENV DATABASE_URL="sqlserver://host.docker.internal:1433;database=GoldenLobster_1;user=prisma;password=prisma;trustServerCertificate=true;connectionLimit=20;poolTimeout=20"
 CMD ["npm", "run", "buildAndStart"]

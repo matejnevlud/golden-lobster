@@ -4,7 +4,7 @@ import { XMLParser } from "fast-xml-parser";
 import { parseBasic } from "@/utils/xmlParser";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { DataGrid, getGridDateOperators, GridFilterOperator, GridRenderCellParams, useGridApiRef } from "@mui/x-data-grid";
-import { Alert, Box, Button, ButtonGroup, CardHeader, Checkbox, CircularProgress, FormControl, FormControlLabel, FormGroup, IconButton, InputAdornment, InputLabel, LinearProgress, MenuItem, Modal, Select, TextField, ToggleButton, ToggleButtonGroup, Typography } from "@mui/material";
+import {Alert, Box, Button, ButtonGroup, CardHeader, Checkbox, CircularProgress, FormControl, FormControlLabel, FormGroup, Grid, IconButton, InputAdornment, InputLabel, LinearProgress, MenuItem, Modal, Select, TextField, ToggleButton, ToggleButtonGroup, Typography} from "@mui/material";
 import {
     changeOrderItemVariant,
     createNewOrder,
@@ -25,7 +25,7 @@ import {
 import { DBT_Meals } from "../../generated/prisma-client";
 import { DBT_OrderItems } from "@prisma/client";
 import { useReactToPrint } from "react-to-print";
-import { convertDate } from "@/utils/utils";
+import {base64DataUri, convertDate} from "@/utils/utils";
 import RestaurantIcon from '@mui/icons-material/Restaurant';
 import TableBarIcon from '@mui/icons-material/TableBar';
 import RefreshIcon from '@mui/icons-material/Refresh';
@@ -83,8 +83,8 @@ export default function WaiterView(props) {
     const [isFullscreen, setIsFullscreen] = useState(false);
 
     const [currentUser, setCurrentUser] = useState(JSON.parse(localStorage.getItem('currentUser') ?? 'null'));
-    const [username, setUsername] = useState('');
-    const [password, setPassword] = useState('');
+    const [username, setUsername] = useState(localStorage.getItem('lastUsername') ?? '')
+    const [password, setPassword] = useState(localStorage.getItem('lastPassword') ?? '')
 
 
     const [currentMealGroupID, setCurrentMealGroupID] = useState<bigint>(BigInt(localStorage.getItem('mealGroup') ?? '1'));
@@ -262,7 +262,7 @@ export default function WaiterView(props) {
         const taxesIDs = paymentTaxes.filter((paymentTax) => paymentTax.ID_Payments == selectedPaymentId).map((paymentTax) => paymentTax.ID_Tax);
         setSelectedPaymentTaxes(taxes.filter((tax) => taxesIDs.includes(tax.ID)));
 
-    }, [selectedPaymentId]);
+    }, [selectedPaymentId, paymentTaxes]);
 
     const onCheckboxChange = (e) => {
         // set all payment methods to false and then set the clicked one to true
@@ -378,6 +378,8 @@ export default function WaiterView(props) {
         }
         setCurrentUser(user);
         localStorage.setItem('currentUser', JSON.stringify(user));
+        localStorage.setItem('lastUsername', username);
+        localStorage.setItem('lastPassword', password);
     }
 
     const logout = () => {
@@ -597,9 +599,10 @@ export default function WaiterView(props) {
                         <ToggleButton value="all">All</ToggleButton>
                     </ToggleButtonGroup>*/}
 
-                    <FormControl>
+                    <FormControl sx={{ marginLeft: 2, minWidth: 120 }}>
                         <InputLabel id="demo-simple-select-label">State</InputLabel>
                         <Select
+                            native
                             labelId="demo-simple-select-label"
                             id="demo-simple-select"
                             value={determineOrderGridStatusFilter()}
@@ -618,10 +621,10 @@ export default function WaiterView(props) {
                                     })
                             }}
                         >
-                            <MenuItem value="Active">Active</MenuItem>
-                            <MenuItem value="Closed">Closed</MenuItem>
-                            <MenuItem value="Canceled">Canceled</MenuItem>
-                            <MenuItem value="All">All</MenuItem>
+                            <option value="Active">Active</option>
+                            <option value="Closed">Closed</option>
+                            <option value="Canceled">Canceled</option>
+                            <option value="All">All</option>
                         </Select>
                     </FormControl>
 
@@ -980,6 +983,7 @@ export default function WaiterView(props) {
             setOrderItems(newWaiterData.orderItems);
             setPayments(newWaiterData.payments);
             setPaymentTaxes(newWaiterData.paymentTaxes);
+
             setSavedPaymentSuccess(true);
 
         } catch (e) {
@@ -1755,8 +1759,9 @@ export default function WaiterView(props) {
                     <>
 
                         <style>
-                            {`@media print {
-                                .contentToPrint{ top: 0; left: 0; transform: none; width: 100%; height: 100%; padding: 20px; overflow: visible; display: flex; flex: 1; background-color: white; }
+                            {`
+                            @media print {
+                                .contentToPrint{ top: 0; left: 0; transform: none; width: 100%; height: 100%; padding: 10px; overflow: visible; display: flex; flex: 1; background-color: white; }
                                 .printButton{ display: none; }
 
                             }`}
@@ -1767,7 +1772,7 @@ export default function WaiterView(props) {
                                 top: '50%',
                                 left: '50%',
                                 transform: 'translate(-50%, -50%)',
-                                width: 600,
+                                width: 750,
                                 bgcolor: 'white',
                                 p: 4,
                                 overflow: 'scroll',
@@ -1777,9 +1782,65 @@ export default function WaiterView(props) {
                             }}>
                             <>
                                 <div ref={contentToPrint}>
-                                    <div key={'title'} className="flex-1 flex items-center mb-4">
-                                        <Typography variant="h5" component="h5">Payment no. {selectedPaymentId?.toString()}</Typography>
-                                    </div>
+
+                                    <Grid container spacing={2}>
+                                        {/* Left Section - Logo */}
+                                        <Grid item xs={4}>
+                                            <img
+                                                src={base64DataUri(props?.menuSetUp?.LogoImage)}
+                                                alt="Golden Lobster Logo"
+                                                className="ml-3 w-28 h-28"
+                                            />
+                                            <Typography className="mt-2 text-sm">
+                                                Restaurant and caffee
+                                            </Typography>
+                                        </Grid>
+
+                                        {/* Middle Section - Company Info */}
+                                        <Grid item xs={4}>
+                                            <Box className="text-center">
+                                                <Typography variant="h6" className="font-bold mb-2">
+                                                    Golden Lobster
+                                                </Typography>
+                                                <Box className="border border-black p-2 mt-9 inline-block">
+                                                    <Typography>
+                                                        Cash receipt
+                                                    </Typography>
+                                                    <Typography className="text-sm" dir="rtl">
+                                                        إيصال نقدي
+                                                    </Typography>
+                                                </Box>
+                                            </Box>
+                                        </Grid>
+
+                                        {/* Right Section - Company Details */}
+                                        <Grid item xs={4}>
+                                            <Box className="text-right">
+                                                <Typography sx={{ fontSize: '12px' }} className="mb-1">C.R. 1542720</Typography>
+                                                <Typography sx={{ fontSize: '12px' }} className="mb-1 text-right" dir="rtl">
+                                                    شركة رومان سبيورك للتجارة
+                                                </Typography>
+                                                <Typography sx={{ fontSize: '12px' }}>Roman Spurek Trading Company</Typography>
+                                                <Typography sx={{ fontSize: '12px' }} className="mb-1 text-right" dir="rtl">
+                                                    صلاله / صلالة / محافظة ظفار
+                                                </Typography>
+                                                <Typography sx={{ fontSize: '12px' }}>Salalah / Salalah / Dhofar Governorate</Typography>
+                                                <Typography sx={{ fontSize: '12px' }}>GSM: 92058220</Typography>
+                                                <Typography sx={{ fontSize: '12px' }} className="mb-1 text-right" dir="rtl">
+                                                    goldenlobsterhawana@gmail.com
+                                                </Typography>
+                                            </Box>
+                                        </Grid>
+
+                                        {/* Receipt Number */}
+                                        <Grid item xs={12}>
+                                            <Typography className="text-red-500 font-bold">
+                                                No: {selectedPaymentId?.toString()}
+                                            </Typography>
+                                        </Grid>
+                                    </Grid>
+
+                                    <div id="horizontal-line" style={{borderTop: '1px solid black', width: '100%', margin: '10px 0'}}></div>
 
 
                                     <div className="flex-1">
@@ -1828,7 +1889,7 @@ export default function WaiterView(props) {
                                     </div>
 
                                     <div key={'timeofpay'} className="flex-1 flex items-center">
-                                        <Typography>Time of pay</Typography>
+                                        <Typography>Time of pay / تاريخ</Typography>
                                         <div className="flex-1"></div>
                                         <Typography>{selectedPayment?.TimeOfPay?.toLocaleString()}</Typography>
                                     </div>
@@ -2490,11 +2551,10 @@ export default function WaiterView(props) {
         </div>,
         <div key="orderlistdetail" style={{ backgroundColor: 'white', width: "calc(100vw - 62.5vh - 6vh" }}>
             <div style={{ width: '100%' }}>
-                {showKitchenView ? <KitchenView {...{ canUserPrepareFood, canUserDeliverFood, isOrderClosedOrCanceled, orderItems, setOrderItems, meals, variants, orders, isRefreshing, setShowKitchenView }}/> :
-                    showCumulatedBills ? renderCumulatedBills() :
-                        selectedOrderId ? renderOrderDetail() :
-                            renderOrdersList()
-                }
+                {showKitchenView && <KitchenView {...{ canUserPrepareFood, canUserDeliverFood, isOrderClosedOrCanceled, orderItems, setOrderItems, meals, variants, orders, isRefreshing, setShowKitchenView }}/>}
+                <div style={{ display: showCumulatedBills ? 'block' : 'none' }}>{renderCumulatedBills()}</div>
+                <div style={{ display: selectedOrderId ? 'block' : 'none'  }} >{renderOrderDetail()}</div>
+                <div style={{ display: (!showCumulatedBills && !selectedOrderId) ? 'block' : 'none' }} >{renderOrdersList()}</div>
             </div>
         </div>,
 

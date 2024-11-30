@@ -232,3 +232,20 @@ model sysdiagrams {
 
   @@unique([principal_id, name], map: "UK_principal_name")
 }
+
+model DBT_Expenses {
+  ID          BigInt      @id(map: "PK_DBT_Expenses")   @default(autoincrement())
+  DateAt      DateTime?
+  Business    String?     @db.Text
+  Description String?     @db.Text
+  Price       Decimal?    @db.Decimal(18, 3)
+  VAT         Decimal?    @db.Decimal(18, 3)
+  PaymentType String?     @db.Text
+  Category1   String?     @db.Text
+  Category2   String?     @db.Text
+  Note1       String?     @db.Text
+  Note2       String?     @db.Text
+  Photos      String?     @db.Text
+  SyncedAt    DateTime?   @default(now())               @db.DateTime
+  UUID        String?     @db.Text
+}

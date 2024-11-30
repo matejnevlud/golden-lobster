@@ -218,3 +218,19 @@ model DBT_Variants {
   ID_Meal     BigInt?
   MealVariant String?
 }
+
+model expenses {
+  id        String   @id
+  date_time   DateTime?
+  business    String?
+  description String?
+  price       Decimal?
+  payment_type String?
+  vat         Decimal?
+  category1   String?
+  category2   String?
+  note1       String?
+  note2       String?
+  photos      String[]
+  created_at  DateTime?
+}

@@ -5,16 +5,48 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="40d176b6-b89c-456e-9352-b7000e0f81ab" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/prisma/schema_vercel_nodemodules.prisma" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/app/testbill/page.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/instrumentation.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/utils/expensesSync.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.env" beforeDir="false" afterPath="$PROJECT_DIR$/.env" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Dockerfile" beforeDir="false" afterPath="$PROJECT_DIR$/Dockerfile" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/generated/prisma-client-vercel/edge.js" beforeDir="false" afterPath="$PROJECT_DIR$/generated/prisma-client-vercel/edge.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/generated/prisma-client-vercel/index-browser.js" beforeDir="false" afterPath="$PROJECT_DIR$/generated/prisma-client-vercel/index-browser.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/generated/prisma-client-vercel/index.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/generated/prisma-client-vercel/index.d.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/generated/prisma-client-vercel/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/generated/prisma-client-vercel/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/generated/prisma-client-vercel/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/generated/prisma-client-vercel/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/generated/prisma-client-vercel/runtime/index-browser.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/generated/prisma-client-vercel/runtime/index-browser.d.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/generated/prisma-client-vercel/runtime/library.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/generated/prisma-client-vercel/runtime/library.d.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/generated/prisma-client-vercel/schema.prisma" beforeDir="false" afterPath="$PROJECT_DIR$/generated/prisma-client-vercel/schema.prisma" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/generated/prisma-client-vercel/wasm.js" beforeDir="false" afterPath="$PROJECT_DIR$/generated/prisma-client-vercel/wasm.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/next.config.mjs" beforeDir="false" afterPath="$PROJECT_DIR$/next.config.mjs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/prisma/schema.prisma" beforeDir="false" afterPath="$PROJECT_DIR$/prisma/schema.prisma" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/menu_old/page.tsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/prisma/schema_azure.prisma" beforeDir="false" afterPath="$PROJECT_DIR$/prisma/schema_azure.prisma" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/prisma/schema_docker.prisma" beforeDir="false" afterPath="$PROJECT_DIR$/prisma/schema_docker.prisma" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/prisma/schema_vercel.prisma" beforeDir="false" afterPath="$PROJECT_DIR$/prisma/schema_vercel.prisma" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/LayoutFooter.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/LayoutFooter.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/WaiterView.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/WaiterView.tsx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="TypeScript JSX File" />
+        <option value="TypeScript File" />
+      </list>
+    </option>
+  </component>
+  <component name="FormatOnSaveOptions">
+    <option name="myRunOnSave" value="false" />
+    <option name="myAllFileTypesSelected" value="true" />
+    <option name="mySelectedFileTypes">
+      <set />
+    </option>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -31,19 +63,23 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "git-widget-placeholder": "main",
-    "last_opened_file_path": "/Users/matejnevlud/github/golden-lobster/prisma",
-    "node.js.detected.package.eslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "ts.external.directory.path": "/Users/matejnevlud/github/golden-lobster/node_modules/typescript/lib",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;com.codeium.enabled&quot;: &quot;true&quot;,
+    &quot;com.codeium.snoozedEndTime&quot;: &quot;0&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/Users/matejnevlud/github/golden-lobster&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.lookFeel&quot;,
+    &quot;ts.external.directory.path&quot;: &quot;/Users/matejnevlud/github/golden-lobster/node_modules/typescript/lib&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/prisma" />
@@ -56,7 +92,7 @@
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-js-predefined-d6986cc7102b-5c90d61e3bab-JavaScript-WS-242.22855.79" />
+        <option value="bundled-js-predefined-d6986cc7102b-e768b9ed790e-JavaScript-WS-243.21565.180" />
       </set>
     </attachedChunks>
   </component>
@@ -69,6 +105,11 @@
       <option name="presentableId" value="Default" />
       <updated>1727268861831</updated>
       <workItem from="1727268863970" duration="4148000" />
+      <workItem from="1732622892747" duration="1488000" />
+      <workItem from="1732645087377" duration="5000" />
+      <workItem from="1732892101484" duration="13614000" />
+      <workItem from="1732968184545" duration="6327000" />
+      <workItem from="1732979217045" duration="1153000" />
     </task>
     <servers />
   </component>
