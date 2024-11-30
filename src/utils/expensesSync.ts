@@ -9,6 +9,11 @@ export default async function expensesSync() {
         const prisma = new PrismaClient();
         const prismaVercel = new PrismaClientVercel();
 
+        // get url from prisma
+        if (process.env.NODE_ENV === 'development') {
+            console.log('syncing expenses to prisma is not possible in development')
+            return
+        }
 
         // get all data from prismaVercel
         const newExpenses = await prismaVercel.expenses.findMany();

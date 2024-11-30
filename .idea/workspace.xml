@@ -5,28 +5,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="40d176b6-b89c-456e-9352-b7000e0f81ab" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/src/app/testbill/page.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/instrumentation.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/utils/expensesSync.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.env" beforeDir="false" afterPath="$PROJECT_DIR$/.env" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Dockerfile" beforeDir="false" afterPath="$PROJECT_DIR$/Dockerfile" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/generated/prisma-client-vercel/edge.js" beforeDir="false" afterPath="$PROJECT_DIR$/generated/prisma-client-vercel/edge.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/generated/prisma-client-vercel/index-browser.js" beforeDir="false" afterPath="$PROJECT_DIR$/generated/prisma-client-vercel/index-browser.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/generated/prisma-client-vercel/index.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/generated/prisma-client-vercel/index.d.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/generated/prisma-client-vercel/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/generated/prisma-client-vercel/index.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/generated/prisma-client-vercel/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/generated/prisma-client-vercel/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/generated/prisma-client-vercel/runtime/index-browser.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/generated/prisma-client-vercel/runtime/index-browser.d.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/generated/prisma-client-vercel/runtime/library.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/generated/prisma-client-vercel/runtime/library.d.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/generated/prisma-client-vercel/schema.prisma" beforeDir="false" afterPath="$PROJECT_DIR$/generated/prisma-client-vercel/schema.prisma" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/generated/prisma-client-vercel/wasm.js" beforeDir="false" afterPath="$PROJECT_DIR$/generated/prisma-client-vercel/wasm.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/next.config.mjs" beforeDir="false" afterPath="$PROJECT_DIR$/next.config.mjs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/prisma/schema.prisma" beforeDir="false" afterPath="$PROJECT_DIR$/prisma/schema.prisma" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/prisma/schema_azure.prisma" beforeDir="false" afterPath="$PROJECT_DIR$/prisma/schema_azure.prisma" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/prisma/schema_docker.prisma" beforeDir="false" afterPath="$PROJECT_DIR$/prisma/schema_docker.prisma" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/prisma/schema_vercel.prisma" beforeDir="false" afterPath="$PROJECT_DIR$/prisma/schema_vercel.prisma" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/LayoutFooter.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/LayoutFooter.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/WaiterView.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/WaiterView.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/utils/expensesSync.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/utils/expensesSync.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
