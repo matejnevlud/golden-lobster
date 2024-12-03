@@ -6,7 +6,7 @@
   <component name="ChangeListManager">
     <list default="true" id="40d176b6-b89c-456e-9352-b7000e0f81ab" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/prisma/schema_vercel_nodemodules.prisma" beforeDir="false" afterPath="$PROJECT_DIR$/prisma/schema_vercel_nodemodules.prisma" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -56,7 +56,7 @@
     "node.js.selected.package.tslint": "(autodetect)",
     "nodejs_package_manager_path": "npm",
     "settings.editor.selected.configurable": "preferences.lookFeel",
-    "ts.external.directory.path": "/Users/matejnevlud/github/golden-lobster/node_modules/typescript/lib",
+    "ts.external.directory.path": "/Users/matejnevlud/Applications/WebStorm.app/Contents/plugins/javascript-plugin/jsLanguageServicesImpl/external",
     "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
@@ -90,7 +90,7 @@
       <workItem from="1732892101484" duration="13614000" />
       <workItem from="1732968184545" duration="6327000" />
       <workItem from="1732979217045" duration="1153000" />
-      <workItem from="1733232147778" duration="5176000" />
+      <workItem from="1733232147778" duration="5738000" />
     </task>
     <servers />
   </component>
