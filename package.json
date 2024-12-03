@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "postinstall": "if [ \"$NODE_ENV\" != \"production\" ]; then npx prisma generate --schema prisma/schema.prisma; fi",
+    "postinstall": "node -e \"if (process.env.NODE_ENV !== 'production') { require('child_process').execSync('npx prisma generate --schema prisma/schema.prisma'); }\"",
     "buildAndStart": "npm run schemasDockerVercel && next build && next start",
     "schemasDockerVercel": "npx prisma generate --schema prisma/schema_docker.prisma && npx prisma generate --schema prisma/schema_vercel.prisma",
     "schemasVercelVercel": "npx prisma generate --schema prisma/schema_vercel_nodemodules.prisma && npx prisma generate --schema prisma/schema_vercel.prisma"
