@@ -6,8 +6,7 @@ generator client {
 
 datasource db {
   provider  = "postgresql"
-  url       = "postgres://default:mWC7n1ZiDJNV@ep-dark-surf-a2sed0d3-pooler.eu-central-1.aws.neon.tech:5432/verceldb?sslmode=require&pgbouncer=true&connect_timeout=15"
-  directUrl = "postgres://default:mWC7n1ZiDJNV@ep-dark-surf-a2sed0d3.eu-central-1.aws.neon.tech:5432/verceldb?sslmode=require"
+  url = env("INTERNET_DATABASE_URL")
 }
 
 model DBT_CashInventories {
