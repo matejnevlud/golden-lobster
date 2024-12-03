@@ -5,19 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="40d176b6-b89c-456e-9352-b7000e0f81ab" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/generated/prisma-client-vercel/edge.js" beforeDir="false" afterPath="$PROJECT_DIR$/generated/prisma-client-vercel/edge.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/generated/prisma-client-vercel/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/generated/prisma-client-vercel/index.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/generated/prisma-client-vercel/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/generated/prisma-client-vercel/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/generated/prisma-client-vercel/schema.prisma" beforeDir="false" afterPath="$PROJECT_DIR$/generated/prisma-client-vercel/schema.prisma" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/prisma/schema_vercel.prisma" beforeDir="false" afterPath="$PROJECT_DIR$/prisma/schema_vercel.prisma" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/page.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/testbill/page.tsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/updateWebMenu/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/updateWebMenu/page.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/waiter/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/waiter/page.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/LayoutFooter.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/LayoutFooter.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/WaiterView.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/WaiterView.tsx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -101,7 +89,7 @@
       <workItem from="1732892101484" duration="13614000" />
       <workItem from="1732968184545" duration="6327000" />
       <workItem from="1732979217045" duration="1153000" />
-      <workItem from="1733232147778" duration="3948000" />
+      <workItem from="1733232147778" duration="4237000" />
     </task>
     <servers />
   </component>
