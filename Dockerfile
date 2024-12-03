@@ -19,4 +19,5 @@ EXPOSE 3000
 # # build the app and then run it
 # set DATABASE_URL to
 ENV DATABASE_URL="sqlserver://host.docker.internal:1433;database=GoldenLobster_1;user=prisma;password=prisma;trustServerCertificate=true;connectionLimit=20;poolTimeout=20"
+ENV INTERNET_DATABASE_URL="postgresql://postgres:GbIheULqPgznNjZgDnpwCGVpnlCHFDWy@junction.proxy.rlwy.net:50687/railway"
 CMD ["npm", "run", "buildAndStart"]

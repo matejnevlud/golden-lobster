@@ -5,18 +5,18 @@ var isSyncing = false
 export default async function expensesSync() {
     if (isSyncing) return
     try {
-        isSyncing = true
-        const prisma = new PrismaClient();
-        const prismaVercel = new PrismaClientVercel();
-
         // get url from prisma
-        if (process.env.NODE_ENV === 'development') {
+        if (process.env.NODE_ENV === 'development' || process.env.DISABLE_EXPENSES_SYNC) {
             console.log('syncing expenses to prisma is not possible in development')
             return
         }
 
+        isSyncing = true
+        const prisma = new PrismaClient();
+        const prismaVercel = new PrismaClientVercel();
+
         // get all data from prismaVercel
-        const newExpenses = await prismaVercel.expenses.findMany();
+        const newExpenses = await prismaVercel.expenses.findMany({ where: { synced: false } });
 
         var DBT_Expenses = await prisma.dBT_Expenses.findMany();
 
@@ -51,10 +51,9 @@ export default async function expensesSync() {
             const DBT_Expense = DBT_Expenses.find((DBT_Expense) => DBT_Expense.UUID == expense.id);
             if (DBT_Expense) {
                 // remove from vercel
-                await prismaVercel.expenses.delete({
-                    where: {
-                        id: expense.id
-                    }
+                await prismaVercel.expenses.update({
+                    where: { id: expense.id },
+                    data: { synced: true }
                 })
             }
         }

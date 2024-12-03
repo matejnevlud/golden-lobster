@@ -232,4 +232,5 @@ model expenses {
   note2       String?
   photos      String[]
   created_at  DateTime?
+  synced       Boolean?  @default(false)
 }

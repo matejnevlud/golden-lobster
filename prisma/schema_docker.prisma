@@ -178,6 +178,7 @@ model DBT_Payments {
   RealPayment      Decimal?  @db.Decimal(18, 3)
   DiscountPercent  Decimal   @default(0, map: "DF_DBT_Payments_DiscountPercent") @db.Decimal(18, 3)
   Deleted          Boolean?  @default(false, map: "DF_DBT_Payments_Deleted")
+  PrintedNo        BigInt?
 }
 
 model DBT_PaymentTaxes {
