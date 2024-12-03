@@ -1,9 +1,12 @@
+export const dynamic = 'force-dynamic';
+
 import { getAllData, getWaiterData } from "@/db";
 import WaiterView from "@/components/WaiterView";
 import { Inter } from "next/font/google";
 import MuiXLicense from "@/components/MuiXLicense";
 
 const inter = Inter({ subsets: ["latin"] });
+
 
 export default async function Menu() {
 

@@ -3,7 +3,7 @@ import UploadComponent from "@/app/updateWebMenu/UploadComponent";
 export const fetchCache = 'force-no-store';
 
 const inter = Inter({ subsets: ["latin"] });
-
+export const dynamic = 'force-dynamic';
 
 export default async function UpdateWebMenu() {
 

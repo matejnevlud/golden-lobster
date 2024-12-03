@@ -515,6 +515,7 @@ export default function WaiterView(props) {
 
     const ordergridRef = useGridApiRef()
     const [randomKey, setRandomKey] = React.useState(Math.random());
+    const [activeStatusState, setActiveStatusState] = React.useState('All');
 
     const determineOrderGridStatusFilter = () => {
         console.log('determineOrderGridStatusFilter')
@@ -605,7 +606,7 @@ export default function WaiterView(props) {
                             native
                             labelId="demo-simple-select-label"
                             id="demo-simple-select"
-                            value={determineOrderGridStatusFilter()}
+                            value={activeStatusState}
                             label="State"
                             onChange={(e) => {
                                 setOrdersFilterToggle(e.target.value);
@@ -662,6 +663,14 @@ export default function WaiterView(props) {
                         overflowX: 'scroll'
                     }}
                     initialState={orderInitialState}
+                    onFilterModelChange={(model) => {
+                        // detect if changed state
+                        const statusFilter = model.items?.find((item) => item.field === 'Status');
+                        if (!statusFilter) setActiveStatusState("All");
+                        else setActiveStatusState(statusFilter.value);
+
+                        console.log('model', statusFilter)
+                    }}
                     onStateChange={(state) => {
 
                         // using visible rows to calculate sum

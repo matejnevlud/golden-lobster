@@ -1,3 +1,4 @@
+export const dynamic = 'force-dynamic';
 import { getAllData } from "@/db";
 import InteractiveMenu from "@/components/InteractiveMenu";
 import { Inter } from "next/font/google";

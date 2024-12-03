@@ -20,27 +20,15 @@ export const LayoutFooter = forwardRef((props, ref: React.MutableRefObject<GridA
 
     // get data using getUILayouts
     const [savedLayouts, setSavedLayouts] = React.useState([]);
+
+    const [applyingLayout, setApplyingLayout] = React.useState(false);
+    const unsubscribeAllRef = React.useRef<(() => void) | null>(null);
+
+
     // get data using getUILayouts
     useEffect(() => {
 
         (async () => {
-
-            // subscribe to state layout change
-            ref.current?.subscribeEvent('columnVisibilityModelChange', () => {
-                console.log('columnVisibilityModelChange')
-            })
-            ref.current?.subscribeEvent('columnWidthChange', () => {
-                console.log('columnWidthChange')
-            })
-            ref.current?.subscribeEvent('filterModelChange', () => {
-                console.log('filterModelChange')
-            })
-            ref.current?.subscribeEvent('sortModelChange', () => {
-                console.log('sortModelChange')
-            })
-
-
-
             const data = await getUILayouts(viewName);
             setSavedLayouts(data);
             let lastClickedLayoutId = localStorage.getItem('lastClickedLayoutId_' + viewName);
@@ -55,19 +43,27 @@ export const LayoutFooter = forwardRef((props, ref: React.MutableRefObject<GridA
     }, []);
 
 
-    // on ref change
 
-    const handleChange = (event: SelectChangeEvent) => {
+
+    // on ref change
+    const handleTableEventChange = () => {
+        console.log('handleTableEventChange');
+        setLayoutId("");
+        unsubscribeAllRef.current?.();
+    }
+
+    const handleSelectChange = (event: SelectChangeEvent) => {
         setLayoutId(event.target.value);
         localStorage.setItem('lastClickedLayoutId_' + viewName, event.target.value);
 
-        const layout = savedLayouts.find((layout: any) => layout.id === event.target.value);
+        const layout = savedLayouts.find((layout: any) => layout.id == event.target.value);
         applyLayout(event.target.value, layout?.state);
     };
 
 
     const applyLayout = async (id: number | string, state?: string) => {
         console.log('Applying layout', id)
+        unsubscribeAllRef.current?.();
         if (!state && typeof id !== 'number') {
             console.log('No state to apply, resetting')
             refresh();
@@ -78,6 +74,24 @@ export const LayoutFooter = forwardRef((props, ref: React.MutableRefObject<GridA
 
         const parsedState = JSON.parse(state);
         ref.current?.restoreState(parsedState);
+
+        setTimeout(() => {
+
+            console.log('Subscribing to events')
+            const unsubscribe1 = ref.current?.subscribeEvent('columnVisibilityModelChange', handleTableEventChange);
+            const unsubscribe2 = ref.current?.subscribeEvent('columnWidthChange', handleTableEventChange);
+            const unsubscribe3 = ref.current?.subscribeEvent('filterModelChange', handleTableEventChange);
+            const unsubscribe4 = ref.current?.subscribeEvent('sortModelChange', handleTableEventChange);
+
+            unsubscribeAllRef.current = () => {
+                unsubscribe1?.();
+                unsubscribe2?.();
+                unsubscribe3?.();
+                unsubscribe4?.();
+            };
+
+
+        }, 1000);
     }
 
 
@@ -139,7 +153,7 @@ export const LayoutFooter = forwardRef((props, ref: React.MutableRefObject<GridA
                         native
                         id="demo-select-small"
                         value={layoutId}
-                        onChange={handleChange}
+                        onChange={handleSelectChange}
 
                     >
                         <option aria-label={"None / NEW"} value="">
