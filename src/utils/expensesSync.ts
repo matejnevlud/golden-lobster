@@ -26,7 +26,9 @@ export default async function expensesSync() {
             if (DBT_Expense) continue;
             console.log('new expense', expense.description);
 
-            await prisma.dBT_Expenses.create({
+
+
+            const newExpense = await prisma.dBT_Expenses.create({
                 data: {
                     DateAt: expense.date_time,
                     Business: expense.business,
@@ -38,10 +40,22 @@ export default async function expensesSync() {
                     Category2: expense.category2,
                     Note1: expense.note1,
                     Note2: expense.note2,
-                    Photos: JSON.stringify(expense.photos),
+                    Photos: null,
                     UUID: expense.id
                 }
             })
+
+            // parse photos base64 array to byteRepresentation
+            if (expense.photos) {
+                await prisma.dBT_ExpensePhoto.createMany({
+                    data: expense.photos.map((photo, index) => {
+                        return {
+                            ID_Expense: newExpense.ID,
+                            Photo: Buffer.from(photo, 'base64')
+                        }
+                    })
+                })
+            }
         }
 
 
