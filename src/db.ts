@@ -18,7 +18,7 @@ import {
     DBT_Payments,
     DBT_PaymentTaxes,
     DBT_CustomerPayments, DBT_CustomerPaymentPayments,
-    Prisma
+    Prisma, DBT_Expenses, DBT_ExpensePhoto
 } from "@prisma/client";
 
 import { PrismaClient as PrismaClientVercel } from '../generated/prisma-client-vercel'
@@ -656,6 +656,22 @@ export async function DB_getNextPaymentPrintNumber(): Promise<number> {
     return maxPrintNo._max.PrintedNo ? parseInt(maxPrintNo._max.PrintedNo.toString()) + 1 : 1;
 }
 
+
+export async function DB_getExpenses(): Promise<DBT_Expenses[]> {
+    const expenses = await prisma.dBT_Expenses.findMany();
+    return expenses.map(expense => {
+        return {
+            ...expense,
+            ID: Number(expense.ID),
+            id: Number(expense.ID),
+        }
+    })
+}
+
+export async function DB_getExpensesPhotos(): Promise<DBT_ExpensePhoto[]> {
+    const expensesPhotos = await prisma.dBT_ExpensePhoto.findMany();
+    return convertUint8ArraysToBase64(expensesPhotos);
+}
 
 
 export async function uploadToNeon () {

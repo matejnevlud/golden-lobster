@@ -51,7 +51,7 @@ export default async function expensesSync() {
                     data: expense.photos.map((photo, index) => {
                         return {
                             ID_Expense: newExpense.ID,
-                            Photo: Buffer.from(photo, 'base64')
+                            Photo: base64ToFile(photo)
                         }
                     })
                 })
@@ -82,6 +82,31 @@ export default async function expensesSync() {
     }
 }
 
+
+function base64ToFile(base64String:string, filename = 'image') {
+    // Remove data URL prefix if present
+    const base64WithoutPrefix = base64String.replace(/^data:image\/\w+;base64,/, '');
+
+    // Get the file type from the base64 string
+    let fileType = 'png'; // default
+    if (base64String.startsWith('data:image/')) {
+        fileType = base64String.split(';')[0].split('/')[1];
+    }
+
+    // Decode base64 string
+    const byteCharacters = atob(base64WithoutPrefix);
+    const byteNumbers = new Array(byteCharacters.length);
+
+    // Convert to byte array
+    for (let i = 0; i < byteCharacters.length; i++) {
+        byteNumbers[i] = byteCharacters.charCodeAt(i);
+    }
+
+    // Create Uint8Array from byte array
+    const byteArray = new Uint8Array(byteNumbers);
+
+    return byteArray
+}
 
 export const migratePhotosArrayToSeparateByteTable = async () => {
     try {
@@ -114,7 +139,7 @@ export const migratePhotosArrayToSeparateByteTable = async () => {
                 data: jsonPhotos.map((photo, index) => {
                     return {
                         ID_Expense: expense.ID,
-                        Photo: Buffer.from(photo, 'base64')
+                        Photo:  base64ToFile(photo)
                     }
                 })
             })

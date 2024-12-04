@@ -5,9 +5,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="40d176b6-b89c-456e-9352-b7000e0f81ab" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/src/app/expenses/page.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/instrumentation.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/instrumentation.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/db.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/db.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/utils/expensesSync.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/utils/expensesSync.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/utils/utils.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/utils/utils.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -17,8 +19,8 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
-        <option value="TypeScript JSX File" />
         <option value="TypeScript File" />
+        <option value="TypeScript JSX File" />
       </list>
     </option>
   </component>
@@ -92,7 +94,7 @@
       <workItem from="1732968184545" duration="6327000" />
       <workItem from="1732979217045" duration="1153000" />
       <workItem from="1733232147778" duration="15365000" />
-      <workItem from="1733310659034" duration="5646000" />
+      <workItem from="1733310659034" duration="10397000" />
     </task>
     <servers />
   </component>
