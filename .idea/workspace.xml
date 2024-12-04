@@ -6,7 +6,16 @@
   <component name="ChangeListManager">
     <list default="true" id="40d176b6-b89c-456e-9352-b7000e0f81ab" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/utils/expensesSync.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/utils/expensesSync.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/generated/prisma-client-vercel/schema.prisma" beforeDir="false" afterPath="$PROJECT_DIR$/generated/prisma-client-vercel/schema.prisma" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/prisma/schema.prisma" beforeDir="false" afterPath="$PROJECT_DIR$/prisma/schema.prisma" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/prisma/schema_azure.prisma" beforeDir="false" afterPath="$PROJECT_DIR$/prisma/schema_azure.prisma" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/prisma/schema_docker.prisma" beforeDir="false" afterPath="$PROJECT_DIR$/prisma/schema_docker.prisma" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/prisma/schema_neon.prisma" beforeDir="false" afterPath="$PROJECT_DIR$/prisma/schema_neon.prisma" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/prisma/schema_pinggy.prisma" beforeDir="false" afterPath="$PROJECT_DIR$/prisma/schema_pinggy.prisma" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/prisma/schema_vercel.prisma" beforeDir="false" afterPath="$PROJECT_DIR$/prisma/schema_vercel.prisma" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/prisma/schema_vercel_nodemodules.prisma" beforeDir="false" afterPath="$PROJECT_DIR$/prisma/schema_vercel_nodemodules.prisma" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/WaiterView.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/WaiterView.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/db.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/db.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -91,7 +100,7 @@
       <workItem from="1732968184545" duration="6327000" />
       <workItem from="1732979217045" duration="1153000" />
       <workItem from="1733232147778" duration="15365000" />
-      <workItem from="1733310659034" duration="4204000" />
+      <workItem from="1733310659034" duration="5010000" />
     </task>
     <servers />
   </component>

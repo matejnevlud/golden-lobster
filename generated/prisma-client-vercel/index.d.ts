@@ -16855,6 +16855,7 @@ export namespace Prisma {
     ID: bigint | null
     ID_Payments: bigint | null
     ID_Tax: bigint | null
+    TaxName: string | null
     TaxPercentage: Decimal | null
     TaxValue: Decimal | null
     CalculatedValue: Decimal | null
@@ -16864,6 +16865,7 @@ export namespace Prisma {
     ID: bigint | null
     ID_Payments: bigint | null
     ID_Tax: bigint | null
+    TaxName: string | null
     TaxPercentage: Decimal | null
     TaxValue: Decimal | null
     CalculatedValue: Decimal | null
@@ -16873,6 +16875,7 @@ export namespace Prisma {
     ID: number
     ID_Payments: number
     ID_Tax: number
+    TaxName: number
     TaxPercentage: number
     TaxValue: number
     CalculatedValue: number
@@ -16902,6 +16905,7 @@ export namespace Prisma {
     ID?: true
     ID_Payments?: true
     ID_Tax?: true
+    TaxName?: true
     TaxPercentage?: true
     TaxValue?: true
     CalculatedValue?: true
@@ -16911,6 +16915,7 @@ export namespace Prisma {
     ID?: true
     ID_Payments?: true
     ID_Tax?: true
+    TaxName?: true
     TaxPercentage?: true
     TaxValue?: true
     CalculatedValue?: true
@@ -16920,6 +16925,7 @@ export namespace Prisma {
     ID?: true
     ID_Payments?: true
     ID_Tax?: true
+    TaxName?: true
     TaxPercentage?: true
     TaxValue?: true
     CalculatedValue?: true
@@ -17016,6 +17022,7 @@ export namespace Prisma {
     ID: bigint
     ID_Payments: bigint | null
     ID_Tax: bigint | null
+    TaxName: string | null
     TaxPercentage: Decimal | null
     TaxValue: Decimal | null
     CalculatedValue: Decimal | null
@@ -17044,6 +17051,7 @@ export namespace Prisma {
     ID?: boolean
     ID_Payments?: boolean
     ID_Tax?: boolean
+    TaxName?: boolean
     TaxPercentage?: boolean
     TaxValue?: boolean
     CalculatedValue?: boolean
@@ -17053,6 +17061,7 @@ export namespace Prisma {
     ID?: boolean
     ID_Payments?: boolean
     ID_Tax?: boolean
+    TaxName?: boolean
     TaxPercentage?: boolean
     TaxValue?: boolean
     CalculatedValue?: boolean
@@ -17062,6 +17071,7 @@ export namespace Prisma {
     ID?: boolean
     ID_Payments?: boolean
     ID_Tax?: boolean
+    TaxName?: boolean
     TaxPercentage?: boolean
     TaxValue?: boolean
     CalculatedValue?: boolean
@@ -17075,6 +17085,7 @@ export namespace Prisma {
       ID: bigint
       ID_Payments: bigint | null
       ID_Tax: bigint | null
+      TaxName: string | null
       TaxPercentage: Prisma.Decimal | null
       TaxValue: Prisma.Decimal | null
       CalculatedValue: Prisma.Decimal | null
@@ -17474,6 +17485,7 @@ export namespace Prisma {
     readonly ID: FieldRef<"DBT_PaymentTaxes", 'BigInt'>
     readonly ID_Payments: FieldRef<"DBT_PaymentTaxes", 'BigInt'>
     readonly ID_Tax: FieldRef<"DBT_PaymentTaxes", 'BigInt'>
+    readonly TaxName: FieldRef<"DBT_PaymentTaxes", 'String'>
     readonly TaxPercentage: FieldRef<"DBT_PaymentTaxes", 'Decimal'>
     readonly TaxValue: FieldRef<"DBT_PaymentTaxes", 'Decimal'>
     readonly CalculatedValue: FieldRef<"DBT_PaymentTaxes", 'Decimal'>
@@ -25549,6 +25561,7 @@ export namespace Prisma {
     ID: 'ID',
     ID_Payments: 'ID_Payments',
     ID_Tax: 'ID_Tax',
+    TaxName: 'TaxName',
     TaxPercentage: 'TaxPercentage',
     TaxValue: 'TaxValue',
     CalculatedValue: 'CalculatedValue'
@@ -26703,6 +26716,7 @@ export namespace Prisma {
     ID?: BigIntFilter<"DBT_PaymentTaxes"> | bigint | number
     ID_Payments?: BigIntNullableFilter<"DBT_PaymentTaxes"> | bigint | number | null
     ID_Tax?: BigIntNullableFilter<"DBT_PaymentTaxes"> | bigint | number | null
+    TaxName?: StringNullableFilter<"DBT_PaymentTaxes"> | string | null
     TaxPercentage?: DecimalNullableFilter<"DBT_PaymentTaxes"> | Decimal | DecimalJsLike | number | string | null
     TaxValue?: DecimalNullableFilter<"DBT_PaymentTaxes"> | Decimal | DecimalJsLike | number | string | null
     CalculatedValue?: DecimalNullableFilter<"DBT_PaymentTaxes"> | Decimal | DecimalJsLike | number | string | null
@@ -26712,6 +26726,7 @@ export namespace Prisma {
     ID?: SortOrder
     ID_Payments?: SortOrderInput | SortOrder
     ID_Tax?: SortOrderInput | SortOrder
+    TaxName?: SortOrderInput | SortOrder
     TaxPercentage?: SortOrderInput | SortOrder
     TaxValue?: SortOrderInput | SortOrder
     CalculatedValue?: SortOrderInput | SortOrder
@@ -26724,6 +26739,7 @@ export namespace Prisma {
     NOT?: DBT_PaymentTaxesWhereInput | DBT_PaymentTaxesWhereInput[]
     ID_Payments?: BigIntNullableFilter<"DBT_PaymentTaxes"> | bigint | number | null
     ID_Tax?: BigIntNullableFilter<"DBT_PaymentTaxes"> | bigint | number | null
+    TaxName?: StringNullableFilter<"DBT_PaymentTaxes"> | string | null
     TaxPercentage?: DecimalNullableFilter<"DBT_PaymentTaxes"> | Decimal | DecimalJsLike | number | string | null
     TaxValue?: DecimalNullableFilter<"DBT_PaymentTaxes"> | Decimal | DecimalJsLike | number | string | null
     CalculatedValue?: DecimalNullableFilter<"DBT_PaymentTaxes"> | Decimal | DecimalJsLike | number | string | null
@@ -26733,6 +26749,7 @@ export namespace Prisma {
     ID?: SortOrder
     ID_Payments?: SortOrderInput | SortOrder
     ID_Tax?: SortOrderInput | SortOrder
+    TaxName?: SortOrderInput | SortOrder
     TaxPercentage?: SortOrderInput | SortOrder
     TaxValue?: SortOrderInput | SortOrder
     CalculatedValue?: SortOrderInput | SortOrder
@@ -26750,6 +26767,7 @@ export namespace Prisma {
     ID?: BigIntWithAggregatesFilter<"DBT_PaymentTaxes"> | bigint | number
     ID_Payments?: BigIntNullableWithAggregatesFilter<"DBT_PaymentTaxes"> | bigint | number | null
     ID_Tax?: BigIntNullableWithAggregatesFilter<"DBT_PaymentTaxes"> | bigint | number | null
+    TaxName?: StringNullableWithAggregatesFilter<"DBT_PaymentTaxes"> | string | null
     TaxPercentage?: DecimalNullableWithAggregatesFilter<"DBT_PaymentTaxes"> | Decimal | DecimalJsLike | number | string | null
     TaxValue?: DecimalNullableWithAggregatesFilter<"DBT_PaymentTaxes"> | Decimal | DecimalJsLike | number | string | null
     CalculatedValue?: DecimalNullableWithAggregatesFilter<"DBT_PaymentTaxes"> | Decimal | DecimalJsLike | number | string | null
@@ -28245,6 +28263,7 @@ export namespace Prisma {
     ID?: bigint | number
     ID_Payments?: bigint | number | null
     ID_Tax?: bigint | number | null
+    TaxName?: string | null
     TaxPercentage?: Decimal | DecimalJsLike | number | string | null
     TaxValue?: Decimal | DecimalJsLike | number | string | null
     CalculatedValue?: Decimal | DecimalJsLike | number | string | null
@@ -28254,6 +28273,7 @@ export namespace Prisma {
     ID?: bigint | number
     ID_Payments?: bigint | number | null
     ID_Tax?: bigint | number | null
+    TaxName?: string | null
     TaxPercentage?: Decimal | DecimalJsLike | number | string | null
     TaxValue?: Decimal | DecimalJsLike | number | string | null
     CalculatedValue?: Decimal | DecimalJsLike | number | string | null
@@ -28263,6 +28283,7 @@ export namespace Prisma {
     ID?: BigIntFieldUpdateOperationsInput | bigint | number
     ID_Payments?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     ID_Tax?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    TaxName?: NullableStringFieldUpdateOperationsInput | string | null
     TaxPercentage?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     TaxValue?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     CalculatedValue?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
@@ -28272,6 +28293,7 @@ export namespace Prisma {
     ID?: BigIntFieldUpdateOperationsInput | bigint | number
     ID_Payments?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     ID_Tax?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    TaxName?: NullableStringFieldUpdateOperationsInput | string | null
     TaxPercentage?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     TaxValue?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     CalculatedValue?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
@@ -28281,6 +28303,7 @@ export namespace Prisma {
     ID?: bigint | number
     ID_Payments?: bigint | number | null
     ID_Tax?: bigint | number | null
+    TaxName?: string | null
     TaxPercentage?: Decimal | DecimalJsLike | number | string | null
     TaxValue?: Decimal | DecimalJsLike | number | string | null
     CalculatedValue?: Decimal | DecimalJsLike | number | string | null
@@ -28290,6 +28313,7 @@ export namespace Prisma {
     ID?: BigIntFieldUpdateOperationsInput | bigint | number
     ID_Payments?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     ID_Tax?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    TaxName?: NullableStringFieldUpdateOperationsInput | string | null
     TaxPercentage?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     TaxValue?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     CalculatedValue?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
@@ -28299,6 +28323,7 @@ export namespace Prisma {
     ID?: BigIntFieldUpdateOperationsInput | bigint | number
     ID_Payments?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     ID_Tax?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    TaxName?: NullableStringFieldUpdateOperationsInput | string | null
     TaxPercentage?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     TaxValue?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     CalculatedValue?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
@@ -29679,6 +29704,7 @@ export namespace Prisma {
     ID?: SortOrder
     ID_Payments?: SortOrder
     ID_Tax?: SortOrder
+    TaxName?: SortOrder
     TaxPercentage?: SortOrder
     TaxValue?: SortOrder
     CalculatedValue?: SortOrder
@@ -29697,6 +29723,7 @@ export namespace Prisma {
     ID?: SortOrder
     ID_Payments?: SortOrder
     ID_Tax?: SortOrder
+    TaxName?: SortOrder
     TaxPercentage?: SortOrder
     TaxValue?: SortOrder
     CalculatedValue?: SortOrder
@@ -29706,6 +29733,7 @@ export namespace Prisma {
     ID?: SortOrder
     ID_Payments?: SortOrder
     ID_Tax?: SortOrder
+    TaxName?: SortOrder
     TaxPercentage?: SortOrder
     TaxValue?: SortOrder
     CalculatedValue?: SortOrder

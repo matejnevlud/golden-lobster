@@ -520,6 +520,7 @@ export async function DB_bindTaxToPayment(tax: DBT_Taxes, payment: DBT_Payments)
         data: {
             ID_Payments: payment.ID,
             ID_Tax: tax.ID,
+            TaxName: tax.TaxName,
             TaxPercentage: tax.Percentage,
             TaxValue: tax.Value,
             CalculatedValue: calculatedValue,

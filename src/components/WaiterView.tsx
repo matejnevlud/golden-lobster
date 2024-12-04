@@ -264,8 +264,7 @@ export default function WaiterView(props) {
         );
         setSelectedPayment(payment);
 
-        const taxesIDs = paymentTaxes.filter((paymentTax) => paymentTax.ID_Payments == selectedPaymentId).map((paymentTax) => paymentTax.ID_Tax);
-        setSelectedPaymentTaxes(taxes.filter((tax) => taxesIDs.includes(tax.ID)));
+        setSelectedPaymentTaxes(paymentTaxes.filter((paymentTax) => paymentTax.ID_Payments == selectedPaymentId))
 
     }, [selectedPaymentId, paymentTaxes]);
 
@@ -1884,7 +1883,7 @@ export default function WaiterView(props) {
                                             <div key={tax.ID} className="flex-1 flex items-center">
                                                 <Typography>{tax.TaxName}</Typography>
                                                 <div className="flex-1"></div>
-                                                <Typography>{tax.Percentage ? tax.Percentage + '%' : tax.Value}</Typography>
+                                                <Typography>{tax.TaxPercentage ? 'OMR ' + parseFloat(tax.CalculatedValue).toFixed(3) + ' (' + tax.TaxPercentage + '%)' : 'OMR ' + tax.TaxValue}</Typography>
                                             </div>
                                         ))}
                                     </div>

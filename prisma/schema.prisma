@@ -182,6 +182,7 @@ model DBT_PaymentTaxes {
   ID                BigInt  @id(map: "PK_DBT_PaymentTaxes") @default(autoincrement())
   ID_Payments       BigInt?
   ID_Tax            BigInt?
+  TaxName     String?  @db.VarChar(50)
   TaxPercentage     Decimal? @db.Decimal(18, 3)
   TaxValue          Decimal? @db.Decimal(18, 3)
   CalculatedValue   Decimal? @db.Decimal(18, 3)
