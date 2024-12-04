@@ -81,3 +81,46 @@ export default async function expensesSync() {
         isSyncing = false
     }
 }
+
+
+export const migratePhotosArrayToSeparateByteTable = async () => {
+    try {
+        const prisma = new PrismaClient();
+
+        const expenses = await prisma.dBT_Expenses.findMany();
+
+        // run only if table dBT_ExpensePhoto is empty
+        const expensePhotos = await prisma.dBT_ExpensePhoto.findMany();
+        if (expensePhotos.length > 0) {
+            console.log('photos already migrated to separate table')
+            return
+        }
+
+
+        for (const expense of expenses) {
+            if (!expense.Photos) {
+                console.log('no photos found', expense.ID)
+                continue
+            }
+
+
+            const jsonPhotos = JSON.parse(expense.Photos);
+            if (!Array.isArray(jsonPhotos)) {
+                console.log('not an array', expense.ID)
+                continue
+            }
+
+            await prisma.dBT_ExpensePhoto.createMany({
+                data: jsonPhotos.map((photo, index) => {
+                    return {
+                        ID_Expense: expense.ID,
+                        Photo: Buffer.from(photo, 'base64')
+                    }
+                })
+            })
+        }
+        console.log('photos migrated to separate table')
+    } catch (error) {
+        console.log('photos migration error', error)
+    }
+}
