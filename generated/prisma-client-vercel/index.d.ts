@@ -16837,30 +16837,45 @@ export namespace Prisma {
     ID: number | null
     ID_Payments: number | null
     ID_Tax: number | null
+    TaxPercentage: Decimal | null
+    TaxValue: Decimal | null
+    CalculatedValue: Decimal | null
   }
 
   export type DBT_PaymentTaxesSumAggregateOutputType = {
     ID: bigint | null
     ID_Payments: bigint | null
     ID_Tax: bigint | null
+    TaxPercentage: Decimal | null
+    TaxValue: Decimal | null
+    CalculatedValue: Decimal | null
   }
 
   export type DBT_PaymentTaxesMinAggregateOutputType = {
     ID: bigint | null
     ID_Payments: bigint | null
     ID_Tax: bigint | null
+    TaxPercentage: Decimal | null
+    TaxValue: Decimal | null
+    CalculatedValue: Decimal | null
   }
 
   export type DBT_PaymentTaxesMaxAggregateOutputType = {
     ID: bigint | null
     ID_Payments: bigint | null
     ID_Tax: bigint | null
+    TaxPercentage: Decimal | null
+    TaxValue: Decimal | null
+    CalculatedValue: Decimal | null
   }
 
   export type DBT_PaymentTaxesCountAggregateOutputType = {
     ID: number
     ID_Payments: number
     ID_Tax: number
+    TaxPercentage: number
+    TaxValue: number
+    CalculatedValue: number
     _all: number
   }
 
@@ -16869,30 +16884,45 @@ export namespace Prisma {
     ID?: true
     ID_Payments?: true
     ID_Tax?: true
+    TaxPercentage?: true
+    TaxValue?: true
+    CalculatedValue?: true
   }
 
   export type DBT_PaymentTaxesSumAggregateInputType = {
     ID?: true
     ID_Payments?: true
     ID_Tax?: true
+    TaxPercentage?: true
+    TaxValue?: true
+    CalculatedValue?: true
   }
 
   export type DBT_PaymentTaxesMinAggregateInputType = {
     ID?: true
     ID_Payments?: true
     ID_Tax?: true
+    TaxPercentage?: true
+    TaxValue?: true
+    CalculatedValue?: true
   }
 
   export type DBT_PaymentTaxesMaxAggregateInputType = {
     ID?: true
     ID_Payments?: true
     ID_Tax?: true
+    TaxPercentage?: true
+    TaxValue?: true
+    CalculatedValue?: true
   }
 
   export type DBT_PaymentTaxesCountAggregateInputType = {
     ID?: true
     ID_Payments?: true
     ID_Tax?: true
+    TaxPercentage?: true
+    TaxValue?: true
+    CalculatedValue?: true
     _all?: true
   }
 
@@ -16986,6 +17016,9 @@ export namespace Prisma {
     ID: bigint
     ID_Payments: bigint | null
     ID_Tax: bigint | null
+    TaxPercentage: Decimal | null
+    TaxValue: Decimal | null
+    CalculatedValue: Decimal | null
     _count: DBT_PaymentTaxesCountAggregateOutputType | null
     _avg: DBT_PaymentTaxesAvgAggregateOutputType | null
     _sum: DBT_PaymentTaxesSumAggregateOutputType | null
@@ -17011,18 +17044,27 @@ export namespace Prisma {
     ID?: boolean
     ID_Payments?: boolean
     ID_Tax?: boolean
+    TaxPercentage?: boolean
+    TaxValue?: boolean
+    CalculatedValue?: boolean
   }, ExtArgs["result"]["dBT_PaymentTaxes"]>
 
   export type DBT_PaymentTaxesSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     ID?: boolean
     ID_Payments?: boolean
     ID_Tax?: boolean
+    TaxPercentage?: boolean
+    TaxValue?: boolean
+    CalculatedValue?: boolean
   }, ExtArgs["result"]["dBT_PaymentTaxes"]>
 
   export type DBT_PaymentTaxesSelectScalar = {
     ID?: boolean
     ID_Payments?: boolean
     ID_Tax?: boolean
+    TaxPercentage?: boolean
+    TaxValue?: boolean
+    CalculatedValue?: boolean
   }
 
 
@@ -17033,6 +17075,9 @@ export namespace Prisma {
       ID: bigint
       ID_Payments: bigint | null
       ID_Tax: bigint | null
+      TaxPercentage: Prisma.Decimal | null
+      TaxValue: Prisma.Decimal | null
+      CalculatedValue: Prisma.Decimal | null
     }, ExtArgs["result"]["dBT_PaymentTaxes"]>
     composites: {}
   }
@@ -17429,6 +17474,9 @@ export namespace Prisma {
     readonly ID: FieldRef<"DBT_PaymentTaxes", 'BigInt'>
     readonly ID_Payments: FieldRef<"DBT_PaymentTaxes", 'BigInt'>
     readonly ID_Tax: FieldRef<"DBT_PaymentTaxes", 'BigInt'>
+    readonly TaxPercentage: FieldRef<"DBT_PaymentTaxes", 'Decimal'>
+    readonly TaxValue: FieldRef<"DBT_PaymentTaxes", 'Decimal'>
+    readonly CalculatedValue: FieldRef<"DBT_PaymentTaxes", 'Decimal'>
   }
     
 
@@ -25500,7 +25548,10 @@ export namespace Prisma {
   export const DBT_PaymentTaxesScalarFieldEnum: {
     ID: 'ID',
     ID_Payments: 'ID_Payments',
-    ID_Tax: 'ID_Tax'
+    ID_Tax: 'ID_Tax',
+    TaxPercentage: 'TaxPercentage',
+    TaxValue: 'TaxValue',
+    CalculatedValue: 'CalculatedValue'
   };
 
   export type DBT_PaymentTaxesScalarFieldEnum = (typeof DBT_PaymentTaxesScalarFieldEnum)[keyof typeof DBT_PaymentTaxesScalarFieldEnum]
@@ -26652,12 +26703,18 @@ export namespace Prisma {
     ID?: BigIntFilter<"DBT_PaymentTaxes"> | bigint | number
     ID_Payments?: BigIntNullableFilter<"DBT_PaymentTaxes"> | bigint | number | null
     ID_Tax?: BigIntNullableFilter<"DBT_PaymentTaxes"> | bigint | number | null
+    TaxPercentage?: DecimalNullableFilter<"DBT_PaymentTaxes"> | Decimal | DecimalJsLike | number | string | null
+    TaxValue?: DecimalNullableFilter<"DBT_PaymentTaxes"> | Decimal | DecimalJsLike | number | string | null
+    CalculatedValue?: DecimalNullableFilter<"DBT_PaymentTaxes"> | Decimal | DecimalJsLike | number | string | null
   }
 
   export type DBT_PaymentTaxesOrderByWithRelationInput = {
     ID?: SortOrder
     ID_Payments?: SortOrderInput | SortOrder
     ID_Tax?: SortOrderInput | SortOrder
+    TaxPercentage?: SortOrderInput | SortOrder
+    TaxValue?: SortOrderInput | SortOrder
+    CalculatedValue?: SortOrderInput | SortOrder
   }
 
   export type DBT_PaymentTaxesWhereUniqueInput = Prisma.AtLeast<{
@@ -26667,12 +26724,18 @@ export namespace Prisma {
     NOT?: DBT_PaymentTaxesWhereInput | DBT_PaymentTaxesWhereInput[]
     ID_Payments?: BigIntNullableFilter<"DBT_PaymentTaxes"> | bigint | number | null
     ID_Tax?: BigIntNullableFilter<"DBT_PaymentTaxes"> | bigint | number | null
+    TaxPercentage?: DecimalNullableFilter<"DBT_PaymentTaxes"> | Decimal | DecimalJsLike | number | string | null
+    TaxValue?: DecimalNullableFilter<"DBT_PaymentTaxes"> | Decimal | DecimalJsLike | number | string | null
+    CalculatedValue?: DecimalNullableFilter<"DBT_PaymentTaxes"> | Decimal | DecimalJsLike | number | string | null
   }, "ID">
 
   export type DBT_PaymentTaxesOrderByWithAggregationInput = {
     ID?: SortOrder
     ID_Payments?: SortOrderInput | SortOrder
     ID_Tax?: SortOrderInput | SortOrder
+    TaxPercentage?: SortOrderInput | SortOrder
+    TaxValue?: SortOrderInput | SortOrder
+    CalculatedValue?: SortOrderInput | SortOrder
     _count?: DBT_PaymentTaxesCountOrderByAggregateInput
     _avg?: DBT_PaymentTaxesAvgOrderByAggregateInput
     _max?: DBT_PaymentTaxesMaxOrderByAggregateInput
@@ -26687,6 +26750,9 @@ export namespace Prisma {
     ID?: BigIntWithAggregatesFilter<"DBT_PaymentTaxes"> | bigint | number
     ID_Payments?: BigIntNullableWithAggregatesFilter<"DBT_PaymentTaxes"> | bigint | number | null
     ID_Tax?: BigIntNullableWithAggregatesFilter<"DBT_PaymentTaxes"> | bigint | number | null
+    TaxPercentage?: DecimalNullableWithAggregatesFilter<"DBT_PaymentTaxes"> | Decimal | DecimalJsLike | number | string | null
+    TaxValue?: DecimalNullableWithAggregatesFilter<"DBT_PaymentTaxes"> | Decimal | DecimalJsLike | number | string | null
+    CalculatedValue?: DecimalNullableWithAggregatesFilter<"DBT_PaymentTaxes"> | Decimal | DecimalJsLike | number | string | null
   }
 
   export type DBT_PaymentsWhereInput = {
@@ -28179,42 +28245,63 @@ export namespace Prisma {
     ID?: bigint | number
     ID_Payments?: bigint | number | null
     ID_Tax?: bigint | number | null
+    TaxPercentage?: Decimal | DecimalJsLike | number | string | null
+    TaxValue?: Decimal | DecimalJsLike | number | string | null
+    CalculatedValue?: Decimal | DecimalJsLike | number | string | null
   }
 
   export type DBT_PaymentTaxesUncheckedCreateInput = {
     ID?: bigint | number
     ID_Payments?: bigint | number | null
     ID_Tax?: bigint | number | null
+    TaxPercentage?: Decimal | DecimalJsLike | number | string | null
+    TaxValue?: Decimal | DecimalJsLike | number | string | null
+    CalculatedValue?: Decimal | DecimalJsLike | number | string | null
   }
 
   export type DBT_PaymentTaxesUpdateInput = {
     ID?: BigIntFieldUpdateOperationsInput | bigint | number
     ID_Payments?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     ID_Tax?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    TaxPercentage?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    TaxValue?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    CalculatedValue?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
   }
 
   export type DBT_PaymentTaxesUncheckedUpdateInput = {
     ID?: BigIntFieldUpdateOperationsInput | bigint | number
     ID_Payments?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     ID_Tax?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    TaxPercentage?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    TaxValue?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    CalculatedValue?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
   }
 
   export type DBT_PaymentTaxesCreateManyInput = {
     ID?: bigint | number
     ID_Payments?: bigint | number | null
     ID_Tax?: bigint | number | null
+    TaxPercentage?: Decimal | DecimalJsLike | number | string | null
+    TaxValue?: Decimal | DecimalJsLike | number | string | null
+    CalculatedValue?: Decimal | DecimalJsLike | number | string | null
   }
 
   export type DBT_PaymentTaxesUpdateManyMutationInput = {
     ID?: BigIntFieldUpdateOperationsInput | bigint | number
     ID_Payments?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     ID_Tax?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    TaxPercentage?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    TaxValue?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    CalculatedValue?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
   }
 
   export type DBT_PaymentTaxesUncheckedUpdateManyInput = {
     ID?: BigIntFieldUpdateOperationsInput | bigint | number
     ID_Payments?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     ID_Tax?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    TaxPercentage?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    TaxValue?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    CalculatedValue?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
   }
 
   export type DBT_PaymentsCreateInput = {
@@ -29592,30 +29679,45 @@ export namespace Prisma {
     ID?: SortOrder
     ID_Payments?: SortOrder
     ID_Tax?: SortOrder
+    TaxPercentage?: SortOrder
+    TaxValue?: SortOrder
+    CalculatedValue?: SortOrder
   }
 
   export type DBT_PaymentTaxesAvgOrderByAggregateInput = {
     ID?: SortOrder
     ID_Payments?: SortOrder
     ID_Tax?: SortOrder
+    TaxPercentage?: SortOrder
+    TaxValue?: SortOrder
+    CalculatedValue?: SortOrder
   }
 
   export type DBT_PaymentTaxesMaxOrderByAggregateInput = {
     ID?: SortOrder
     ID_Payments?: SortOrder
     ID_Tax?: SortOrder
+    TaxPercentage?: SortOrder
+    TaxValue?: SortOrder
+    CalculatedValue?: SortOrder
   }
 
   export type DBT_PaymentTaxesMinOrderByAggregateInput = {
     ID?: SortOrder
     ID_Payments?: SortOrder
     ID_Tax?: SortOrder
+    TaxPercentage?: SortOrder
+    TaxValue?: SortOrder
+    CalculatedValue?: SortOrder
   }
 
   export type DBT_PaymentTaxesSumOrderByAggregateInput = {
     ID?: SortOrder
     ID_Payments?: SortOrder
     ID_Tax?: SortOrder
+    TaxPercentage?: SortOrder
+    TaxValue?: SortOrder
+    CalculatedValue?: SortOrder
   }
 
   export type DBT_PaymentsCountOrderByAggregateInput = {

@@ -511,11 +511,18 @@ export async function DB_unbindOrderItemsFromPayment(payment_id: number | bigint
 
 }
 
-export async function DB_bindTaxToPayment(tax_id: number | bigint, payment_id: number | bigint): Promise<DBT_PaymentTaxes> {
+export async function DB_bindTaxToPayment(tax: DBT_Taxes, payment: DBT_Payments): Promise<DBT_PaymentTaxes> {
+
+    const itemsCostMinusDiscount = convertDecimalToNumber(payment.ItemsCost ?? 0) - convertDecimalToNumber(payment.Discount);
+    const calculatedValue = (tax.Percentage ? itemsCostMinusDiscount * convertDecimalToNumber(tax.Percentage) / 100 : convertDecimalToNumber(tax.Value))
+
     const paymentTax = await prisma.dBT_PaymentTaxes.create({
         data: {
-            ID_Payments: payment_id,
-            ID_Tax: tax_id,
+            ID_Payments: payment.ID,
+            ID_Tax: tax.ID,
+            TaxPercentage: tax.Percentage,
+            TaxValue: tax.Value,
+            CalculatedValue: calculatedValue,
         }
     });
     return paymentTax;
@@ -536,6 +543,7 @@ export async function DB_printPayment(payment_id: number | bigint): Promise<DBT_
         where: { ID: payment_id },
         data: {
             Printed: true,
+            PrintedNo: await DB_getNextPaymentPrintNumber()
         }
     });
     return payment;
@@ -636,6 +644,16 @@ export async function DB_bindPaymentToCustomerPayment(payment_id: number | bigin
     return customerPaymentPayment;
 }
 
+
+export async function DB_getNextPaymentPrintNumber(): Promise<number> {
+    // get max PrintNo from DBT_Payments
+    const maxPrintNo = await prisma.dBT_Payments.aggregate({
+        _max: {
+            PrintedNo: true
+        }
+    });
+    return maxPrintNo._max.PrintedNo ? parseInt(maxPrintNo._max.PrintedNo.toString()) + 1 : 1;
+}
 
 
 

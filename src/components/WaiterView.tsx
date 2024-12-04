@@ -17,7 +17,7 @@ import {
     DB_changeOrderItemVariant,
     DB_changeOrderNote,
     DB_closeOrder, DB_createCustomerPayment,
-    DB_createPayment, DB_deliverOrderItem, DB_editPayment, DB_prepareOrderItem,
+    DB_createPayment, DB_deliverOrderItem, DB_editPayment, DB_getNextPaymentPrintNumber, DB_prepareOrderItem,
     DB_printPayment, DB_removePayment, DB_reopenOrder, DB_unbindAllTaxesFromPayment, DB_unbindOrderItemsFromPayment,
     getAllData,
     getWaiterData,
@@ -140,6 +140,7 @@ export default function WaiterView(props) {
         removeAfterPrint: false,
         suppressErrors: false,
     });
+    const [nextPrintNumber, setNextPrintNumber] = useState(0);
 
     const handlePrint = async () => {
         //handlePrintHook(null, () => contentToPrint.current)
@@ -148,6 +149,7 @@ export default function WaiterView(props) {
         const updatedPayment = await DB_printPayment(selectedPaymentId);
         if (!updatedPayment) return;
         setPayments(payments.map((payment) => payment.ID == selectedPaymentId ? updatedPayment : payment));
+        setSelectedPayment(updatedPayment)
     }
 
 
@@ -177,6 +179,9 @@ export default function WaiterView(props) {
             setOrderItems(orderItems)
             setPayments(payments)
             setPaymentTaxes(paymentTaxes)
+
+            const nextPn = await DB_getNextPaymentPrintNumber();
+            setNextPrintNumber(nextPn)
 
         } catch (e) {
 
@@ -983,7 +988,7 @@ export default function WaiterView(props) {
             // 3. Create multiple DBT_PaymentTax
             const newPts = [];
             for (const t of ts) {
-                const newpt = await DB_bindTaxToPayment(t.ID, editedPayment.ID);
+                const newpt = await DB_bindTaxToPayment(t, editedPayment);
                 newPts.push(newpt);
             }
 
@@ -1045,7 +1050,7 @@ export default function WaiterView(props) {
             // 3. Create multiple DBT_PaymentTax
             const newPts = [];
             for (const t of ts) {
-                const newpt = await DB_bindTaxToPayment(t.ID, newPayment.ID);
+                const newpt = await DB_bindTaxToPayment(t, newPayment);
                 newPts.push(newpt);
             }
 
@@ -1843,8 +1848,8 @@ export default function WaiterView(props) {
 
                                         {/* Receipt Number */}
                                         <Grid item xs={12}>
-                                            <Typography className="text-red-500 font-bold">
-                                                No: {selectedPaymentId?.toString()}
+                                            <Typography className={["text-red-500 font-bold", selectedPayment?.Printed && "text-black"]}>
+                                                No: {selectedPayment?.PrintedNo ? selectedPayment.PrintedNo : nextPrintNumber}
                                             </Typography>
                                         </Grid>
                                     </Grid>

@@ -150,6 +150,9 @@ model DBT_PaymentTaxes {
   ID          BigInt  @id @default(autoincrement())
   ID_Payments BigInt?
   ID_Tax      BigInt?
+  TaxPercentage     Decimal? @db.Decimal(18, 3)
+  TaxValue          Decimal? @db.Decimal(18, 3)
+  CalculatedValue   Decimal? @db.Decimal(18, 3)
 }
 
 model DBT_Payments {

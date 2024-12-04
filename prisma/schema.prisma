@@ -179,9 +179,12 @@ model DBT_Payments {
 }
 
 model DBT_PaymentTaxes {
-  ID          BigInt  @id(map: "PK_DBT_PaymentTaxes") @default(autoincrement())
-  ID_Payments BigInt?
-  ID_Tax      BigInt?
+  ID                BigInt  @id(map: "PK_DBT_PaymentTaxes") @default(autoincrement())
+  ID_Payments       BigInt?
+  ID_Tax            BigInt?
+  TaxPercentage     Decimal? @db.Decimal(18, 3)
+  TaxValue          Decimal? @db.Decimal(18, 3)
+  CalculatedValue   Decimal? @db.Decimal(18, 3)
 }
 
 /// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
@@ -246,4 +249,10 @@ model DBT_Expenses {
   Photos      String?     @db.Text
   SyncedAt    DateTime?   @default(now())               @db.DateTime
   UUID        String?     @db.Text
+}
+
+model DBT_ExpensePhoto {
+  ID              BigInt  @id(map: "PK_DBT_ExpensePhotos") @default(autoincrement())
+  ID_Expense      BigInt?
+  Photo           Bytes?
 }

@@ -262,7 +262,10 @@ exports.Prisma.DBT_PaymentMethodsScalarFieldEnum = {
 exports.Prisma.DBT_PaymentTaxesScalarFieldEnum = {
   ID: 'ID',
   ID_Payments: 'ID_Payments',
-  ID_Tax: 'ID_Tax'
+  ID_Tax: 'ID_Tax',
+  TaxPercentage: 'TaxPercentage',
+  TaxValue: 'TaxValue',
+  CalculatedValue: 'CalculatedValue'
 };
 
 exports.Prisma.DBT_PaymentsScalarFieldEnum = {
