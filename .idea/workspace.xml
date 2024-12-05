@@ -5,10 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="40d176b6-b89c-456e-9352-b7000e0f81ab" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.env" beforeDir="false" afterPath="$PROJECT_DIR$/.env" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Dockerfile" beforeDir="false" afterPath="$PROJECT_DIR$/Dockerfile" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/db.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/db.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/utils/expensesSync.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/utils/expensesSync.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -95,7 +92,8 @@
       <workItem from="1732979217045" duration="1153000" />
       <workItem from="1733232147778" duration="15365000" />
       <workItem from="1733310659034" duration="11300000" />
-      <workItem from="1733384358033" duration="1741000" />
+      <workItem from="1733384358033" duration="2267000" />
+      <workItem from="1733389214699" duration="32000" />
     </task>
     <servers />
   </component>

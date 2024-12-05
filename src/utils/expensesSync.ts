@@ -72,7 +72,7 @@ export default async function expensesSync() {
             }
         }
 
-
+        await prismaVercel.$disconnect();
 
         console.log('expensesSync done')
     } catch (error) {
