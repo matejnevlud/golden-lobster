@@ -35,6 +35,11 @@ function InteractiveMenu() {
 
     const [isWaiter, setIsWaiter] = useState(false);
     const [reloadClickCounter, setReloadClickCounter] = useState(0);
+    const [devMenuClickCounter, setDevMenuClickCounter] = useState(0);
+    const [showDevMenu, setShowDevMenu] = useState(false);
+    const [hiddenMealGroups, setHiddenMealGroups] = useState<bigint[]>([]);
+    const [ogMealGroups, setOgMealGroups] = useState<DBT_MealGroups[]>([]);
+
 
     const [loading, setLoading] = useState(true);
 
@@ -64,6 +69,7 @@ function InteractiveMenu() {
             setLanguages(data.languages);
             setMealsInGroups(data.mealsInGroups);
             setTranslatedData(data.translatedData);
+            setOgMealGroups(data.mealGroups.filter((mg) => mg.VisibleInMenu || _isWaiter));
             setMealGroups(data.mealGroups.filter((mg) => mg.VisibleInMenu || _isWaiter));
             setMeals(data.meals);
             setVariants(data.variants);
@@ -102,7 +108,10 @@ function InteractiveMenu() {
         setCurrentLanguageID(id);
 
         const translated = translatedData[id];
-        setMealGroups(translated.mealGroups);
+        let _isWaiter = typeof localStorage.getItem('currentUser') === 'string';
+        setMealGroups(translated.mealGroups.filter((mg) => mg.VisibleInMenu || _isWaiter));
+        setOgMealGroups(translated.mealGroups.filter((mg) => mg.VisibleInMenu || _isWaiter));
+        setHiddenMealGroups([]);
         setMeals(translated.meals);
         setVariants(translated.variants);
         setMenuSetUp(translated.menuSetUp);
@@ -256,6 +265,70 @@ function InteractiveMenu() {
         );
     }
 
+    const renderDevMenu = () => {
+        return [
+            <div style={{ position: 'absolute', bottom: '0', right: '0', width: '72px', height: '72px', zIndex: 999, opacity: 0.2}}>
+                <button onClick={() => devMenuClickCounter >= 4 ? setShowDevMenu(true) : setDevMenuClickCounter(devMenuClickCounter + 1)} style={{padding: '20px'}}>
+                    <svg xmlns="http://www.w3.org/2000/svg" height="32px" viewBox="0 -960 960 960" width="32px" fill="#00">
+                        <path d="M160-120q-33 0-56.5-23.5T80-200v-560q0-33 23.5-56.5T160-840h560q33 0 56.5 23.5T800-760v80h80v80h-80v80h80v80h-80v80h80v80h-80v80q0 33-23.5 56.5T720-120H160Zm0-80h560v-560H160v560Zm80-80h200v-160H240v160Zm240-280h160v-120H480v120Zm-240 80h200v-200H240v200Zm240 200h160v-240H480v240ZM160-760v560-560Z"/>
+                    </svg>
+                </button>
+            </div>,
+            (showDevMenu && 
+                <div style={{ position: 'absolute', top: '0', left: '0', width: '100vw', height: '100vh', backgroundColor: 'rgba(0,0,0,0.5)', zIndex: 999 }}>
+                    <div style={{ position: 'absolute', top: '20px', left: '20px', width: 'calc(100vw - 40px)', height: 'calc(100vh - 40px)', backgroundColor: 'white', zIndex: 1000, padding: '20px', overflow: 'auto' }}>
+                        <div className="flex justify-between items-center mb-4">
+                            <h2 className="text-xl font-bold">Meal Groups Visibility</h2>
+                            <button 
+                                onClick={() => {
+                                    setShowDevMenu(false);
+                                    setDevMenuClickCounter(0);
+                                }}
+                                className="p-2 hover:bg-gray-100 rounded-full"
+                            >
+                                <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
+                                    <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
+                                </svg>
+                            </button>
+                        </div>
+                        <div className="flex flex-col gap-4">
+                            {ogMealGroups.map((mg) => (
+                                <label key={mg.ID} className="flex items-center gap-2">
+                                    <input 
+                                        type="checkbox"
+                                        style={{width: '6rem', height: '3rem', scale: '2', marginLeft: '3rem'}}
+                                        checked={mg.VisibleInMenu && !hiddenMealGroups.includes(mg.ID)}
+                                        onChange={(e) => {
+                                            const isTicked = e.target.checked;
+                                            if (isTicked) {
+                                                const tmp = hiddenMealGroups.filter((id) => id != mg.ID);
+                                                setHiddenMealGroups(tmp);
+                                                setMealGroups([...mealGroups, mg]);
+                                            } else {
+                                                const tmp = [...hiddenMealGroups, mg.ID];
+                                                setHiddenMealGroups(tmp);
+                                                setMealGroups(ogMealGroups.filter((mg) => !tmp.includes(mg.ID)));
+                                            }
+                                        }}
+                                    />
+                                    <span>{mg.MealGroup}</span>
+                                </label>
+                            ))}
+                            <button
+                                onClick={() => {
+                                    setShowDevMenu(false);
+                                    setDevMenuClickCounter(0);
+                                }}
+                                className="p-6 bg-blue-500 text-white rounded-full"
+                            >
+                                Close
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )
+        ];
+    }
 
 
     if (loading) {
@@ -289,6 +362,7 @@ function InteractiveMenu() {
             {renderMealGroupTextBox()}
 
             {renderRefresh()}
+            {renderDevMenu()}
         </div>
     );
 

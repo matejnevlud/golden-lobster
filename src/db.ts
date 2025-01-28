@@ -95,7 +95,7 @@ export async function getLanguages() {
 
 export async function translate(text: string | null, id_language: number) {
     // if DEV, return text
-    //if (process.env.NODE_ENV === 'development') return text;
+    if (process.env.NODE_ENV === 'development') return text;
     try {
         const procedure = await prisma.$queryRaw`SELECT dbo.Translate(${text}, ${id_language})`;
         if (!procedure) return text;

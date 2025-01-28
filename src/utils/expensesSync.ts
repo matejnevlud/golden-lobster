@@ -24,7 +24,7 @@ export default async function expensesSync() {
         for (const expense of newExpenses) {
             const DBT_Expense = DBT_Expenses.find((DBT_Expense) => DBT_Expense.UUID == expense.id);
             if (DBT_Expense) continue;
-            console.log('new expense', expense.description);
+            console.log('new expense', expense.description, expense.reported, typeof expense.reported);
 
 
 
