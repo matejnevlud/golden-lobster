@@ -349,7 +349,8 @@ exports.Prisma.ExpensesScalarFieldEnum = {
   note2: 'note2',
   photos: 'photos',
   created_at: 'created_at',
-  synced: 'synced'
+  synced: 'synced',
+  reported: 'reported'
 };
 
 exports.Prisma.SortOrder = {

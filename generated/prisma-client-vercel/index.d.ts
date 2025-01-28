@@ -24377,6 +24377,7 @@ export namespace Prisma {
     note2: string | null
     created_at: Date | null
     synced: boolean | null
+    reported: boolean | null
   }
 
   export type ExpensesMaxAggregateOutputType = {
@@ -24393,6 +24394,7 @@ export namespace Prisma {
     note2: string | null
     created_at: Date | null
     synced: boolean | null
+    reported: boolean | null
   }
 
   export type ExpensesCountAggregateOutputType = {
@@ -24410,6 +24412,7 @@ export namespace Prisma {
     photos: number
     created_at: number
     synced: number
+    reported: number
     _all: number
   }
 
@@ -24438,6 +24441,7 @@ export namespace Prisma {
     note2?: true
     created_at?: true
     synced?: true
+    reported?: true
   }
 
   export type ExpensesMaxAggregateInputType = {
@@ -24454,6 +24458,7 @@ export namespace Prisma {
     note2?: true
     created_at?: true
     synced?: true
+    reported?: true
   }
 
   export type ExpensesCountAggregateInputType = {
@@ -24471,6 +24476,7 @@ export namespace Prisma {
     photos?: true
     created_at?: true
     synced?: true
+    reported?: true
     _all?: true
   }
 
@@ -24575,6 +24581,7 @@ export namespace Prisma {
     photos: string[]
     created_at: Date | null
     synced: boolean | null
+    reported: boolean | null
     _count: ExpensesCountAggregateOutputType | null
     _avg: ExpensesAvgAggregateOutputType | null
     _sum: ExpensesSumAggregateOutputType | null
@@ -24611,6 +24618,7 @@ export namespace Prisma {
     photos?: boolean
     created_at?: boolean
     synced?: boolean
+    reported?: boolean
   }, ExtArgs["result"]["expenses"]>
 
   export type expensesSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -24628,6 +24636,7 @@ export namespace Prisma {
     photos?: boolean
     created_at?: boolean
     synced?: boolean
+    reported?: boolean
   }, ExtArgs["result"]["expenses"]>
 
   export type expensesSelectScalar = {
@@ -24645,6 +24654,7 @@ export namespace Prisma {
     photos?: boolean
     created_at?: boolean
     synced?: boolean
+    reported?: boolean
   }
 
 
@@ -24666,6 +24676,7 @@ export namespace Prisma {
       photos: string[]
       created_at: Date | null
       synced: boolean | null
+      reported: boolean | null
     }, ExtArgs["result"]["expenses"]>
     composites: {}
   }
@@ -25073,6 +25084,7 @@ export namespace Prisma {
     readonly photos: FieldRef<"expenses", 'String[]'>
     readonly created_at: FieldRef<"expenses", 'DateTime'>
     readonly synced: FieldRef<"expenses", 'Boolean'>
+    readonly reported: FieldRef<"expenses", 'Boolean'>
   }
     
 
@@ -25671,7 +25683,8 @@ export namespace Prisma {
     note2: 'note2',
     photos: 'photos',
     created_at: 'created_at',
-    synced: 'synced'
+    synced: 'synced',
+    reported: 'reported'
   };
 
   export type ExpensesScalarFieldEnum = (typeof ExpensesScalarFieldEnum)[keyof typeof ExpensesScalarFieldEnum]
@@ -27219,6 +27232,7 @@ export namespace Prisma {
     photos?: StringNullableListFilter<"expenses">
     created_at?: DateTimeNullableFilter<"expenses"> | Date | string | null
     synced?: BoolNullableFilter<"expenses"> | boolean | null
+    reported?: BoolNullableFilter<"expenses"> | boolean | null
   }
 
   export type expensesOrderByWithRelationInput = {
@@ -27236,6 +27250,7 @@ export namespace Prisma {
     photos?: SortOrder
     created_at?: SortOrderInput | SortOrder
     synced?: SortOrderInput | SortOrder
+    reported?: SortOrderInput | SortOrder
   }
 
   export type expensesWhereUniqueInput = Prisma.AtLeast<{
@@ -27256,6 +27271,7 @@ export namespace Prisma {
     photos?: StringNullableListFilter<"expenses">
     created_at?: DateTimeNullableFilter<"expenses"> | Date | string | null
     synced?: BoolNullableFilter<"expenses"> | boolean | null
+    reported?: BoolNullableFilter<"expenses"> | boolean | null
   }, "id">
 
   export type expensesOrderByWithAggregationInput = {
@@ -27273,6 +27289,7 @@ export namespace Prisma {
     photos?: SortOrder
     created_at?: SortOrderInput | SortOrder
     synced?: SortOrderInput | SortOrder
+    reported?: SortOrderInput | SortOrder
     _count?: expensesCountOrderByAggregateInput
     _avg?: expensesAvgOrderByAggregateInput
     _max?: expensesMaxOrderByAggregateInput
@@ -27298,6 +27315,7 @@ export namespace Prisma {
     photos?: StringNullableListFilter<"expenses">
     created_at?: DateTimeNullableWithAggregatesFilter<"expenses"> | Date | string | null
     synced?: BoolNullableWithAggregatesFilter<"expenses"> | boolean | null
+    reported?: BoolNullableWithAggregatesFilter<"expenses"> | boolean | null
   }
 
   export type DBT_CashInventoriesCreateInput = {
@@ -28806,6 +28824,7 @@ export namespace Prisma {
     photos?: expensesCreatephotosInput | string[]
     created_at?: Date | string | null
     synced?: boolean | null
+    reported?: boolean | null
   }
 
   export type expensesUncheckedCreateInput = {
@@ -28823,6 +28842,7 @@ export namespace Prisma {
     photos?: expensesCreatephotosInput | string[]
     created_at?: Date | string | null
     synced?: boolean | null
+    reported?: boolean | null
   }
 
   export type expensesUpdateInput = {
@@ -28840,6 +28860,7 @@ export namespace Prisma {
     photos?: expensesUpdatephotosInput | string[]
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     synced?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    reported?: NullableBoolFieldUpdateOperationsInput | boolean | null
   }
 
   export type expensesUncheckedUpdateInput = {
@@ -28857,6 +28878,7 @@ export namespace Prisma {
     photos?: expensesUpdatephotosInput | string[]
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     synced?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    reported?: NullableBoolFieldUpdateOperationsInput | boolean | null
   }
 
   export type expensesCreateManyInput = {
@@ -28874,6 +28896,7 @@ export namespace Prisma {
     photos?: expensesCreatephotosInput | string[]
     created_at?: Date | string | null
     synced?: boolean | null
+    reported?: boolean | null
   }
 
   export type expensesUpdateManyMutationInput = {
@@ -28891,6 +28914,7 @@ export namespace Prisma {
     photos?: expensesUpdatephotosInput | string[]
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     synced?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    reported?: NullableBoolFieldUpdateOperationsInput | boolean | null
   }
 
   export type expensesUncheckedUpdateManyInput = {
@@ -28908,6 +28932,7 @@ export namespace Prisma {
     photos?: expensesUpdatephotosInput | string[]
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     synced?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    reported?: NullableBoolFieldUpdateOperationsInput | boolean | null
   }
 
   export type BigIntFilter<$PrismaModel = never> = {
@@ -30070,6 +30095,7 @@ export namespace Prisma {
     photos?: SortOrder
     created_at?: SortOrder
     synced?: SortOrder
+    reported?: SortOrder
   }
 
   export type expensesAvgOrderByAggregateInput = {
@@ -30091,6 +30117,7 @@ export namespace Prisma {
     note2?: SortOrder
     created_at?: SortOrder
     synced?: SortOrder
+    reported?: SortOrder
   }
 
   export type expensesMinOrderByAggregateInput = {
@@ -30107,6 +30134,7 @@ export namespace Prisma {
     note2?: SortOrder
     created_at?: SortOrder
     synced?: SortOrder
+    reported?: SortOrder
   }
 
   export type expensesSumOrderByAggregateInput = {
