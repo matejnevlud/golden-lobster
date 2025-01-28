@@ -237,4 +237,5 @@ model expenses {
   photos      String[]
   created_at  DateTime?
   synced       Boolean?  @default(false)
+  reported     Boolean?  @default(true)
 }

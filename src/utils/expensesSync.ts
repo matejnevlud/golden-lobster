@@ -41,7 +41,8 @@ export default async function expensesSync() {
                     Note1: expense.note1,
                     Note2: expense.note2,
                     Photos: null,
-                    UUID: expense.id
+                    UUID: expense.id,
+                    Reported: expense.reported,
                 }
             })
 

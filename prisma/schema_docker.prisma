@@ -253,6 +253,7 @@ model DBT_Expenses {
   Photos      String?     @db.Text
   SyncedAt    DateTime?   @default(now())               @db.DateTime
   UUID        String?     @db.Text
+  Reported    Boolean?    @default(true)               @db.Bit
 }
 
 model DBT_ExpensePhoto {
