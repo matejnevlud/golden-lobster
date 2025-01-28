@@ -267,7 +267,7 @@ function InteractiveMenu() {
 
     const renderDevMenu = () => {
         return [
-            <div style={{ position: 'absolute', bottom: '0', right: '0', width: '72px', height: '72px', zIndex: 999, opacity: 0.2}}>
+            <div key={'buttondev'} style={{ position: 'absolute', bottom: '0', right: '0', width: '72px', height: '72px', zIndex: 999, opacity: 0.2}}>
                 <button onClick={() => devMenuClickCounter >= 4 ? setShowDevMenu(true) : setDevMenuClickCounter(devMenuClickCounter + 1)} style={{padding: '20px'}}>
                     <svg xmlns="http://www.w3.org/2000/svg" height="32px" viewBox="0 -960 960 960" width="32px" fill="#00">
                         <path d="M160-120q-33 0-56.5-23.5T80-200v-560q0-33 23.5-56.5T160-840h560q33 0 56.5 23.5T800-760v80h80v80h-80v80h80v80h-80v80h80v80h-80v80q0 33-23.5 56.5T720-120H160Zm0-80h560v-560H160v560Zm80-80h200v-160H240v160Zm240-280h160v-120H480v120Zm-240 80h200v-200H240v200Zm240 200h160v-240H480v240ZM160-760v560-560Z"/>
@@ -275,7 +275,7 @@ function InteractiveMenu() {
                 </button>
             </div>,
             (showDevMenu && 
-                <div style={{ position: 'absolute', top: '0', left: '0', width: '100vw', height: '100vh', backgroundColor: 'rgba(0,0,0,0.5)', zIndex: 999 }}>
+                <div key="hiddenMenu" style={{ position: 'absolute', top: '0', left: '0', width: '100vw', height: '100vh', backgroundColor: 'rgba(0,0,0,0.5)', zIndex: 999 }}>
                     <div style={{ position: 'absolute', top: '20px', left: '20px', width: 'calc(100vw - 40px)', height: 'calc(100vh - 40px)', backgroundColor: 'white', zIndex: 1000, padding: '20px', overflow: 'auto' }}>
                         <div className="flex justify-between items-center mb-4">
                             <h2 className="text-xl font-bold">Meal Groups Visibility</h2>
