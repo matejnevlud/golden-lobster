@@ -296,7 +296,7 @@ function InteractiveMenu() {
                                 <label key={mg.ID} className="flex items-center gap-2">
                                     <input 
                                         type="checkbox"
-                                        style={{width: '6rem', height: '3rem', scale: '2', marginLeft: '3rem'}}
+                                        style={{width: '6rem', height: '3rem' }}
                                         checked={mg.VisibleInMenu && !hiddenMealGroups.includes(mg.ID)}
                                         onChange={(e) => {
                                             const isTicked = e.target.checked;
