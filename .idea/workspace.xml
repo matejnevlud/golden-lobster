@@ -5,10 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="40d176b6-b89c-456e-9352-b7000e0f81ab" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.github/workflows/docker-image.yml" beforeDir="false" afterPath="$PROJECT_DIR$/.github/workflows/docker-image.yml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Dockerfile" beforeDir="false" afterPath="$PROJECT_DIR$/DOCKER_OLD" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/generated/prisma-client-vercel/runtime/library.js" beforeDir="false" afterPath="$PROJECT_DIR$/generated/prisma-client-vercel/runtime/library.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/InteractiveMenu.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/InteractiveMenu.tsx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -99,7 +96,7 @@
       <workItem from="1733389214699" duration="32000" />
       <workItem from="1737817377433" duration="763000" />
       <workItem from="1738089024143" duration="12654000" />
-      <workItem from="1738328420760" duration="832000" />
+      <workItem from="1738328420760" duration="2751000" />
     </task>
     <servers />
   </component>

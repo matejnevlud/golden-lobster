@@ -253,6 +253,8 @@ function InteractiveMenu() {
     }
 
     const renderRefresh = () => {
+        if (!!process.env.RAILWAY_PROJECT_ID) return;
+
         return (
             <div style={{ position: 'absolute', bottom: '0', left: '0', width: '32px', height: '72px', zIndex: 999, opacity: 0.2}}>
                 <button onClick={() => reloadClickCounter >= 4 ? location.reload() : setReloadClickCounter(reloadClickCounter + 1)} style={{ padding: '20px'}}>
@@ -266,6 +268,8 @@ function InteractiveMenu() {
     }
 
     const renderDevMenu = () => {
+        if (!!process.env.RAILWAY_PROJECT_ID) return;
+        
         return [
             <div key={'buttondev'} style={{ position: 'absolute', bottom: '0', right: '0', width: '72px', height: '72px', zIndex: 999, opacity: 0.2}}>
                 <button onClick={() => devMenuClickCounter >= 4 ? setShowDevMenu(true) : setDevMenuClickCounter(devMenuClickCounter + 1)} style={{padding: '20px'}}>
