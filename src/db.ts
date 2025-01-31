@@ -291,6 +291,10 @@ export async function getWaiterData(): Promise<any> {
 }
 
 
+export async function shouldHideDevMenu(): Promise<boolean> {
+    return !!process.env.RAILWAY_PROJECT_ID;
+}
+
 
 
 export type ALL_DATA = {

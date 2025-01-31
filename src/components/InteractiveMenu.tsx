@@ -9,7 +9,7 @@ import Cookies from 'js-cookie'
 import Workspace from "@/components/Workspace";
 import dynamic from "next/dynamic";
 import {CircularProgress} from "@mui/material";
-import {getAllData} from "@/db";
+import {getAllData, shouldHideDevMenu} from "@/db";
 
 export type InteractiveMenuProps = {
     languages: DBT_Languages[]
@@ -252,8 +252,8 @@ function InteractiveMenu() {
         );
     }
 
-    const renderRefresh = () => {
-        if (!!process.env.RAILWAY_PROJECT_ID) return;
+    const renderRefresh = async () => {
+        if (await shouldHideDevMenu()) return;
 
         return (
             <div style={{ position: 'absolute', bottom: '0', left: '0', width: '32px', height: '72px', zIndex: 999, opacity: 0.2}}>
@@ -267,9 +267,9 @@ function InteractiveMenu() {
         );
     }
 
-    const renderDevMenu = () => {
-        if (!!process.env.RAILWAY_PROJECT_ID) return;
-        
+    const renderDevMenu = async () => {
+        if (await shouldHideDevMenu()) return;
+
         return [
             <div key={'buttondev'} style={{ position: 'absolute', bottom: '0', right: '0', width: '72px', height: '72px', zIndex: 999, opacity: 0.2}}>
                 <button onClick={() => devMenuClickCounter >= 4 ? setShowDevMenu(true) : setDevMenuClickCounter(devMenuClickCounter + 1)} style={{padding: '20px'}}>
