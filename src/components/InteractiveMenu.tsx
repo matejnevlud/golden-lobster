@@ -309,6 +309,11 @@ function InteractiveMenu() {
                                                 setHiddenMealGroups(tmp);
                                                 setMealGroups(ogMealGroups.filter((mg) => !tmp.includes(mg.ID)));
                                             }
+
+                                            //Add this line to log the new state
+                                            console.log('Hidden Meal Groups:', hiddenMealGroups);
+                                            console.log('Visible Meal Groups:', mealGroups);
+
                                         }}
                                     />
                                     <span>{mg.MealGroup}</span>
