@@ -44,6 +44,7 @@ model DBT_MealGroups {
   BackgroudPicture Bytes?  @db.Image
   Order            Int?
   VisibleInMenu    Boolean @default(false, map: "DF_DBT_MealGroups_VisibleInMenu")
+  ShowOnWEB        Boolean? @default(true)
 }
 
 model DBT_Meals {

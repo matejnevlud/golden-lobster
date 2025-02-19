@@ -296,7 +296,6 @@ export default function WaiterView(props) {
             }
         }
 
-        console.log('selectedPaymentMethod', selectedPaymentMethod)
 
         if (!selectedPaymentMethod) return false;
 
@@ -364,9 +363,13 @@ export default function WaiterView(props) {
     }, [checkboxes, orderItems, discountPercent]);
 
     window.addEventListener('storage', function (event) {
-        //console.log('storage event', event)
-        if (event.key === 'mealGroup') {
-            setCurrentMealGroupID(BigInt(event.newValue));
+        if (event.key === 'mealGroup' && parseInt(event.newValue) != parseInt(currentMealGroupID)) {
+
+            //console.log('mealGroup changed in local storage', event.newValue)
+            setTimeout(() => {
+                setCurrentMealGroupID(BigInt(event.newValue));
+            }, 500);
+
         }
 
     });
@@ -402,7 +405,7 @@ export default function WaiterView(props) {
         // get y position from local storage
         const y = localStorage.getItem(`mg_${currentMealGroupID}_m_${meal.ID}_idx_${idx}`) ?? null;
         if (y == null || !meal.Meal || meal.Meal?.trim?.() == '') return null;
-        console.log('renderAddToOrderButton', meal, idx, y)
+
 
         const style = {
             position: 'absolute',
@@ -438,7 +441,7 @@ export default function WaiterView(props) {
         if (isOrderClosedOrCanceled() || !selectedOrderId) return;
 
         return (
-            <div style={{ position: 'relative' }} key='w'>
+            <div style={{ position: 'relative' }} key={currentMealGroupID+'_mg_strip'}>
                 {mealsOrdered.map((meal, idx) => {
                     return renderAddToOrderButton(meal, idx)
                 })}
@@ -2558,7 +2561,7 @@ export default function WaiterView(props) {
 
 
     return [
-        <div key="addbar" style={{ width: "6vh", backgroundColor: 'black', paddingLeft: "10px", paddingRight: "10px" }}>
+        <div key={currentMealGroupID + '_addbar'} style={{ width: "6vh", backgroundColor: 'black', paddingLeft: "10px", paddingRight: "10px" }}>
             {renderAddStrip(jsonObj.Head?.Workspace)}
 
         </div>,

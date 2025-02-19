@@ -134,7 +134,15 @@ export async function getLayouts(langID?: number) {
 
 export async function getMealGroups(langID?: number) {
 
-    var result = await prisma.dBT_MealGroups.findMany({ where: { Active: true }, orderBy: { Order: 'asc' } });
+
+    //var result = await prisma.dBT_MealGroups.findMany({ where: { Active: true }, orderBy: { Order: 'asc' } });
+    var result;
+
+    if (process.env.NODE_ENV === 'development') {
+        result = await prisma.dBT_MealGroups.findMany({ where: { Active: true }, orderBy: { Order: 'asc' }, select: { ID: true, Active: true, MealGroup: true, ID_Layout: true, Order: true, VisibleInMenu: true } });
+    } else {
+        result = await prisma.dBT_MealGroups.findMany({ where: { Active: true }, orderBy: { Order: 'asc' } });
+    }
     result = convertUint8ArraysToBase64(result);
 
     const { cookies } = require('next/headers');
@@ -148,7 +156,28 @@ export async function getMealGroups(langID?: number) {
 }
 
 export async function getMeals(langID?: number) {
-    var result = await prisma.dBT_Meals.findMany({ where: { Active: true } });
+    var result;
+
+    if (process.env.NODE_ENV === 'development') {
+        /*
+        ID: bigint
+      Active: boolean
+      Kitchen: boolean | null
+      Available: boolean | null
+      Meal: string | null
+      MealDescription: string | null
+      Price: Prisma.Decimal | null
+      IsCombo: boolean
+      Picture: Buffer | null
+      PictureDescription: string | null
+      Recipe: Buffer | null
+      Dicountable: Prisma.Decimal | null
+         */
+        // select all except picture
+        result = await prisma.dBT_Meals.findMany({ where: { Active: true }, select: { ID: true, Active: true, Kitchen: true, Available: true, Meal: true, MealDescription: true, Price: true, IsCombo: true, PictureDescription: true, Recipe: true, Dicountable: true } });
+    } else {
+        result = await prisma.dBT_Meals.findMany({ where: { Active: true } });
+    }
     result = convertUint8ArraysToBase64(result);
 
     // translate
@@ -603,6 +632,10 @@ export async function DB_cancelOrder(order_id: number | bigint): Promise<{ updat
 
 
 export async function DB_reopenOrder(order_id: number | bigint): Promise<{ updatedOrder: DBT_Orders, updatedOrderItems: DBT_OrderItems[] }> {
+
+    const isOrderClosed = await prisma.dBT_Orders.findFirst({ where: { ID: order_id, OrderClosed: true } });
+    const isOrderCanceled = await prisma.dBT_Orders.findFirst({ where: { ID: order_id, Canceled: true } });
+
     const updatedOrder = await prisma.dBT_Orders.update({
         where: { ID: order_id },
         data: {
@@ -611,20 +644,26 @@ export async function DB_reopenOrder(order_id: number | bigint): Promise<{ updat
         }
     });
 
-    // uncancel all order items
     const orderItems = await prisma.dBT_OrderItems.findMany({ where: { ID_Order: String(order_id) } });
-    const updatedOrderItems = [];
-    for (const orderItem of orderItems) {
-        const updatedOI = await prisma.dBT_OrderItems.update({
-            where: { ID: orderItem.ID },
-            data: {
-                Canceled: false,
-            }
-        });
-        updatedOrderItems.push(updatedOI);
+
+
+    // uncancel all order items if order was canceled
+    if (isOrderCanceled) {
+        const updatedOrderItems = [];
+        for (const orderItem of orderItems) {
+            const updatedOI = await prisma.dBT_OrderItems.update({
+                where: { ID: orderItem.ID },
+                data: {
+                    Canceled: false,
+                }
+            });
+            updatedOrderItems.push(updatedOI);
+        }
+        return { updatedOrder, updatedOrderItems };
     }
 
-    return { updatedOrder, updatedOrderItems };
+
+    return { updatedOrder, orderItems };
 }
 
 export async function DB_createCustomerPayment(customer_id: number | bigint, realAmount: number | bigint, id_user: number | bigint): Promise<DBT_CustomerPayments> {
@@ -689,7 +728,7 @@ export async function uploadToNeon () {
     const languages = await prisma.dBT_Languages.findMany();
     const layouts = await prisma.dBT_Layouts.findMany();
     const meals = await prisma.dBT_Meals.findMany();
-    const mealGroups = await prisma.dBT_MealGroups.findMany();
+    const mealGroups = await prisma.dBT_MealGroups.findMany({ where: { ShowOnWEB: true } });
     const mealsInGroups = await prisma.dBT_MealsInGroups.findMany();
     const variants = await prisma.dBT_Variants.findMany();
     const menuSetUp = await prisma.dBT_MenuSetUp.findMany();

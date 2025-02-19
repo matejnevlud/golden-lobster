@@ -184,7 +184,8 @@ exports.Prisma.DBT_MealGroupsScalarFieldEnum = {
   ID_Layout: 'ID_Layout',
   BackgroudPicture: 'BackgroudPicture',
   Order: 'Order',
-  VisibleInMenu: 'VisibleInMenu'
+  VisibleInMenu: 'VisibleInMenu',
+  ShowOnWEB: 'ShowOnWEB'
 };
 
 exports.Prisma.DBT_MealsScalarFieldEnum = {

@@ -9257,6 +9257,7 @@ export namespace Prisma {
     BackgroudPicture: Buffer | null
     Order: number | null
     VisibleInMenu: boolean | null
+    ShowOnWEB: boolean | null
   }
 
   export type DBT_MealGroupsMaxAggregateOutputType = {
@@ -9267,6 +9268,7 @@ export namespace Prisma {
     BackgroudPicture: Buffer | null
     Order: number | null
     VisibleInMenu: boolean | null
+    ShowOnWEB: boolean | null
   }
 
   export type DBT_MealGroupsCountAggregateOutputType = {
@@ -9277,6 +9279,7 @@ export namespace Prisma {
     BackgroudPicture: number
     Order: number
     VisibleInMenu: number
+    ShowOnWEB: number
     _all: number
   }
 
@@ -9301,6 +9304,7 @@ export namespace Prisma {
     BackgroudPicture?: true
     Order?: true
     VisibleInMenu?: true
+    ShowOnWEB?: true
   }
 
   export type DBT_MealGroupsMaxAggregateInputType = {
@@ -9311,6 +9315,7 @@ export namespace Prisma {
     BackgroudPicture?: true
     Order?: true
     VisibleInMenu?: true
+    ShowOnWEB?: true
   }
 
   export type DBT_MealGroupsCountAggregateInputType = {
@@ -9321,6 +9326,7 @@ export namespace Prisma {
     BackgroudPicture?: true
     Order?: true
     VisibleInMenu?: true
+    ShowOnWEB?: true
     _all?: true
   }
 
@@ -9418,6 +9424,7 @@ export namespace Prisma {
     BackgroudPicture: Buffer | null
     Order: number | null
     VisibleInMenu: boolean | null
+    ShowOnWEB: boolean | null
     _count: DBT_MealGroupsCountAggregateOutputType | null
     _avg: DBT_MealGroupsAvgAggregateOutputType | null
     _sum: DBT_MealGroupsSumAggregateOutputType | null
@@ -9447,6 +9454,7 @@ export namespace Prisma {
     BackgroudPicture?: boolean
     Order?: boolean
     VisibleInMenu?: boolean
+    ShowOnWEB?: boolean
   }, ExtArgs["result"]["dBT_MealGroups"]>
 
   export type DBT_MealGroupsSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -9457,6 +9465,7 @@ export namespace Prisma {
     BackgroudPicture?: boolean
     Order?: boolean
     VisibleInMenu?: boolean
+    ShowOnWEB?: boolean
   }, ExtArgs["result"]["dBT_MealGroups"]>
 
   export type DBT_MealGroupsSelectScalar = {
@@ -9467,6 +9476,7 @@ export namespace Prisma {
     BackgroudPicture?: boolean
     Order?: boolean
     VisibleInMenu?: boolean
+    ShowOnWEB?: boolean
   }
 
 
@@ -9481,6 +9491,7 @@ export namespace Prisma {
       BackgroudPicture: Buffer | null
       Order: number | null
       VisibleInMenu: boolean | null
+      ShowOnWEB: boolean | null
     }, ExtArgs["result"]["dBT_MealGroups"]>
     composites: {}
   }
@@ -9881,6 +9892,7 @@ export namespace Prisma {
     readonly BackgroudPicture: FieldRef<"DBT_MealGroups", 'Bytes'>
     readonly Order: FieldRef<"DBT_MealGroups", 'Int'>
     readonly VisibleInMenu: FieldRef<"DBT_MealGroups", 'Boolean'>
+    readonly ShowOnWEB: FieldRef<"DBT_MealGroups", 'Boolean'>
   }
     
 
@@ -25470,7 +25482,8 @@ export namespace Prisma {
     ID_Layout: 'ID_Layout',
     BackgroudPicture: 'BackgroudPicture',
     Order: 'Order',
-    VisibleInMenu: 'VisibleInMenu'
+    VisibleInMenu: 'VisibleInMenu',
+    ShowOnWEB: 'ShowOnWEB'
   };
 
   export type DBT_MealGroupsScalarFieldEnum = (typeof DBT_MealGroupsScalarFieldEnum)[keyof typeof DBT_MealGroupsScalarFieldEnum]
@@ -26211,6 +26224,7 @@ export namespace Prisma {
     BackgroudPicture?: BytesNullableFilter<"DBT_MealGroups"> | Buffer | null
     Order?: IntNullableFilter<"DBT_MealGroups"> | number | null
     VisibleInMenu?: BoolNullableFilter<"DBT_MealGroups"> | boolean | null
+    ShowOnWEB?: BoolNullableFilter<"DBT_MealGroups"> | boolean | null
   }
 
   export type DBT_MealGroupsOrderByWithRelationInput = {
@@ -26221,6 +26235,7 @@ export namespace Prisma {
     BackgroudPicture?: SortOrderInput | SortOrder
     Order?: SortOrderInput | SortOrder
     VisibleInMenu?: SortOrderInput | SortOrder
+    ShowOnWEB?: SortOrderInput | SortOrder
   }
 
   export type DBT_MealGroupsWhereUniqueInput = Prisma.AtLeast<{
@@ -26234,6 +26249,7 @@ export namespace Prisma {
     BackgroudPicture?: BytesNullableFilter<"DBT_MealGroups"> | Buffer | null
     Order?: IntNullableFilter<"DBT_MealGroups"> | number | null
     VisibleInMenu?: BoolNullableFilter<"DBT_MealGroups"> | boolean | null
+    ShowOnWEB?: BoolNullableFilter<"DBT_MealGroups"> | boolean | null
   }, "ID">
 
   export type DBT_MealGroupsOrderByWithAggregationInput = {
@@ -26244,6 +26260,7 @@ export namespace Prisma {
     BackgroudPicture?: SortOrderInput | SortOrder
     Order?: SortOrderInput | SortOrder
     VisibleInMenu?: SortOrderInput | SortOrder
+    ShowOnWEB?: SortOrderInput | SortOrder
     _count?: DBT_MealGroupsCountOrderByAggregateInput
     _avg?: DBT_MealGroupsAvgOrderByAggregateInput
     _max?: DBT_MealGroupsMaxOrderByAggregateInput
@@ -26262,6 +26279,7 @@ export namespace Prisma {
     BackgroudPicture?: BytesNullableWithAggregatesFilter<"DBT_MealGroups"> | Buffer | null
     Order?: IntNullableWithAggregatesFilter<"DBT_MealGroups"> | number | null
     VisibleInMenu?: BoolNullableWithAggregatesFilter<"DBT_MealGroups"> | boolean | null
+    ShowOnWEB?: BoolNullableWithAggregatesFilter<"DBT_MealGroups"> | boolean | null
   }
 
   export type DBT_MealsWhereInput = {
@@ -27711,6 +27729,7 @@ export namespace Prisma {
     BackgroudPicture?: Buffer | null
     Order?: number | null
     VisibleInMenu?: boolean | null
+    ShowOnWEB?: boolean | null
   }
 
   export type DBT_MealGroupsUncheckedCreateInput = {
@@ -27721,6 +27740,7 @@ export namespace Prisma {
     BackgroudPicture?: Buffer | null
     Order?: number | null
     VisibleInMenu?: boolean | null
+    ShowOnWEB?: boolean | null
   }
 
   export type DBT_MealGroupsUpdateInput = {
@@ -27731,6 +27751,7 @@ export namespace Prisma {
     BackgroudPicture?: NullableBytesFieldUpdateOperationsInput | Buffer | null
     Order?: NullableIntFieldUpdateOperationsInput | number | null
     VisibleInMenu?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    ShowOnWEB?: NullableBoolFieldUpdateOperationsInput | boolean | null
   }
 
   export type DBT_MealGroupsUncheckedUpdateInput = {
@@ -27741,6 +27762,7 @@ export namespace Prisma {
     BackgroudPicture?: NullableBytesFieldUpdateOperationsInput | Buffer | null
     Order?: NullableIntFieldUpdateOperationsInput | number | null
     VisibleInMenu?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    ShowOnWEB?: NullableBoolFieldUpdateOperationsInput | boolean | null
   }
 
   export type DBT_MealGroupsCreateManyInput = {
@@ -27751,6 +27773,7 @@ export namespace Prisma {
     BackgroudPicture?: Buffer | null
     Order?: number | null
     VisibleInMenu?: boolean | null
+    ShowOnWEB?: boolean | null
   }
 
   export type DBT_MealGroupsUpdateManyMutationInput = {
@@ -27761,6 +27784,7 @@ export namespace Prisma {
     BackgroudPicture?: NullableBytesFieldUpdateOperationsInput | Buffer | null
     Order?: NullableIntFieldUpdateOperationsInput | number | null
     VisibleInMenu?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    ShowOnWEB?: NullableBoolFieldUpdateOperationsInput | boolean | null
   }
 
   export type DBT_MealGroupsUncheckedUpdateManyInput = {
@@ -27771,6 +27795,7 @@ export namespace Prisma {
     BackgroudPicture?: NullableBytesFieldUpdateOperationsInput | Buffer | null
     Order?: NullableIntFieldUpdateOperationsInput | number | null
     VisibleInMenu?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    ShowOnWEB?: NullableBoolFieldUpdateOperationsInput | boolean | null
   }
 
   export type DBT_MealsCreateInput = {
@@ -29365,6 +29390,7 @@ export namespace Prisma {
     BackgroudPicture?: SortOrder
     Order?: SortOrder
     VisibleInMenu?: SortOrder
+    ShowOnWEB?: SortOrder
   }
 
   export type DBT_MealGroupsAvgOrderByAggregateInput = {
@@ -29381,6 +29407,7 @@ export namespace Prisma {
     BackgroudPicture?: SortOrder
     Order?: SortOrder
     VisibleInMenu?: SortOrder
+    ShowOnWEB?: SortOrder
   }
 
   export type DBT_MealGroupsMinOrderByAggregateInput = {
@@ -29391,6 +29418,7 @@ export namespace Prisma {
     BackgroudPicture?: SortOrder
     Order?: SortOrder
     VisibleInMenu?: SortOrder
+    ShowOnWEB?: SortOrder
   }
 
   export type DBT_MealGroupsSumOrderByAggregateInput = {
