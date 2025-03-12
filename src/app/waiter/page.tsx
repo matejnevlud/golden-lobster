@@ -10,11 +10,7 @@ const inter = Inter({ subsets: ["latin"] });
 
 export default async function Menu() {
 
-    const allData = await getAllData();
-
-    const waiterData = await getWaiterData()
-
-
+    const [allData, waiterData] = await Promise.all([getAllData(), getWaiterData()]);
 
 
     return (

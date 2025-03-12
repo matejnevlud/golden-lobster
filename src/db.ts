@@ -107,11 +107,23 @@ export async function translate(text: string | null, id_language: number) {
 
         //console.log(text, procedure_string, result_string)
 
-        if (procedure_string == "{}") return "";
         if (procedure_string == "{ }") return "\u00A0";
-        if (typeof procedure_string === 'string' && procedure_string.includes("{")) return procedure_string;
+        if (procedure_string == "{}") return "";
+
+        if (typeof procedure_string === 'string' && procedure_string.includes("{")) {
+            console.log('No translation found for', text, 'to', id_language, ', adding to DBT_ToBeTranslated');
+            // Insert into DBT_ToBeTranslated Text and ID_Language using RAW SQL if not already exists
+            const exists = await prisma.$queryRaw`SELECT * FROM DBT_ToBeTranslated WHERE Text = ${text} AND ID_Language = ${id_language}`;
+            if (!exists[0]) {
+                await prisma.$queryRaw`INSERT INTO DBT_ToBeTranslated (Text, ID_Language) VALUES (${text}, ${id_language})`;
+            }
+
+            return procedure_string
+        }
 
         if (!result || !result_string) return text;
+
+
         return result_string;
     } catch (e) {
         console.error('Error translating', text, 'to', id_language, 'error:', e);
@@ -272,48 +284,53 @@ export type WAITER_DATA = {
 
 }
 export async function getWaiterData(): Promise<any> {
-    const customers = await prisma.dBT_Customer.findMany();
-    // get last 1000 orders
-    let orders = await prisma.dBT_Orders.findMany({ take: 10000, orderBy: { ID: 'desc' } });
-    orders = (orders);
-    // get orders with payments
+    let start_time = new Date().getTime();
 
-    // get last 10000 orders
-    let orderItems = await prisma.dBT_OrderItems.findMany({ take: 10000, orderBy: { ID: 'desc' } });
-    orderItems = (orderItems);
-
-    const paymentMethods = await prisma.dBT_PaymentMethods.findMany();
-    const tables = await prisma.dBT_Tables.findMany();
-    const users = await prisma.dBT_Users.findMany();
-    const taxes = await prisma.dBT_Taxes.findMany();
-
-    // where not deleted
-    let payments = await prisma.dBT_Payments.findMany({ where: { Deleted: false }, take: 10000, orderBy: { ID: 'desc' } });
-    payments = (payments);
-
-    const paymentTaxes = await prisma.dBT_PaymentTaxes.findMany({ take: 10000, orderBy: { ID: 'desc' } });
-
-    const customerPayments = await prisma.dBT_CustomerPayments.findMany({ take: 10000, orderBy: { ID: 'desc' } });
-    const customerPaymentPayments = await prisma.dBT_CustomerPaymentPayments.findMany({ take: 10000, orderBy: { ID: 'desc' } });
+    const [
+        customers,
+        orders,
+        orderItems,
+        paymentMethods,
+        tables,
+        users,
+        taxes,
+        payments,
+        paymentTaxes,
+        customerPayments,
+        customerPaymentPayments
+    ] = await Promise.all([
+        prisma.dBT_Customer.findMany(),
+        prisma.dBT_Orders.findMany({ take: 10000, orderBy: { ID: 'desc' } }),
+        prisma.dBT_OrderItems.findMany({ take: 10000, orderBy: { ID: 'desc' } }),
+        prisma.dBT_PaymentMethods.findMany(),
+        prisma.dBT_Tables.findMany(),
+        prisma.dBT_Users.findMany(),
+        prisma.dBT_Taxes.findMany(),
+        prisma.dBT_Payments.findMany({ where: { Deleted: false }, take: 10000, orderBy: { ID: 'desc' } }),
+        prisma.dBT_PaymentTaxes.findMany({ take: 10000, orderBy: { ID: 'desc' } }),
+        prisma.dBT_CustomerPayments.findMany({ take: 10000, orderBy: { ID: 'desc' } }),
+        prisma.dBT_CustomerPaymentPayments.findMany({ take: 10000, orderBy: { ID: 'desc' } })
+    ]);
 
     // get all orders with payments using raw query
     const ordersCalculated = await prisma.$queryRaw`
-    SELECT o.ID AS OrderID,
-    SUM(p.ItemsCost) - SUM(p.Discount) AS ItemsCost,
-    SUM(p.Taxes) AS Taxes,
-    SUM(p.ItemsCost) - SUM(p.Discount) + SUM(p.Taxes) AS Cost,
-    SUM(p.RealPayment) AS RealPayment
-    FROM DBT_Orders AS o
-    LEFT JOIN (
-        SELECT DISTINCT ID_Order, ID_Payment
-        FROM DBT_OrderItems
-        WHERE Canceled != 1
-    ) AS oi ON oi.ID_Order = o.ID
-    LEFT JOIN DBT_Payments AS p ON p.ID = oi.ID_Payment AND p.Deleted != 1
-    GROUP BY o.ID;
-    `;
+            SELECT o.ID AS OrderID,
+            SUM(p.ItemsCost) - SUM(p.Discount) AS ItemsCost,
+            SUM(p.Taxes) AS Taxes,
+            SUM(p.ItemsCost) - SUM(p.Discount) + SUM(p.Taxes) AS Cost,
+            SUM(p.RealPayment) AS RealPayment
+            FROM DBT_Orders AS o
+            LEFT JOIN (
+                SELECT DISTINCT ID_Order, ID_Payment
+                FROM DBT_OrderItems
+                WHERE Canceled != 1
+            ) AS oi ON oi.ID_Order = o.ID
+            LEFT JOIN DBT_Payments AS p ON p.ID = oi.ID_Payment AND p.Deleted != 1
+            GROUP BY o.ID;
+            `;
 
 
+    console.log('getWaiterData took', new Date().getTime() - start_time, 'ms');
 
 
     return convertDecimalToNumber({ customers, orders, orderItems, paymentMethods, tables, users, taxes, payments, paymentTaxes, customerPayments, customerPaymentPayments, ordersCalculated });
@@ -346,27 +363,41 @@ export type ALL_DATA = {
     }
 }
 export async function getAllData(): Promise<any> {
-    const languages = await getLanguages();
-    const layouts = await getLayouts();
-    const mealGroups = await getMealGroups();
-    const meals = await getMeals();
-    const mealsInGroups = await getMealsInGroups();
-    const variants = await getVariants();
-    const menuSetUp = await getMenuSetUp();
+    let start_time = new Date().getTime();
+
+    const [languages, layouts, mealGroups, meals, mealsInGroups, variants, menuSetUp] = await Promise.all([
+        getLanguages(),
+        getLayouts(),
+        getMealGroups(),
+        getMeals(),
+        getMealsInGroups(),
+        getVariants(),
+        getMenuSetUp()
+    ]);
 
 
     // download all data in different languages
     const translatedData = {};
     for (const language of languages) {
         const langID = language.ID as unknown as number;
+        const [translatedMealGroups, translatedMeals, translatedVariants, translatedMenuSetUp, translatedLayouts] = await Promise.all([
+            getMealGroups(langID),
+            getMeals(langID),
+            getVariants(langID),
+            getMenuSetUp(langID),
+            getLayouts(langID)
+        ]);
+
         translatedData[langID] = {
-            mealGroups: await getMealGroups(langID),
-            meals: await getMeals(langID),
-            variants: await getVariants(langID),
-            menuSetUp: await getMenuSetUp(langID),
-            layouts: await getLayouts(langID),
+            mealGroups: translatedMealGroups,
+            meals: translatedMeals,
+            variants: translatedVariants,
+            menuSetUp: translatedMenuSetUp,
+            layouts: translatedLayouts,
         }
     }
+
+    console.log('getAllData took', new Date().getTime() - start_time, 'ms');
 
     return convertDecimalToNumber({ languages, layouts, meals, mealGroups, mealsInGroups, variants, menuSetUp, translatedData });
 }

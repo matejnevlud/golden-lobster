@@ -36,6 +36,7 @@ import { GridFilterInputDate } from "@mui/x-data-grid/components/panel/filterPan
 import KitchenView from "@/components/KitchenView";
 import { LayoutDataGrid, LayoutFooter } from "@/components/LayoutFooter";
 import { DataGridPro } from "@mui/x-data-grid-pro";
+import dynamic from "next/dynamic";
 
 const getSavedColumnWidth = (table: string, field: string) => {
     return localStorage.getItem(`${table}_${field}`) != null ? parseInt(localStorage.getItem(`${table}_${field}`)) : undefined;
@@ -43,7 +44,7 @@ const getSavedColumnWidth = (table: string, field: string) => {
 
 BigInt.prototype.toJSON = function () { return parseInt(this.toString()) }
 
-export default function WaiterView(props) {
+ function WaiterView(props) {
 
     const { getRemainingTime } = useIdleTimer({
         onIdle: () => logout(),
@@ -401,17 +402,14 @@ export default function WaiterView(props) {
         console.log('newOrderItem', newOrderItem)
         setOrderItems([...orderItems, newOrderItem]);
     }
-    const renderAddToOrderButton = (meal: any, idx: number) => {
-        // get y position from local storage
-        const y = localStorage.getItem(`mg_${currentMealGroupID}_m_${meal.ID}_idx_${idx}`) ?? null;
-        if (y == null || !meal.Meal || meal.Meal?.trim?.() == '') return null;
 
+    const renderAddToOrderButton = (meal: any, idx: number) => {
 
         const style = {
             position: 'absolute',
-            top: y + 'px',
-            left: '0px',
-            width: '100%',
+            top: meal.y + 'px',
+            left: idx % 2 == 0 ? '0' : '50%',
+            width: '50%',
             height: '2.5vh',
             backgroundColor: 'green',
             color: 'white',
@@ -436,14 +434,21 @@ export default function WaiterView(props) {
         const mealGroup = mealGroups.find((mg) => (mg.ID == currentMealGroupID));
         const mealsInGroup = mealsInGroups.filter((mig) => (mig.ID_Group == currentMealGroupID)) ?? [];
         const mealsFilter = mealsInGroup.map((mig) => ({ ...(meals.find((m) => m.ID == mig.ID_Meal)), order: mig.Order })).filter((m) => m != null);
-        const mealsOrdered = mealsFilter.sort((a, b) => a.order - b.order) as DBT_Meals[];
+        var mealsOrdered = mealsFilter.sort((a, b) => a.order - b.order) as DBT_Meals[];
+
+
+        // const y = localStorage.getItem(`mg_${currentMealGroupID}_m_${meal.ID}_idx_${idx}`) ?? null;
+        mealsOrdered = mealsOrdered.map((meal, idx) => ({ ...meal, y: localStorage.getItem(`mg_${currentMealGroupID}_m_${meal.ID}_idx_${idx}`) ?? null }));
+        mealsOrdered = mealsOrdered.filter((meal) => meal.y != null && meal.Meal && meal.Meal.trim() != '');
+        //         if (y == null || !meal.Meal || meal.Meal?.trim?.() == '') return null;
+        // filter out  by this parameters
 
         if (isOrderClosedOrCanceled() || !selectedOrderId) return;
 
         return (
             <div style={{ position: 'relative' }} key={currentMealGroupID+'_mg_strip'}>
                 {mealsOrdered.map((meal, idx) => {
-                    return renderAddToOrderButton(meal, idx)
+                    return renderAddToOrderButton(meal, idx);
                 })}
             </div>
         );
@@ -965,7 +970,7 @@ export default function WaiterView(props) {
 
             let parsedRealPayment = null;
             try {
-                parsedRealPayment = parseFloat(newPaymentRealPayment);
+                parsedRealPayment = parseFloat(newPaymentRealPayment?.replace?.(',', '.'));
             } catch {
                 alert('Invalid real payment, skipping.');
             }
@@ -1032,7 +1037,7 @@ export default function WaiterView(props) {
 
             let parsedRealPayment = null;
             try {
-                parsedRealPayment = parseFloat(newPaymentRealPayment);
+                parsedRealPayment = parseFloat(newPaymentRealPayment?.replace?.(',', '.'));
             } catch {
                 alert('Invalid real payment, skipping.');
             }
@@ -2561,7 +2566,7 @@ export default function WaiterView(props) {
 
 
     return [
-        <div key={currentMealGroupID + '_addbar'} style={{ width: "6vh", backgroundColor: 'black', paddingLeft: "10px", paddingRight: "10px" }}>
+        <div key={currentMealGroupID + '_addbar'} style={{ width: "12vh", backgroundColor: 'black', paddingLeft: "10px", paddingRight: "10px" }}>
             {renderAddStrip(jsonObj.Head?.Workspace)}
 
         </div>,
@@ -2583,6 +2588,9 @@ export default function WaiterView(props) {
     ]
 }
 
+
+// export NOSSR
+export default dynamic(() => Promise.resolve(WaiterView), { ssr: false })
 
 const styles = {
     boxContainer: {
