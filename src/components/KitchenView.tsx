@@ -65,7 +65,7 @@ export default function KitchenView(props: KitchenViewProps) {
 
 
 
-    const kitchenViewCols = [
+    const kitchenViewCols = useMemo(() => [
         {
             field: 'Button_kitchen', headerName: 'Kitchen',
             renderCell: (params: any) => (
@@ -158,9 +158,9 @@ export default function KitchenView(props: KitchenViewProps) {
         { field: 'OrderStatus', headerName: 'Order Status', type: 'singleSelect', valueOptions: ['Active', 'Closed', 'Canceled'] },
 
 
-    ]
+    ], [orderItems, meals, variants, orders]);
 
-    const rows = orderItems
+    const rows = useMemo(() => orderItems
     .filter((orderItem) => !orderItem.Time_Prepared)
     .map((orderItem) => ({
         id: parseInt(orderItem.ID),
@@ -188,18 +188,15 @@ export default function KitchenView(props: KitchenViewProps) {
             if (!order) return 'Active';
             return order.Closed ? 'Closed' : order.Canceled ? 'Canceled' : 'Active';
         })(),
-    }));
+    }))
+    , [orderItems, meals, variants, orders]);
 
 
     // @ts-ignore
     return (
-        <div style={{ display: 'flex', flexDirection: 'column', height: '100vh' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', height: '100vh', overflow: 'hidden' }}>
 
-            <div className="flex items-center me-4 ms-4">
-
-                <Button variant={"contained"} className="p-4" onClick={() => {
-                    setShowKitchenView(false)
-                }}>Back</Button>
+            <div className="flex items-center me-4 ms-4 overflow-hidden">
                 <CardHeader title={"Kitchen View"} className="flex-1" />
             </div>
 
@@ -215,7 +212,7 @@ export default function KitchenView(props: KitchenViewProps) {
                     '&.MuiDataGrid-root--densityStandard .MuiDataGrid-cell': { py: '15px' },
                     '&.MuiDataGrid-root--densityComfortable .MuiDataGrid-cell': { py: '22px' },
                 }}
-                style={{ flex: 1, overflow: 'scroll' }}
+                style={{ flex: 1, overflow: 'hidden' }}
                 onColumnWidthChange={(params: any) => {
                     //localStorage.setItem(`kitchenview_${params.colDef.field}`, params.width.toString())
                 }}

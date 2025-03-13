@@ -464,6 +464,29 @@ export async function getAllData(): Promise<ALL_DATA> {
 }
 
 
+export async function DB_getOrders(): Promise<DBT_Orders[]> {
+    const result = await prisma.dBT_Orders.findMany({ take: 10000, orderBy: { ID: 'desc' } });
+    return convertDecimalToNumber(result);
+}
+
+export async function DB_getOrdersCalculated(): Promise<{ OrderID: number, ItemsCost: number, Taxes: number, Cost: number, RealPayment: number }[]> {
+    const result = await prisma.$queryRaw`
+            SELECT o.ID AS OrderID,
+            SUM(p.ItemsCost) - SUM(p.Discount) AS ItemsCost,
+            SUM(p.Taxes) AS Taxes,
+            SUM(p.ItemsCost) - SUM(p.Discount) + SUM(p.Taxes) AS Cost,
+            SUM(p.RealPayment) AS RealPayment
+            FROM DBT_Orders AS o
+            LEFT JOIN (
+                SELECT DISTINCT ID_Order, ID_Payment
+                FROM DBT_OrderItems
+                WHERE Canceled != 1
+            ) AS oi ON oi.ID_Order = o.ID
+            LEFT JOIN DBT_Payments AS p ON p.ID = oi.ID_Payment AND p.Deleted != 1
+            GROUP BY o.ID;
+            `;
+    return convertDecimalToNumber(result);
+}
 
 export async function DB_getOrderItems(): Promise<DBT_OrderItems[]> {
     const result = await prisma.dBT_OrderItems.findMany({ take: 10000, orderBy: { ID: 'desc' } });

@@ -71,11 +71,17 @@ export default function Workspace(props: WorkspaceProps) {
     let headJsonObj = parser.parse(headLayout?.Xml ?? "");
     console.log('mealGroupLayout headJsonObj', mealJsonObj)
     // delete all mg_ keys from local storage
-    Object.keys(localStorage).forEach((key) => {
-        if (key.startsWith('mg_')) {
-            localStorage.removeItem(key);
-        }
-    });
+
+    useEffect(() => {
+        Object.keys(localStorage).forEach((key) => {
+            if (key.startsWith('mg_')) {
+                localStorage.removeItem(key);
+            }
+        });
+    }, []);
+
+
+
     const renderMealNameText = (o: any, text: any, strike: boolean, meal: DBT_Meals) => {
         const container = parseBasic(o, null);
         const positionStyle = {

@@ -15,7 +15,7 @@ import {
     DB_changeOrderItemVariant,
     DB_changeOrderNote,
     DB_closeOrder, DB_createCustomerPayment,
-    DB_createPayment, DB_deliverOrderItem, DB_editPayment, DB_getNextPaymentPrintNumber, DB_getOrderItems, DB_getPayments, DB_getPaymentTaxes, DB_prepareOrderItem,
+    DB_createPayment, DB_deliverOrderItem, DB_editPayment, DB_getNextPaymentPrintNumber, DB_getOrderItems, DB_getOrdersCalculated, DB_getPayments, DB_getPaymentTaxes, DB_prepareOrderItem,
     DB_printPayment, DB_removePayment, DB_reopenOrder, DB_unbindAllTaxesFromPayment, DB_unbindOrderItemsFromPayment,
     getAllData,
     getWaiterData, WAITER_DATA,
@@ -46,6 +46,9 @@ export default function OrderDetail(props) {
 
     const orders = useWaiterStore(state => state.orders);
     const setOrders = useWaiterStore(state => state.setOrders);
+
+    const ordersCalculated = useWaiterStore(state => state.ordersCalculated);
+    const setOrdersCalculated = useWaiterStore(state => state.setOrdersCalculated);
 
     const orderItems = useWaiterStore(state => state.orderItems);
     const setOrderItems = useWaiterStore(state => state.setOrderItems);
@@ -126,14 +129,15 @@ export default function OrderDetail(props) {
             left: idx % 2 == 0 ? '0' : '50%',
             width: '50%',
             height: '2.5vh',
-            backgroundColor: 'green',
-            color: 'white',
+            backgroundColor: '#4CAF50',
+            color: '#113811',
             textAlign: 'center',
             lineHeight: '0.9vh',
             fontWeight: 'bold',
             zIndex: 1000,
             cursor: 'pointer',
-            border: '2px solid lime',
+            borderRadius: '5px',
+            border: '2px solid green',
         }
         return (
             <button style={style} key={`mg_${currentMealGroupID}_m_${meal.ID}_idx_${idx}`} onClick={() => addMealToOrder(meal.ID)}>
@@ -182,7 +186,10 @@ export default function OrderDetail(props) {
         suppressErrors: false,
     });
     const [nextPrintNumber, setNextPrintNumber] = useState(0);
-
+    // Initialize next print number
+    useEffect(() => {
+        DB_getNextPaymentPrintNumber().then((nextPn) => setNextPrintNumber(nextPn));
+    }, []);
     const handlePrint = async () => {
         //handlePrintHook(null, () => contentToPrint.current)
         window.print('print')
@@ -191,25 +198,14 @@ export default function OrderDetail(props) {
         if (!updatedPayment) return;
         setPayments(payments.map((payment) => payment.ID == selectedPaymentId ? updatedPayment : payment));
         setSelectedPayment(updatedPayment)
+
+        const nextPn = await DB_getNextPaymentPrintNumber();
+        setNextPrintNumber(nextPn)
     }
 
 
     const [isRefreshing, setIsRefreshing] = useState(false);
-    const refreshData = async () => {
-        setIsRefreshing(true);
 
-        try {
-            reloadData();
-
-            const nextPn = await DB_getNextPaymentPrintNumber();
-            setNextPrintNumber(nextPn)
-
-        } catch (e) {
-
-        } finally {
-            setIsRefreshing(false);
-        }
-    }
 
 
     const orderSum = useMemo(() => {
@@ -472,16 +468,32 @@ export default function OrderDetail(props) {
 
     }
 
+    const [deletingBill, setDeletingBill] = useState(false);
     const deleteBill = async (selectedPaymentId) => {
-        const newOrderItems = await DB_unbindOrderItemsFromPayment(selectedPaymentId);
-        const newPaymentTaxes = await DB_unbindAllTaxesFromPayment(selectedPaymentId);
-        const newPayments = await DB_removePayment(selectedPaymentId);
 
-        setOrderItems(newOrderItems);
-        setPaymentTaxes(newPaymentTaxes);
-        setPayments(newPayments);
+        try {
+            setDeletingBill(true);
+            const [newOrderItems, newPaymentTaxes, newPayments] = await Promise.all([
+                DB_unbindOrderItemsFromPayment(selectedPaymentId),
+                DB_unbindAllTaxesFromPayment(selectedPaymentId),
+                DB_removePayment(selectedPaymentId),
+            ]);
 
-        setOpenEditPayModal(false);
+
+
+            setOrderItems(newOrderItems);
+            setPaymentTaxes(newPaymentTaxes);
+            setPayments(newPayments);
+
+            setOrdersCalculated(await DB_getOrdersCalculated());
+
+            setOpenEditPayModal(false);
+        } catch (e) {
+            console.error(e);
+            alert('Error deleting bill');
+        } finally {
+            setDeletingBill(false);
+        }
     }
 
 
@@ -535,14 +547,16 @@ export default function OrderDetail(props) {
             }
 
             // Revalidate the orderItems and payments
-            const [newOrderItems, newPayments, newPaymentTaxesArray] = await Promise.all([
+            const [newOrderItems, newPayments, newPaymentTaxesArray, newOrdersCalculated] = await Promise.all([
                 DB_getOrderItems(),
                 DB_getPayments(),
                 DB_getPaymentTaxes(),
+                DB_getOrdersCalculated(),
             ]);
             setOrderItems(newOrderItems);
             setPayments(newPayments);
             setPaymentTaxes(newPaymentTaxesArray);
+            setOrdersCalculated(newOrdersCalculated);
 
             setSavedPaymentSuccess(true);
 
@@ -606,6 +620,10 @@ export default function OrderDetail(props) {
             setPayments(newPayments);
             const newPaymentTaxesArray = [...paymentTaxes, ...newPts];
             setPaymentTaxes(newPaymentTaxesArray);
+
+            //Reload orders calculated
+            setOrdersCalculated(await DB_getOrdersCalculated());
+
             //setCheckboxes({});
             //setDiscountPercent(0);
             setOpenPayModal(false);
@@ -629,19 +647,35 @@ export default function OrderDetail(props) {
 
     }
 
+    const [cancelingOrder, setCancelingOrder] = useState(false);
     const cancelOrder = async () => {
-        const {updatedOrder, updatedOrderItems} = await DB_cancelOrder(selectedOrderId);
-        if (!updatedOrder) return;
-        setOrders(orders.map((order) => order.ID == selectedOrderId ? updatedOrder : order));
-        setOrderItems(orderItems.map((orderItem) => updatedOrderItems.find((oi) => oi.ID == orderItem.ID) ?? orderItem));
-        setSelectedOrderId(null);
+        try {
+            setCancelingOrder(true);
+            const {updatedOrder, updatedOrderItems} = await DB_cancelOrder(selectedOrderId);
+            if (!updatedOrder) throw new Error('Error canceling order');
+            setOrders(orders.map((order) => order.ID == selectedOrderId ? updatedOrder : order));
+            setOrderItems(orderItems.map((orderItem) => updatedOrderItems.find((oi) => oi.ID == orderItem.ID) ?? orderItem));
+            setSelectedOrderId(null);
+        } catch (e) {
+            alert(e.message);
+        } finally {
+            setCancelingOrder(false);
+        }
     }
 
+    const [reopeningOrder, setReopeningOrder] = useState(false);
     const reopenOrder = async () => {
-        const {updatedOrder, updatedOrderItems} = await DB_reopenOrder(selectedOrderId);
-        if (!updatedOrder) return;
-        setOrders(orders.map((order) => order.ID == selectedOrderId ? updatedOrder : order));
-        setOrderItems(orderItems.map((orderItem) => updatedOrderItems.find((oi) => oi.ID == orderItem.ID) ?? orderItem));
+        try {
+            setReopeningOrder(true);
+            const {updatedOrder, updatedOrderItems} = await DB_reopenOrder(selectedOrderId);
+            if (!updatedOrder) throw new Error('Error reopening order');
+            setOrders(orders.map((order) => order.ID == selectedOrderId ? updatedOrder : order));
+            setOrderItems(orderItems.map((orderItem) => updatedOrderItems.find((oi) => oi.ID == orderItem.ID) ?? orderItem));
+        } catch (e) {
+            alert(e.message);
+        } finally {
+            setReopeningOrder(false);
+        }
     }
 
     const [cancelingOrderItem, setCancelingOrderItem] = useState(false);
@@ -837,7 +871,7 @@ export default function OrderDetail(props) {
                     </div>
                     <div className="flex justify-items-center mt-4">
                         <Box sx={{m: 1, position: 'relative'}}>
-                            <Button variant={"contained"} color={"error"} className="p-4" onClick={() => {
+                            <Button variant={"contained"} loading={deletingBill} color={"error"} className="p-4" onClick={() => {
                                 deleteBill(selectedPaymentId);
                             }}>Delete</Button>
 
@@ -1016,7 +1050,7 @@ export default function OrderDetail(props) {
 
 
     return [
-        <div key={`strip_${currentMealGroupID}`} style={{ width: "12vh", height: '100vh', backgroundColor: 'black', paddingLeft: "10px", paddingRight: "10px", position: 'absolute', left: '-12vh', top: 0}}>
+        <div key={`strip_${currentMealGroupID}`} style={{ width: "12vh", height: '100vh', backgroundColor: 'white', paddingLeft: "10px", paddingRight: "10px", position: 'absolute', left: '-12vh', top: 0}}>
             {renderAddStrip()}
         </div>,
 
@@ -1029,10 +1063,11 @@ export default function OrderDetail(props) {
                 <CardHeader title={"Order no. " + selectedOrderId + " - " + (orders.find((order) => order.ID == selectedOrderId)?.OrderName ?? '') + " - " + tables.find((table) => table.ID == orders.find((order) => order.ID == selectedOrderId)?.ID_Table)?.TableName} className="flex-1"/>
                 {isOrderClosed && <CardHeader title={"ORDER IS CLOSED"} className="flex-1"/>}
                 {isOrderCanceled && <CardHeader title={"ORDER IS CANCELED"} className="flex-1"/>}
-                {isOrderClosedOrCanceled && <Button variant={"contained"} className="p-4" color={"success"} onClick={() => reopenOrder()}>Open Order</Button>}
+                {isOrderClosedOrCanceled && <Button variant={"contained"} className="p-4" color={"success"} loading={reopeningOrder} onClick={() => reopenOrder()}>Open Order</Button>}
 
                 {!isOrderClosedOrCanceled && <Button variant={"contained"} className="p-4" color={"error"}
                                                        disabled={!!orderPayments.length}
+                                                     loading={cancelingOrder}
                                                        onClick={() => cancelOrder()}>Cancel Order</Button>}
             </div>
 
@@ -1116,7 +1151,7 @@ export default function OrderDetail(props) {
                         Order item {selectedOrderItemId} actions
                     </Typography>
                     <div className="flex flex-col">
-                        <Button size={'large'} color={'error'} variant={'outlined'} onClick={() => cancelOrderItem(selectedOrderItemId)}>Remove from order</Button>
+                        <Button size={'large'} color={'error'} variant={'outlined'}  loading={cancelingOrderItem} onClick={() => cancelOrderItem(selectedOrderItemId)}>Remove from order</Button>
 
                     </div>
                     <Typography variant="h6" component="h2" className="pt-2 pb-2">

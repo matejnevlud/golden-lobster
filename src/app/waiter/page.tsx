@@ -20,7 +20,7 @@ export default async function Menu() {
             </head>
             <body className={inter.className}>
             <div className="min-h-screen min-w-full flex flex-row">
-                <iframe src="/" width="800" height="1280" style={{ height: '100vh', width: '62.5vh' }}/>
+                <iframe src="/" width="800" height="1280" style={{ height: '100vh', width: '62.5vh', overflow: 'hidden' }}/>
                 <WaiterView {...waiterData} waiterData={waiterData} />
             </div>
             <MuiXLicense />

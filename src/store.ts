@@ -8,6 +8,9 @@ interface WaiterStore {
     orders: DBT_Orders[]
     setOrders: (newOrders: DBT_Orders[]) => void
 
+    ordersCalculated: any[]
+    setOrdersCalculated: (newOrdersCalculated: any[]) => void
+
     orderItems: DBT_OrderItems[]
     setOrderItems: (newOrderItems: DBT_OrderItems[]) => void
 
@@ -33,6 +36,9 @@ export const useWaiterStore = create<WaiterStore>((set) => ({
 
     orders: [] as DBT_Orders[],
     setOrders: (newOrders: DBT_Orders[]) => set({ orders: newOrders }),
+
+    ordersCalculated: [] as any[],
+    setOrdersCalculated: (newOrdersCalculated: any[]) => set({ ordersCalculated: newOrdersCalculated }),
 
     orderItems: [] as DBT_OrderItems[],
     setOrderItems: (newOrderItems: DBT_OrderItems[]) => set({ orderItems: newOrderItems }),

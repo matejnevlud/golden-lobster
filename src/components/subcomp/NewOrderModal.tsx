@@ -54,22 +54,33 @@ export const NewOrderModal = (props) => {
 
     const [newOrderTableID, setNewOrderTableID] = useState(-1);
     const [newOrderOrderName, setNewOrderOrderName] = useState(null);
+    const [creatingOrder, setCreatingOrder] = useState(false);
+
+
     const createOrder = async () => {
         if (newOrderTableID == -1) {
             alert('Please select a table');
             return;
         }
 
-        console.log('createOrder', newOrderTableID, newOrderOrderName)
-        const newOrder = await createNewOrder(newOrderTableID, currentUser.ID, newOrderOrderName);
-        console.log('newOrder', newOrder)
 
-        setOrders([...orders, newOrder]);
-        setOpenTableModal(false)
+        try {
+            setCreatingOrder(true);
+            console.log('createOrder', newOrderTableID, newOrderOrderName)
+            const newOrder = await createNewOrder(newOrderTableID, currentUser.ID, newOrderOrderName);
+            console.log('newOrder', newOrder)
 
-        setSelectedOrderId(newOrder.ID);
-        setNewOrderTableID(-1);
-        setNewOrderOrderName(null);
+            setOrders([...orders, newOrder]);
+            setOpenTableModal(false)
+
+            setSelectedOrderId(newOrder.ID);
+            setNewOrderTableID(-1);
+            setNewOrderOrderName(null);
+        } catch (error) {
+            console.error('createOrder error', error)
+        } finally {
+            setCreatingOrder(false);
+        }
     }
 
 
@@ -126,7 +137,7 @@ export const NewOrderModal = (props) => {
                         <TextField label="Order name" onChange={(e) => setNewOrderOrderName(e.target.value)} />
                     </div>
                     <div className="flex flex-col">
-                        <Button onClick={() => createOrder(newOrderTableID)} disabled={newOrderTableID == -1} size={"large"} variant={"contained"} color={"success"}>Create Order</Button>
+                        <Button onClick={() => createOrder(newOrderTableID)} loading={creatingOrder} disabled={newOrderTableID == -1} size={"large"} variant={"contained"} color={"success"}>Create Order</Button>
                     </div>
                 </div>
 

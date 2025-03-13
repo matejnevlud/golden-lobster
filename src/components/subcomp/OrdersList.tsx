@@ -63,10 +63,13 @@ const todayFilterOperator: GridFilterOperator<any, Date, any>[] = [
 export const OrdersList = (props) => {
 
     const waiterData : WAITER_DATA = props.waiterData;
-    const { tables, ordersCalculated } = waiterData;
+    const { tables } = waiterData;
 
     const orders = useWaiterStore(state => state.orders);
     const setOrders = useWaiterStore(state => state.setOrders);
+
+    const ordersCalculated = useWaiterStore(state => state.ordersCalculated);
+    const setOrdersCalculated = useWaiterStore(state => state.setOrdersCalculated);
 
     const selectedOrderId = useWaiterStore(state => state.selectedOrderId);
     const setSelectedOrderId = useWaiterStore(state => state.setSelectedOrderId);
