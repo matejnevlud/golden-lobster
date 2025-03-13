@@ -10,8 +10,8 @@ const inter = Inter({ subsets: ["latin"] });
 
 export default async function Menu() {
 
-    const [allData, waiterData] = await Promise.all([getAllData(), getWaiterData()]);
-
+    //const [allData, waiterData] = await Promise.all([getAllData(), getWaiterData()]);
+    const waiterData = await getWaiterData();
 
     return (
         <html lang="en">
@@ -21,7 +21,7 @@ export default async function Menu() {
             <body className={inter.className}>
             <div className="min-h-screen min-w-full flex flex-row">
                 <iframe src="/" width="800" height="1280" style={{ height: '100vh', width: '62.5vh' }}/>
-                <WaiterView {...allData} {...waiterData} />
+                <WaiterView {...waiterData} waiterData={waiterData} />
             </div>
             <MuiXLicense />
             </body>

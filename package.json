@@ -31,7 +31,8 @@
     "react-idle-timer": "^5.7.2",
     "react-sizeme": "^3.0.2",
     "react-to-print": "^2.15.1",
-    "usehooks-ts": "^3.1.0"
+    "usehooks-ts": "^3.1.0",
+    "zustand": "^5.0.3"
   },
   "devDependencies": {
     "@types/node": "^20",

@@ -1,11 +1,12 @@
 'use client';
 
-import { XMLParser } from "fast-xml-parser";
-import { parseBasic } from "@/utils/xmlParser";
-import React, { useEffect, useMemo, useRef, useState } from "react";
-import { DataGrid, getGridDateOperators, GridFilterOperator, GridRenderCellParams, useGridApiRef } from "@mui/x-data-grid";
+import {XMLParser} from "fast-xml-parser";
+import {parseBasic} from "@/utils/xmlParser";
+import React, {useEffect, useMemo, useRef, useState} from "react";
+import {DataGrid, getGridDateOperators, GridFilterOperator, GridRenderCellParams, useGridApiRef} from "@mui/x-data-grid";
 import {Alert, Box, Button, ButtonGroup, CardHeader, Checkbox, CircularProgress, FormControl, FormControlLabel, FormGroup, Grid, IconButton, InputAdornment, InputLabel, LinearProgress, MenuItem, Modal, Select, TextField, ToggleButton, ToggleButtonGroup, Typography} from "@mui/material";
 import {
+    ALL_DATA,
     changeOrderItemVariant,
     createNewOrder,
     createNewOrderItem,
@@ -20,33 +21,44 @@ import {
     DB_createPayment, DB_deliverOrderItem, DB_editPayment, DB_getNextPaymentPrintNumber, DB_prepareOrderItem,
     DB_printPayment, DB_removePayment, DB_reopenOrder, DB_unbindAllTaxesFromPayment, DB_unbindOrderItemsFromPayment,
     getAllData,
-    getWaiterData,
+    getWaiterData, WAITER_DATA,
 } from "@/db";
-import { DBT_Meals } from "../../generated/prisma-client";
-import { DBT_OrderItems } from "@prisma/client";
-import { useReactToPrint } from "react-to-print";
+import {DBT_OrderItems, DBT_Meals} from "@prisma/client";
+import {useReactToPrint} from "react-to-print";
 import {base64DataUri, convertDate} from "@/utils/utils";
 import RestaurantIcon from '@mui/icons-material/Restaurant';
 import TableBarIcon from '@mui/icons-material/TableBar';
 import RefreshIcon from '@mui/icons-material/Refresh';
 import OpenInFullIcon from '@mui/icons-material/OpenInFull';
-import { useIdleTimer } from 'react-idle-timer/legacy'
-import { Snackbar } from "@mui/base";
-import { GridFilterInputDate } from "@mui/x-data-grid/components/panel/filterPanel/GridFilterInputDate";
+import {useIdleTimer} from 'react-idle-timer/legacy'
+import {Snackbar} from "@mui/base";
+import {GridFilterInputDate} from "@mui/x-data-grid/components/panel/filterPanel/GridFilterInputDate";
 import KitchenView from "@/components/KitchenView";
-import { LayoutDataGrid, LayoutFooter } from "@/components/LayoutFooter";
-import { DataGridPro } from "@mui/x-data-grid-pro";
+import {LayoutDataGrid, LayoutFooter} from "@/components/LayoutFooter";
+import {DataGridPro} from "@mui/x-data-grid-pro";
 import dynamic from "next/dynamic";
+import {OrdersList} from "@/components/subcomp/OrdersList";
+import {useWaiterStore} from "@/store";
 
 const getSavedColumnWidth = (table: string, field: string) => {
     return localStorage.getItem(`${table}_${field}`) != null ? parseInt(localStorage.getItem(`${table}_${field}`)) : undefined;
 }
 
-BigInt.prototype.toJSON = function () { return parseInt(this.toString()) }
+BigInt.prototype.toJSON = function () {
+    return parseInt(this.toString())
+}
 
- function WaiterView(props) {
+function WaiterView(props) {
+    const waiterData : WAITER_DATA = props.waiterData;
 
-    const { getRemainingTime } = useIdleTimer({
+
+    const orders = useWaiterStore(state => state.orders);
+    const setOrders = useWaiterStore(state => state.setOrders);
+
+    const orderItems = useWaiterStore(state => state.orderItems);
+    const setOrderItems = useWaiterStore(state => state.setOrderItems);
+
+    const {getRemainingTime} = useIdleTimer({
         onIdle: () => logout(),
         timeout: 10_800_000,
         throttle: 500
@@ -69,12 +81,12 @@ BigInt.prototype.toJSON = function () { return parseInt(this.toString()) }
 
 
     const headLayout = layouts.find((layout) => layout.Type === "Head" && layout.Active);
-    const parser = new XMLParser({ ignoreAttributes: false });
+    const parser = new XMLParser({ignoreAttributes: false});
     let jsonObj = parser.parse(headLayout?.Xml ?? "");
 
     const [ordersFilterToggle, setOrdersFilterToggle] = useState('Active');
-    const [orders, setOrders] = useState(props.orders);
-    const [orderItems, setOrderItems] = useState(props.orderItems);
+    //const [orders, setOrders] = useState(props.orders);
+    //const [orderItems, setOrderItems] = useState(props.orderItems);
     const [payments, setPayments] = useState(props.payments);
     const [paymentTaxes, setPaymentTaxes] = useState(props.paymentTaxes);
     const [customerPayments, setCustomerPayments] = useState(props.customerPayments);
@@ -89,7 +101,9 @@ BigInt.prototype.toJSON = function () { return parseInt(this.toString()) }
 
 
     const [currentMealGroupID, setCurrentMealGroupID] = useState<bigint>(BigInt(localStorage.getItem('mealGroup') ?? '1'));
-    const [selectedOrderId, setSelectedOrderId] = useState<bigint | null>(null);
+
+    const selectedOrderId = useWaiterStore(state => state.selectedOrderId);
+    const setSelectedOrderId = useWaiterStore(state => state.setSelectedOrderId);
 
 
     const [openTableModal, setOpenTableModal] = useState(false);
@@ -160,7 +174,7 @@ BigInt.prototype.toJSON = function () { return parseInt(this.toString()) }
 
         try {
             //const { languages, layouts, meals, mealGroups, mealsInGroups, variants, menuSetUp, translatedData } = await getAllData();
-            const { customers, orders, orderItems, paymentMethods, tables, users, taxes, payments, paymentTaxes, customerPayments, customerPaymentPayments, ordersCalculated } = await getWaiterData()
+            const {customers, orders, orderItems, paymentMethods, tables, users, taxes, payments, paymentTaxes, customerPayments, customerPaymentPayments, ordersCalculated} = await getWaiterData()
 
             //setLayouts(layouts)
             //setMeals(meals)
@@ -193,6 +207,12 @@ BigInt.prototype.toJSON = function () { return parseInt(this.toString()) }
 
     // refresh data every 10 seconds
     useEffect(() => {
+
+        // init store from server props
+        setOrders(waiterData.orders);
+        setOrderItems(waiterData.orderItems);
+
+
         const interval = setInterval(() => {
             refreshData();
         }, 60_000);
@@ -201,6 +221,9 @@ BigInt.prototype.toJSON = function () { return parseInt(this.toString()) }
     }, []);
 
     useEffect(() => {
+        console.log('selectedOrderId changed in WaiterView', selectedOrderId)
+
+
         if (!selectedOrderId) refreshData();
     }, [selectedOrderId]);
     useEffect(() => {
@@ -254,10 +277,10 @@ BigInt.prototype.toJSON = function () { return parseInt(this.toString()) }
                     // try to find the key in the accumulator
                     const found = acc.find((item) => item.key === key);
                     if (found) {
-                        acc[acc.indexOf(found)] = { ...found, count: found.count + 1 }
+                        acc[acc.indexOf(found)] = {...found, count: found.count + 1}
                     } else {
                         // if not found, create a new object and push it to the accumulator
-                        acc.push({ key, count: 1, orderItem });
+                        acc.push({key, count: 1, orderItem});
                     }
 
                     return acc;
@@ -272,7 +295,7 @@ BigInt.prototype.toJSON = function () { return parseInt(this.toString()) }
     const onCheckboxChange = (e) => {
         // set all payment methods to false and then set the clicked one to true
         if (paymentMethods.some((paymentMethod) => paymentMethod.PaymentMethod == e.target.name)) {
-            const newCheckboxes = { ...checkboxes };
+            const newCheckboxes = {...checkboxes};
             for (const paymentMethod of paymentMethods) {
                 newCheckboxes[paymentMethod.PaymentMethod] = false;
             }
@@ -282,8 +305,7 @@ BigInt.prototype.toJSON = function () { return parseInt(this.toString()) }
         }
 
 
-
-        setCheckboxes({ ...checkboxes, [e.target.name]: e.target.checked });
+        setCheckboxes({...checkboxes, [e.target.name]: e.target.checked});
     }
 
     const hasPaymentChecked = () => {
@@ -376,7 +398,6 @@ BigInt.prototype.toJSON = function () { return parseInt(this.toString()) }
     });
 
 
-
     const login = async () => {
         console.log('login', username, password)
         const user = users.find((user) => user.Name == username && user.Password == password && user.Active);
@@ -395,118 +416,7 @@ BigInt.prototype.toJSON = function () { return parseInt(this.toString()) }
         localStorage.removeItem('currentUser');
 
     }
-    const addMealToOrder = async (mealId: bigint) => {
-        console.log('addMealToOrder', mealId)
-        if (!selectedOrderId) return;
-        const newOrderItem = await createNewOrderItem(selectedOrderId, mealId, currentUser.ID);
-        console.log('newOrderItem', newOrderItem)
-        setOrderItems([...orderItems, newOrderItem]);
-    }
 
-    const renderAddToOrderButton = (meal: any, idx: number) => {
-
-        const style = {
-            position: 'absolute',
-            top: meal.y + 'px',
-            left: idx % 2 == 0 ? '0' : '50%',
-            width: '50%',
-            height: '2.5vh',
-            backgroundColor: 'green',
-            color: 'white',
-            textAlign: 'center',
-            lineHeight: '0.9vh',
-            fontWeight: 'bold',
-            zIndex: 1000,
-            cursor: 'pointer',
-            border: '2px solid lime',
-        }
-        return (
-            <button style={style} key={`mg_${currentMealGroupID}_m_${meal.ID}_idx_${idx}`} onClick={() => addMealToOrder(meal.ID)}>
-                {'>'}
-            </button>
-        )
-    }
-
-    const renderAddStrip = (o: any) => {
-        const container = parseBasic(o);
-
-
-        const mealGroup = mealGroups.find((mg) => (mg.ID == currentMealGroupID));
-        const mealsInGroup = mealsInGroups.filter((mig) => (mig.ID_Group == currentMealGroupID)) ?? [];
-        const mealsFilter = mealsInGroup.map((mig) => ({ ...(meals.find((m) => m.ID == mig.ID_Meal)), order: mig.Order })).filter((m) => m != null);
-        var mealsOrdered = mealsFilter.sort((a, b) => a.order - b.order) as DBT_Meals[];
-
-
-        // const y = localStorage.getItem(`mg_${currentMealGroupID}_m_${meal.ID}_idx_${idx}`) ?? null;
-        mealsOrdered = mealsOrdered.map((meal, idx) => ({ ...meal, y: localStorage.getItem(`mg_${currentMealGroupID}_m_${meal.ID}_idx_${idx}`) ?? null }));
-        mealsOrdered = mealsOrdered.filter((meal) => meal.y != null && meal.Meal && meal.Meal.trim() != '');
-        //         if (y == null || !meal.Meal || meal.Meal?.trim?.() == '') return null;
-        // filter out  by this parameters
-
-        if (isOrderClosedOrCanceled() || !selectedOrderId) return;
-
-        return (
-            <div style={{ position: 'relative' }} key={currentMealGroupID+'_mg_strip'}>
-                {mealsOrdered.map((meal, idx) => {
-                    return renderAddToOrderButton(meal, idx);
-                })}
-            </div>
-        );
-    }
-
-
-
-    const [newOrderTableID, setNewOrderTableID] = useState(-1);
-    const [newOrderOrderName, setNewOrderOrderName] = useState(null);
-    const createOrder = async () => {
-        if (newOrderTableID == -1) {
-            alert('Please select a table');
-            return;
-        }
-
-        console.log('createOrder', newOrderTableID, newOrderOrderName)
-        const newOrder = await createNewOrder(newOrderTableID, currentUser.ID, newOrderOrderName);
-        console.log('newOrder', newOrder)
-
-        setOrders([...orders, newOrder]);
-        setOpenTableModal(false)
-
-        setSelectedOrderId(newOrder.ID);
-        setNewOrderTableID(-1);
-        setNewOrderOrderName(null);
-    }
-
-
-    const [ordersSum, setOrdersSum] = useState(0);
-    const [orderItemsCostSum, setOrderItemsCostSum] = useState(0);
-    const [orderTaxesSum, setOrderTaxesSum] = useState(0);
-    const [orderTotalSum, setOrderTotalSum] = useState(0);
-    const [orderRealPaymentSum, setOrderRealPaymentSum] = useState(0);
-
-    const orderInitialState = {
-        sorting: {
-            sortModel: [
-                { field: 'OrderClosed', sort: 'asc' },
-                { field: 'DateTime', sort: 'desc' },
-            ],
-        },
-        filter: {
-          filterModel: {
-            items: [
-              { field: 'Status', operator: 'is', value: 'Active' },
-            ],
-          }
-        },
-        columns: {
-            columnVisibilityModel: {
-                id: false,
-                OrderName: false,
-                ID_Table: false,
-                Canceled: false,
-                OrderClosed: false,
-            }
-        }
-    };
 
     const todayFilterOperator: GridFilterOperator<any, Date, any>[] = [
         {
@@ -524,80 +434,10 @@ BigInt.prototype.toJSON = function () { return parseInt(this.toString()) }
         ...getGridDateOperators()
     ];
 
-
-    const ordergridRef = useGridApiRef()
-    const [randomKey, setRandomKey] = React.useState(Math.random());
-    const [activeStatusState, setActiveStatusState] = React.useState('All');
-
-    const determineOrderGridStatusFilter = () => {
-        console.log('determineOrderGridStatusFilter')
-        if (!ordergridRef.current?.exportState) return 'All';
-        const filterItems = ordergridRef.current?.exportState()?.filter?.filterModel?.items;
-        console.log('filterItems', filterItems)
-
-        const statusFilter = filterItems?.find((item) => item.field === 'Status');
-        if (!statusFilter) return 'All';
-        if (statusFilter.value === undefined) return 'All';
-
-        return statusFilter.value;
-    }
-
     const renderOrdersList = () => {
-        const cols = [
-            { field: 'id', headerName: 'ID' },
-            { field: 'OrderName', headerName: 'Order Name' },
-            {
-                field: 'ID_Order', headerName: 'Order', type: 'number',
-                renderCell: (params) => (
-                    <div>
-                        <b>{params.row.id}</b>
-                        <br />
-                        <span>{params.row.OrderName ?? '-'}</span>
-                    </div>
-                ),
-            },
-
-            { field: 'ID_Table', headerName: 'ID_Table' },
-            { field: 'Table', headerName: 'Table', type: 'singleSelect', valueOptions: tables.map((table) => table.TableName) },
-            { field: 'Note', headerName: 'Note', type: 'text' },
-            {
-                field: 'DateTime',
-                headerName: 'Created At',
-                type: 'date',
-                valueFormatter: convertDate,
-                filterOperators: todayFilterOperator,
-            },
-            { field: 'ItemsCost', headerName: 'ItemsCost', type: 'number', valueFormatter: val => val.toFixed(3) },
-            { field: 'Taxes', headerName: 'Taxes', type: 'number', valueFormatter: val => val.toFixed(3) },
-            { field: 'Total', headerName: 'Total', type: 'number', valueFormatter: val => val.toFixed(3) },
-            { field: 'RealPayment', headerName: 'RealPayment', type: 'number', valueFormatter: val => val.toFixed(3) },
-            { field: 'Status', headerName: 'Status', type: 'singleSelect', valueOptions: ['Active', 'Closed', 'Canceled'] },
-        ]
-
-        const rows = orders.map((order) => ({
-            OrderName: order.OrderName,
-            id: parseInt(order.ID),
-            ID_Order: parseInt(order.ID),
-            ID_Table: parseInt(order.ID_Table),
-            Table: tables.find((table) => table.ID == order.ID_Table)?.TableName,
-            ID_Customer: parseInt(order.ID_Customer),
-            DateTime: order.DateTime,
-            Canceled: order.Canceled,
-            Price: order.Price,
-            OrderClosed: order.OrderClosed,
-            Status: order.OrderClosed ? 'Closed' : order.Canceled ? 'Canceled' : 'Active',
-
-            ItemsCost: parseFloat(ordersCalculated.find((oc) => oc.OrderID == order.ID)?.ItemsCost ?? 0),
-            Taxes: parseFloat(ordersCalculated.find((oc) => oc.OrderID == order.ID)?.Taxes ?? 0),
-            Total: parseFloat(ordersCalculated.find((oc) => oc.OrderID == order.ID)?.Cost ?? 0),
-            RealPayment: parseFloat(ordersCalculated.find((oc) => oc.OrderID == order.ID)?.RealPayment ?? 0),
-            Note: order.Note,
-
-        }))//.filter((order) => ordersFilterToggle == 'active' ? !order.OrderClosed && !order.Canceled : ordersFilterToggle == 'closed' ? order.OrderClosed : ordersFilterToggle == 'canceled' ? order.Canceled : true);
 
         return (
-            <div style={{ display: 'flex', flexDirection: 'column', height: '100vh' }}>
-
+            <div style={{display: 'flex', flexDirection: 'column', height: '100vh'}}>
                 <div className="flex items-center me-4 p-4">
                     {/*<ToggleButtonGroup
                         color="primary"
@@ -612,40 +452,12 @@ BigInt.prototype.toJSON = function () { return parseInt(this.toString()) }
                         <ToggleButton value="all">All</ToggleButton>
                     </ToggleButtonGroup>*/}
 
-                    <FormControl sx={{ marginLeft: 2, minWidth: 120 }}>
-                        <InputLabel id="demo-simple-select-label">State</InputLabel>
-                        <Select
-                            native
-                            labelId="demo-simple-select-label"
-                            id="demo-simple-select"
-                            value={activeStatusState}
-                            label="State"
-                            onChange={(e) => {
-                                setOrdersFilterToggle(e.target.value);
-                                if(e.target.value === 'All')
-                                    ordergridRef.current?.setFilterModel({
-                                        items: []
-                                    })
-                                else
-                                    ordergridRef.current?.setFilterModel({
-                                        items: [
-                                            { field: 'Status', operator: 'is', value: e.target.value }
-                                        ]
-                                    })
-                            }}
-                        >
-                            <option value="Active">Active</option>
-                            <option value="Closed">Closed</option>
-                            <option value="Canceled">Canceled</option>
-                            <option value="All">All</option>
-                        </Select>
-                    </FormControl>
 
 
                     <div className="flex-1"></div>
-                    <IconButton className="p-4" size="large" aria-label="refresh" onClick={() => refreshData()}><RefreshIcon /></IconButton>
+                    <IconButton className="p-4" size="large" aria-label="refresh" onClick={() => refreshData()}><RefreshIcon/></IconButton>
 
-                    <IconButton className="p-4" size="large" onClick={() => setIsFullscreen(!isFullscreen)}><OpenInFullIcon /></IconButton>
+                    <IconButton className="p-4" size="large" onClick={() => setIsFullscreen(!isFullscreen)}><OpenInFullIcon/></IconButton>
                     <div className="flex-1"></div>
                     <Button variant={"contained"} color={"error"} className="p-4" onClick={() => logout()}>Logout {currentUser.Name}</Button>
                     <div className="flex-1"></div>
@@ -656,150 +468,6 @@ BigInt.prototype.toJSON = function () { return parseInt(this.toString()) }
                     <Button variant={"contained"} className="p-4" onClick={() => setOpenTableModal(true)}>New Order</Button>
 
                 </div>
-
-                {isRefreshing && <LinearProgress />}
-                <DataGridPro
-                    pagination
-                    apiRef={ordergridRef}
-                    key={'ordergrid' + randomKey}
-                    viewName={'ordergrid'}
-                    slots={{ footer: LayoutFooter }}
-                    slotProps={{ footer: { viewName: 'ordergrid', refresh: () => setRandomKey(Math.random()), ref: ordergridRef } }}
-                    isRowSelectable={() => false}
-                    getRowHeight={() => 'auto'}
-                    getEstimatedRowHeight={() => 72}
-                    sx={{
-                        '&.MuiDataGrid-root--densityCompact .MuiDataGrid-cell': { py: '8px' },
-                        '&.MuiDataGrid-root--densityStandard .MuiDataGrid-cell': { py: '15px' },
-                        '&.MuiDataGrid-root--densityComfortable .MuiDataGrid-cell': { py: '22px' },
-                        overflowX: 'scroll'
-                    }}
-                    initialState={orderInitialState}
-                    onFilterModelChange={(model) => {
-                        // detect if changed state
-                        const statusFilter = model.items?.find((item) => item.field === 'Status');
-                        if (!statusFilter) setActiveStatusState("All");
-                        else setActiveStatusState(statusFilter.value);
-
-                        console.log('model', statusFilter)
-                    }}
-                    onStateChange={(state) => {
-
-                        // using visible rows to calculate sum
-                        const visibleRowsLookup = state.filter.filteredRowsLookup
-
-                        if (!visibleRowsLookup) return;
-
-                        const visibleItems = [];
-                        for (const [id, value] of Object.entries(visibleRowsLookup)) {
-                            if (value === true) {
-                                visibleItems.push(parseInt(id));
-                            }
-                        }
-
-                        const rowsFiltered = rows.filter((row) => visibleItems.includes(row.id));
-
-
-                        const sum = rowsFiltered.reduce((acc, order) => acc + parseFloat(order.Price ?? 0), 0);
-
-                        setOrdersSum(sum);
-
-                        const orderItemsCostSum = rowsFiltered.reduce((acc, row) => acc + row.ItemsCost, 0);
-
-                        setOrderItemsCostSum(orderItemsCostSum);
-
-                        const orderTaxesSum = rowsFiltered.reduce((acc, row) => acc + row.Taxes, 0);
-                        setOrderTaxesSum(orderTaxesSum);
-
-                        const orderTotalSum = rowsFiltered.reduce((acc, row) => acc + row.Total, 0);
-                        setOrderTotalSum(orderTotalSum);
-
-                        const orderRealPaymentSum = rowsFiltered.reduce((acc, row) => acc + row.RealPayment, 0);
-                        setOrderRealPaymentSum(orderRealPaymentSum);
-
-
-                    }}
-                    rows={rows} columns={cols} onRowClick={({ id, row }) => {
-                        setSelectedOrderId(id)
-                    }}
-                    getRowClassName={(params) => params.row.Canceled ? 'bg-red-200' : params.row.OrderClosed ? 'bg-gray-200' : ''}
-                />
-                <div className="flex items-center me-4">
-
-                    <div className="flex-1 mt-3.5 me-4 mb-3.5">
-                        Items Cost Sum<br /> OMR {orderItemsCostSum.toFixed(3)}
-                    </div>
-                    <div className="flex-1 mt-3.5 me-4 mb-3.5">
-                        Taxes Sum<br /> OMR {orderTaxesSum.toFixed(3)}
-                    </div>
-                    <div className="flex-1 mt-3.5 me-4 mb-3.5">
-                        Total Sum<br /> OMR {orderTotalSum.toFixed(3)}
-                    </div>
-                    <div className="flex-1 mt-3.5 me-4 mb-3.5">
-                        Real Payment Sum<br /> OMR {orderRealPaymentSum.toFixed(3)}
-                    </div>
-                </div>
-                <Modal
-                    open={openTableModal}
-                    onClose={() => setOpenTableModal(false)}
-                    aria-labelledby="modal-modal-title"
-                    aria-describedby="modal-modal-description"
-                >
-                    <Box sx={{
-                        position: 'absolute' as 'absolute',
-                        top: '50%',
-                        left: '50%',
-                        transform: 'translate(-50%, -50%)',
-                        width: 800,
-                        bgcolor: 'background.paper',
-                        border: '2px solid #000',
-                        boxShadow: 24,
-                        p: 4,
-                    }}>
-                        <Typography id="modal-modal-title" variant="h6" component="h2">
-                            1. Select table
-                        </Typography>
-                        <div className="flex flex-row justify-between mt-4 mb-4">
-                            <div className="flex flex-col">
-                                {tables.filter(t => t.Col == 1).map((table) => (
-                                    <Button key={table.ID} style={{ marginBottom: 5 }} variant={newOrderTableID == table.ID ? 'contained' : 'outlined'} disabled={!table.Active} onClick={() => setNewOrderTableID(table.ID)}>{table.TableName}</Button>
-                                ))}
-                            </div>
-                            <div className="flex flex-col">
-                                {tables.filter(t => t.Col == 2).map((table) => (
-                                    <Button key={table.ID} style={{ marginBottom: 5 }} variant={newOrderTableID == table.ID ? 'contained' : 'outlined'} disabled={!table.Active} onClick={() => setNewOrderTableID(table.ID)}>{table.TableName}</Button>
-                                ))}
-                            </div>
-                            <div className="flex flex-col">
-                                {tables.filter(t => t.Col == 3).map((table) => (
-                                    <Button key={table.ID} style={{ marginBottom: 5 }} variant={newOrderTableID == table.ID ? 'contained' : 'outlined'} disabled={!table.Active} onClick={() => setNewOrderTableID(table.ID)}>{table.TableName}</Button>
-                                ))}
-                            </div>
-                            <div className="flex flex-col">
-                                {tables.filter(t => t.Col == 4).map((table) => (
-                                    <Button key={table.ID} style={{ marginBottom: 5 }} variant={newOrderTableID == table.ID ? 'contained' : 'outlined'} disabled={!table.Active} onClick={() => setNewOrderTableID(table.ID)}>{table.TableName}</Button>
-                                ))}
-                            </div>
-                        </div>
-
-                        <Typography id="modal-modal-title" variant="h6" component="h2">
-                            2. Set order name
-                        </Typography>
-                        <div className="flex flex-row justify-between mt-4 mb-4">
-                            <div className="flex flex-col">
-                                <TextField label="Order name" value={newOrderOrderName ?? ''} onChange={(e) => setNewOrderOrderName(e.target.value)} />
-                            </div>
-                            <div className="flex flex-col">
-                                <Button onClick={() => createOrder(newOrderTableID)} disabled={newOrderTableID == -1} size={"large"} variant={"contained"} color={"success"}>Create Order</Button>
-                            </div>
-                        </div>
-
-
-
-                    </Box>
-                </Modal>
-
-
             </div>
         )
     }
@@ -844,12 +512,10 @@ BigInt.prototype.toJSON = function () { return parseInt(this.toString()) }
         setSelectedCustomer(editedPayment.ID_Customer);
 
 
-
         setOpenEditPayModal(true)
 
 
     }
-
     const openBillModalEasy = (paymentID, ois = orderItems, pmnts = payments, pmtxs = paymentTaxes) => {
         setSelectedPaymentId(paymentID)
 
@@ -889,12 +555,10 @@ BigInt.prototype.toJSON = function () { return parseInt(this.toString()) }
         setSelectedCustomer(editedPayment.ID_Customer);
 
 
-
         setOpenBillModal(true)
 
 
     }
-
     const openCumulatedBillModal = (paymentID, ois = orderItems, pmnts = payments, pmtxs = paymentTaxes) => {
         setSelectedPaymentId(paymentID)
 
@@ -932,7 +596,6 @@ BigInt.prototype.toJSON = function () { return parseInt(this.toString()) }
         setDiscountPercent(editedPayment.DiscountPercent);
         setNewPaymentRealPayment(editedPayment.RealPayment);
         setSelectedCustomer(editedPayment.ID_Customer);
-
 
 
         setOpenBillModal(true)
@@ -1017,7 +680,6 @@ BigInt.prototype.toJSON = function () { return parseInt(this.toString()) }
     }
 
 
-
     const [creatingPayment, setCreatingPayment] = useState(false);
     const createPaymentNew = async () => {
         if (creatingPayment) {
@@ -1092,7 +754,7 @@ BigInt.prototype.toJSON = function () { return parseInt(this.toString()) }
     }
 
     const cancelOrder = async () => {
-        const { updatedOrder, updatedOrderItems } = await DB_cancelOrder(selectedOrderId);
+        const {updatedOrder, updatedOrderItems} = await DB_cancelOrder(selectedOrderId);
         if (!updatedOrder) return;
         setOrders(orders.map((order) => order.ID == selectedOrderId ? updatedOrder : order));
         setOrderItems(orderItems.map((orderItem) => updatedOrderItems.find((oi) => oi.ID == orderItem.ID) ?? orderItem));
@@ -1100,7 +762,7 @@ BigInt.prototype.toJSON = function () { return parseInt(this.toString()) }
     }
 
     const reopenOrder = async () => {
-        const { updatedOrder, updatedOrderItems } = await DB_reopenOrder(selectedOrderId);
+        const {updatedOrder, updatedOrderItems} = await DB_reopenOrder(selectedOrderId);
         if (!updatedOrder) return;
         setOrders(orders.map((order) => order.ID == selectedOrderId ? updatedOrder : order));
         setOrderItems(orderItems.map((orderItem) => updatedOrderItems.find((oi) => oi.ID == orderItem.ID) ?? orderItem));
@@ -1156,12 +818,12 @@ BigInt.prototype.toJSON = function () { return parseInt(this.toString()) }
                         <FormGroup>
                             {orderItems.filter((orderItem) => orderItem.ID_Order == selectedOrderId && !orderItem.Canceled).map((orderItem) => (
                                 <FormControlLabel key={orderItem.ID}
-                                    control={<Checkbox checked={checkboxes[orderItem.ID.toString()]}
-                                        onChange={onCheckboxChange}
-                                        name={orderItem.ID.toString()}
-                                        disabled={orderItem.ID_Payment && orderItem.ID_Payment != selectedPaymentId}
-                                    />}
-                                    label={`${meals.find((meal) => meal.ID == orderItem.ID_Meal)?.Meal} ${variants.find((variant) => variant.ID == orderItem.ID_Variant)?.MealVariant ?? ''}   -   OMR ${orderItem.Price}`} />
+                                                  control={<Checkbox checked={checkboxes[orderItem.ID.toString()]}
+                                                                     onChange={onCheckboxChange}
+                                                                     name={orderItem.ID.toString()}
+                                                                     disabled={orderItem.ID_Payment && orderItem.ID_Payment != selectedPaymentId}
+                                                  />}
+                                                  label={`${meals.find((meal) => meal.ID == orderItem.ID_Meal)?.Meal} ${variants.find((variant) => variant.ID == orderItem.ID_Variant)?.MealVariant ?? ''}   -   OMR ${orderItem.Price}`}/>
                             ))}
                         </FormGroup>
                     </div>
@@ -1170,7 +832,7 @@ BigInt.prototype.toJSON = function () { return parseInt(this.toString()) }
                     </Typography>
                     <div className="flex-1">
                         {taxes.map((tax) => (
-                            <FormControlLabel key={tax.ID} control={<Checkbox name={tax.TaxName} checked={checkboxes[tax.TaxName]} onChange={onCheckboxChange} />} label={`${tax.TaxName} - ${tax.Percentage ? tax.Percentage + '%' : tax.Value}`} />
+                            <FormControlLabel key={tax.ID} control={<Checkbox name={tax.TaxName} checked={checkboxes[tax.TaxName]} onChange={onCheckboxChange}/>} label={`${tax.TaxName} - ${tax.Percentage ? tax.Percentage + '%' : tax.Value}`}/>
                         ))}
                     </div>
                     <Typography variant="h6" component="h2" className="pt-2 pb-2">
@@ -1211,7 +873,7 @@ BigInt.prototype.toJSON = function () { return parseInt(this.toString()) }
                             variant="outlined"
                             value={discountPercent * 100}
                             disabled
-                            sx={{ width: '10ch' }}
+                            sx={{width: '10ch'}}
                             InputProps={{
                                 endAdornment: <InputAdornment position="start">%</InputAdornment>,
                             }}
@@ -1247,11 +909,11 @@ BigInt.prototype.toJSON = function () { return parseInt(this.toString()) }
                     </Typography>
                     <div className="flex">
                         {paymentMethods.map((paymentMethod) => (
-                            <FormControlLabel key={paymentMethod.ID} control={<Checkbox name={paymentMethod.PaymentMethod} checked={checkboxes[paymentMethod.PaymentMethod]} onChange={onCheckboxChange} />} label={`${paymentMethod.PaymentMethod}`} />
+                            <FormControlLabel key={paymentMethod.ID} control={<Checkbox name={paymentMethod.PaymentMethod} checked={checkboxes[paymentMethod.PaymentMethod]} onChange={onCheckboxChange}/>} label={`${paymentMethod.PaymentMethod}`}/>
                         ))}
                     </div>
 
-                    <div id="horizontal-line" style={{ borderTop: '1px solid black', width: '100%', margin: '10px 0' }}></div>
+                    <div id="horizontal-line" style={{borderTop: '1px solid black', width: '100%', margin: '10px 0'}}></div>
                     <div className="flex">
                         <div className="flex-1 flex flex-col">
                             <Typography variant="body" className="pt-1 pb-1">
@@ -1287,7 +949,7 @@ BigInt.prototype.toJSON = function () { return parseInt(this.toString()) }
                         </div>
                     </div>
                     <div className="flex justify-items-center mt-4">
-                        <Box sx={{ m: 1, position: 'relative' }}>
+                        <Box sx={{m: 1, position: 'relative'}}>
                             <Button variant={"contained"} color={"error"} className="p-4" onClick={() => {
                                 deleteBill(selectedPaymentId);
                             }}>Delete</Button>
@@ -1297,19 +959,19 @@ BigInt.prototype.toJSON = function () { return parseInt(this.toString()) }
                             {savedPaymentSuccess && (
                                 <Alert
                                     severity="success"
-                                    sx={{ width: '100%' }}
+                                    sx={{width: '100%'}}
                                 >
                                     Payment saved
                                 </Alert>
                             )}
                         </div>
-                        <Box sx={{ m: 1, position: 'relative' }}>
+                        <Box sx={{m: 1, position: 'relative'}}>
                             <Button disabled={!hasPaymentChecked()} variant={"contained"} className="p-4" onClick={() => {
                                 setOpenBillModal(true);
                             }}>Show bill</Button>
                         </Box>
                         <div className="w-4"></div>
-                        <Box sx={{ m: 1, position: 'relative' }}>
+                        <Box sx={{m: 1, position: 'relative'}}>
                             <Button
                                 className="p-4"
                                 variant="contained"
@@ -1342,7 +1004,7 @@ BigInt.prototype.toJSON = function () { return parseInt(this.toString()) }
     const orderDetailInitialState = {
         sorting: {
             sortModel: [
-                { field: 'Time', sort: 'desc' },
+                {field: 'Time', sort: 'desc'},
             ],
         },
         columns: {
@@ -1383,28 +1045,28 @@ BigInt.prototype.toJSON = function () { return parseInt(this.toString()) }
                         const oi = await DB_prepareOrderItem(params.row.id);
                         setOrderItems(orderItems.map((orderItem) => orderItem.ID == oi.ID ? oi : orderItem));
                     }}>
-                        <RestaurantIcon />
+                        <RestaurantIcon/>
                     </IconButton>
                 ),
                 type: 'boolean',
                 valueGetter: (value, row) => !!row.Time_Prepared,
             },
 
-            { field: 'id', headerName: 'ID' },
-            { field: 'ID_Order', headerName: 'ID_Order' },
-            { field: 'ID_Meal', headerName: 'ID_Meal' },
+            {field: 'id', headerName: 'ID'},
+            {field: 'ID_Order', headerName: 'ID_Order'},
+            {field: 'ID_Meal', headerName: 'ID_Meal'},
             {
                 field: 'Meal', headerName: 'Meal',
                 renderCell: (params) => (
                     <div>
                         <b>{params.row.Meal}</b>
-                        <br />
+                        <br/>
                         <span>{params.row.Variant}</span>
                     </div>
                 ),
             },
-            { field: 'ID_Variant', headerName: 'ID_Variant' },
-            { field: 'Variant', headerName: 'Variant' },
+            {field: 'ID_Variant', headerName: 'ID_Variant'},
+            {field: 'Variant', headerName: 'Variant'},
 
 
             {
@@ -1415,9 +1077,9 @@ BigInt.prototype.toJSON = function () { return parseInt(this.toString()) }
                 renderCell: (params) => (
                     <div>
                         <span>Ordered: {convertDate(params.row.TimeOfOrder)}</span>
-                        <br />
+                        <br/>
                         <span>Prepared: {convertDate(params.row.Time_Prepared)}</span>
-                        <br />
+                        <br/>
                         <span>Delivered: {convertDate(params.row.Time_Delivered)}</span>
                     </div>
                 ),
@@ -1425,13 +1087,13 @@ BigInt.prototype.toJSON = function () { return parseInt(this.toString()) }
                 valueFormatter: convertDate,
 
             },
-            { field: 'TimeOfOrder', headerName: 'Ordered', type: 'date', valueFormatter: convertDate },
-            { field: 'Time_Prepared', headerName: 'Prep', type: 'date', valueFormatter: convertDate },
-            { field: 'Time_Delivered', headerName: 'Deliver', type: 'date', valueFormatter: convertDate },
-            { field: 'Note', headerName: 'Note' },
+            {field: 'TimeOfOrder', headerName: 'Ordered', type: 'date', valueFormatter: convertDate},
+            {field: 'Time_Prepared', headerName: 'Prep', type: 'date', valueFormatter: convertDate},
+            {field: 'Time_Delivered', headerName: 'Deliver', type: 'date', valueFormatter: convertDate},
+            {field: 'Note', headerName: 'Note'},
 
-            { field: 'Price', headerName: 'Price', type: 'number' },
-            { field: 'Status', headerName: 'Status', valueOptions: ['Paid', 'Canceled'], type: 'singleSelect' },
+            {field: 'Price', headerName: 'Price', type: 'number'},
+            {field: 'Status', headerName: 'Status', valueOptions: ['Paid', 'Canceled'], type: 'singleSelect'},
 
             {
                 field: 'Button_waiter', headerName: 'Waiter',
@@ -1443,7 +1105,7 @@ BigInt.prototype.toJSON = function () { return parseInt(this.toString()) }
                         const oi = await DB_deliverOrderItem(params.row.id);
                         setOrderItems(orderItems.map((orderItem) => orderItem.ID == oi.ID ? oi : orderItem));
                     }}>
-                        <TableBarIcon />
+                        <TableBarIcon/>
                     </IconButton>
                 ),
                 type: 'boolean',
@@ -1473,39 +1135,39 @@ BigInt.prototype.toJSON = function () { return parseInt(this.toString()) }
         }));
 
         return (
-            <div style={{ display: 'flex', flexDirection: 'column', height: '100vh' }}>
+            <div style={{display: 'flex', flexDirection: 'column', height: '100vh'}}>
 
                 <div className="flex items-center me-4 ms-4">
 
                     <Button variant={"contained"} className="p-4" onClick={() => setSelectedOrderId(null)}>Back</Button>
-                    <CardHeader title={"Order no. " + selectedOrderId + " - " + (orders.find((order) => order.ID == selectedOrderId)?.OrderName ?? '') + " - " + tables.find((table) => table.ID == orders.find((order) => order.ID == selectedOrderId)?.ID_Table)?.TableName} className="flex-1" />
-                    {isOrderClosed() && <CardHeader title={"ORDER IS CLOSED"} className="flex-1" />}
-                    {isOrderCanceled() && <CardHeader title={"ORDER IS CANCELED"} className="flex-1" />}
+                    <CardHeader title={"Order no. " + selectedOrderId + " - " + (orders.find((order) => order.ID == selectedOrderId)?.OrderName ?? '') + " - " + tables.find((table) => table.ID == orders.find((order) => order.ID == selectedOrderId)?.ID_Table)?.TableName} className="flex-1"/>
+                    {isOrderClosed() && <CardHeader title={"ORDER IS CLOSED"} className="flex-1"/>}
+                    {isOrderCanceled() && <CardHeader title={"ORDER IS CANCELED"} className="flex-1"/>}
                     {isOrderClosedOrCanceled() && <Button variant={"contained"} className="p-4" color={"success"} onClick={() => reopenOrder()}>Open Order</Button>}
 
                     {!isOrderClosedOrCanceled() && <Button variant={"contained"} className="p-4" color={"error"}
-                        disabled={!!orderPayments.length}
-                        onClick={() => cancelOrder()}>Cancel Order</Button>}
+                                                           disabled={!!orderPayments.length}
+                                                           onClick={() => cancelOrder()}>Cancel Order</Button>}
                 </div>
 
-                {isRefreshing && <LinearProgress />}
+                {isRefreshing && <LinearProgress/>}
                 <LayoutDataGrid
                     key={'orderDetial'}
                     viewName={'orderDetial'}
                     isRowSelectable={() => false}
                     getRowHeight={() => 'auto'} getEstimatedRowHeight={() => 72}
                     sx={{
-                        '&.MuiDataGrid-root--densityCompact .MuiDataGrid-cell': { py: '8px' },
-                        '&.MuiDataGrid-root--densityStandard .MuiDataGrid-cell': { py: '15px' },
-                        '&.MuiDataGrid-root--densityComfortable .MuiDataGrid-cell': { py: '22px' },
+                        '&.MuiDataGrid-root--densityCompact .MuiDataGrid-cell': {py: '8px'},
+                        '&.MuiDataGrid-root--densityStandard .MuiDataGrid-cell': {py: '15px'},
+                        '&.MuiDataGrid-root--densityComfortable .MuiDataGrid-cell': {py: '22px'},
                     }}
-                    style={{ flex: 1, overflow: 'scroll' }}
+                    style={{flex: 1, overflow: 'scroll'}}
                     initialState={orderDetailInitialState}
-                    rows={rows} columns={orderItemCols} onRowClick={({ id, row }) => {
-                        if (isOrderClosedOrCanceled()) return;
-                        setSelectedOrderItemId(id);
-                        setOpenOrderItemActionsModal(true);
-                    }}
+                    rows={rows} columns={orderItemCols} onRowClick={({id, row}) => {
+                    if (isOrderClosedOrCanceled()) return;
+                    setSelectedOrderItemId(id);
+                    setOpenOrderItemActionsModal(true);
+                }}
                     getRowClassName={(params) => params.row.Status == 'Canceled' ? 'bg-red-200' : params.row.Status == 'Paid' ? 'bg-green-200' : ''}
                 />
 
@@ -1614,12 +1276,12 @@ BigInt.prototype.toJSON = function () { return parseInt(this.toString()) }
                             <FormGroup>
                                 {orderItems.filter((orderItem) => orderItem.ID_Order == selectedOrderId && !orderItem.Canceled).map((orderItem) => (
                                     <FormControlLabel key={orderItem.ID}
-                                        control={<Checkbox checked={checkboxes[orderItem.ID.toString()]}
-                                            onChange={onCheckboxChange}
-                                            name={orderItem.ID.toString()}
-                                            disabled={orderItem.ID_Payment}
-                                        />}
-                                        label={`${meals.find((meal) => meal.ID == orderItem.ID_Meal)?.Meal} ${variants.find((variant) => variant.ID == orderItem.ID_Variant)?.MealVariant ?? ''}   -   OMR ${orderItem.Price}`} />
+                                                      control={<Checkbox checked={checkboxes[orderItem.ID.toString()]}
+                                                                         onChange={onCheckboxChange}
+                                                                         name={orderItem.ID.toString()}
+                                                                         disabled={orderItem.ID_Payment}
+                                                      />}
+                                                      label={`${meals.find((meal) => meal.ID == orderItem.ID_Meal)?.Meal} ${variants.find((variant) => variant.ID == orderItem.ID_Variant)?.MealVariant ?? ''}   -   OMR ${orderItem.Price}`}/>
                                 ))}
                             </FormGroup>
                         </div>
@@ -1628,7 +1290,7 @@ BigInt.prototype.toJSON = function () { return parseInt(this.toString()) }
                         </Typography>
                         <div className="flex-1">
                             {taxes.map((tax) => (
-                                <FormControlLabel key={tax.ID} control={<Checkbox name={tax.TaxName} checked={checkboxes[tax.TaxName]} onChange={onCheckboxChange} />} label={`${tax.TaxName} - ${tax.Percentage ? tax.Percentage + '%' : tax.Value}`} />
+                                <FormControlLabel key={tax.ID} control={<Checkbox name={tax.TaxName} checked={checkboxes[tax.TaxName]} onChange={onCheckboxChange}/>} label={`${tax.TaxName} - ${tax.Percentage ? tax.Percentage + '%' : tax.Value}`}/>
                             ))}
                         </div>
                         <Typography variant="h6" component="h2" className="pt-2 pb-2">
@@ -1667,7 +1329,7 @@ BigInt.prototype.toJSON = function () { return parseInt(this.toString()) }
                                 variant="outlined"
                                 value={Math.round(discountPercent * 100)}
                                 disabled
-                                sx={{ width: '10ch', marginLeft: '10px', marginRight: '10px' }}
+                                sx={{width: '10ch', marginLeft: '10px', marginRight: '10px'}}
                                 InputProps={{
                                     endAdornment: <InputAdornment position="start">%</InputAdornment>,
                                 }}
@@ -1696,11 +1358,11 @@ BigInt.prototype.toJSON = function () { return parseInt(this.toString()) }
                         </Typography>
                         <div className="flex">
                             {paymentMethods.map((paymentMethod) => (
-                                <FormControlLabel key={paymentMethod.ID} control={<Checkbox name={paymentMethod.PaymentMethod} checked={checkboxes[paymentMethod.PaymentMethod]} onChange={onCheckboxChange} />} label={`${paymentMethod.PaymentMethod}`} />
+                                <FormControlLabel key={paymentMethod.ID} control={<Checkbox name={paymentMethod.PaymentMethod} checked={checkboxes[paymentMethod.PaymentMethod]} onChange={onCheckboxChange}/>} label={`${paymentMethod.PaymentMethod}`}/>
                             ))}
                         </div>
 
-                        <div id="horizontal-line" style={{ borderTop: '1px solid black', width: '100%', margin: '10px 0' }}></div>
+                        <div id="horizontal-line" style={{borderTop: '1px solid black', width: '100%', margin: '10px 0'}}></div>
                         <div className="flex">
                             <div className="flex-1 flex flex-col">
                                 <Typography variant="body" className="pt-1 pb-1">
@@ -1739,7 +1401,7 @@ BigInt.prototype.toJSON = function () { return parseInt(this.toString()) }
 
                         <div className="flex justify-items-center me-4">
                             <div className="flex-1"></div>
-                            <Box sx={{ m: 1, position: 'relative' }}>
+                            <Box sx={{m: 1, position: 'relative'}}>
                                 <Button
                                     className="p-4"
                                     variant="contained"
@@ -1775,7 +1437,7 @@ BigInt.prototype.toJSON = function () { return parseInt(this.toString()) }
                     onClose={() => setOpenBillModal(false)}
                     aria-labelledby="modal-modal-title"
                     aria-describedby="modal-modal-description"
-                    BackdropProps={{ style: { backgroundColor: 'rgba(0, 0, 0, 1)' } }}
+                    BackdropProps={{style: {backgroundColor: 'rgba(0, 0, 0, 1)'}}}
                 >
                     <>
 
@@ -1788,19 +1450,19 @@ BigInt.prototype.toJSON = function () { return parseInt(this.toString()) }
                             }`}
                         </style>
                         <Box className="contentToPrint"
-                            sx={{
-                                position: 'absolute' as 'absolute',
-                                top: '50%',
-                                left: '50%',
-                                transform: 'translate(-50%, -50%)',
-                                width: 750,
-                                bgcolor: 'white',
-                                p: 4,
-                                overflow: 'scroll',
-                                display: 'flex',
-                                flexDirection: 'column',
-                                maxHeight: '100%',
-                            }}>
+                             sx={{
+                                 position: 'absolute' as 'absolute',
+                                 top: '50%',
+                                 left: '50%',
+                                 transform: 'translate(-50%, -50%)',
+                                 width: 750,
+                                 bgcolor: 'white',
+                                 p: 4,
+                                 overflow: 'scroll',
+                                 display: 'flex',
+                                 flexDirection: 'column',
+                                 maxHeight: '100%',
+                             }}>
                             <>
                                 <div ref={contentToPrint}>
 
@@ -1837,17 +1499,17 @@ BigInt.prototype.toJSON = function () { return parseInt(this.toString()) }
                                         {/* Right Section - Company Details */}
                                         <Grid item xs={4}>
                                             <Box className="text-right">
-                                                <Typography sx={{ fontSize: '12px' }} className="mb-1">C.R. 1542720</Typography>
-                                                <Typography sx={{ fontSize: '12px' }} className="mb-1 text-right" dir="rtl">
+                                                <Typography sx={{fontSize: '12px'}} className="mb-1">C.R. 1542720</Typography>
+                                                <Typography sx={{fontSize: '12px'}} className="mb-1 text-right" dir="rtl">
                                                     شركة رومان سبيورك للتجارة
                                                 </Typography>
-                                                <Typography sx={{ fontSize: '12px' }}>Roman Spurek Trading Company</Typography>
-                                                <Typography sx={{ fontSize: '12px' }} className="mb-1 text-right" dir="rtl">
+                                                <Typography sx={{fontSize: '12px'}}>Roman Spurek Trading Company</Typography>
+                                                <Typography sx={{fontSize: '12px'}} className="mb-1 text-right" dir="rtl">
                                                     صلاله / صلالة / محافظة ظفار
                                                 </Typography>
-                                                <Typography sx={{ fontSize: '12px' }}>Salalah / Salalah / Dhofar Governorate</Typography>
-                                                <Typography sx={{ fontSize: '12px' }}>GSM: 92058220</Typography>
-                                                <Typography sx={{ fontSize: '12px' }} className="mb-1 text-right" dir="rtl">
+                                                <Typography sx={{fontSize: '12px'}}>Salalah / Salalah / Dhofar Governorate</Typography>
+                                                <Typography sx={{fontSize: '12px'}}>GSM: 92058220</Typography>
+                                                <Typography sx={{fontSize: '12px'}} className="mb-1 text-right" dir="rtl">
                                                     goldenlobsterhawana@gmail.com
                                                 </Typography>
                                             </Box>
@@ -1867,7 +1529,7 @@ BigInt.prototype.toJSON = function () { return parseInt(this.toString()) }
                                     <div className="flex-1">
 
                                         {selectedPaymentItems
-                                            .map(({ key, count, orderItem }) => (
+                                            .map(({key, count, orderItem}) => (
                                                 <div key={orderItem.ID} className="flex-1 flex items-center">
                                                     <Typography className="w-12">{count}x</Typography>
                                                     <Typography>{`${meals.find((meal) => meal.ID == orderItem.ID_Meal)?.Meal} ${variants.find((variant) => variant.ID == orderItem.ID_Variant)?.MealVariant ?? ''}`}</Typography>
@@ -1885,7 +1547,7 @@ BigInt.prototype.toJSON = function () { return parseInt(this.toString()) }
                                         </div>
                                     }
 
-                                    <div id="horizontal-line" style={{ borderTop: '1px solid black', width: '100%', margin: '10px 0' }}></div>
+                                    <div id="horizontal-line" style={{borderTop: '1px solid black', width: '100%', margin: '10px 0'}}></div>
                                     <div className="flex-1">
                                         {selectedPaymentTaxes.map((tax) => (
                                             <div key={tax.ID} className="flex-1 flex items-center">
@@ -1901,7 +1563,7 @@ BigInt.prototype.toJSON = function () { return parseInt(this.toString()) }
                                         <Typography>OMR {parseFloat(selectedPayment?.Taxes).toFixed(3)}</Typography>
                                     </div>
 
-                                    <div id="horizontal-line" style={{ borderTop: '1px solid black', width: '100%', margin: '10px 0' }}></div>
+                                    <div id="horizontal-line" style={{borderTop: '1px solid black', width: '100%', margin: '10px 0'}}></div>
 
                                     <div key={'Payment_type'} className="flex-1 flex items-center">
                                         <Typography>Payment type</Typography>
@@ -1919,7 +1581,7 @@ BigInt.prototype.toJSON = function () { return parseInt(this.toString()) }
                                         <div className="flex-1"></div>
                                         <Typography>{users.find((user) => user.ID == selectedPayment?.ID_User)?.Name}</Typography>
                                     </div>
-                                    <div id="horizontal-line" style={{ borderTop: '1px solid black', width: '100%', margin: '10px 0' }}></div>
+                                    <div id="horizontal-line" style={{borderTop: '1px solid black', width: '100%', margin: '10px 0'}}></div>
 
 
                                     <div key={'final'} className="flex-1 flex items-center">
@@ -1935,7 +1597,7 @@ BigInt.prototype.toJSON = function () { return parseInt(this.toString()) }
                         </Box>
 
 
-                        <div className="printContent" style={{ zIndex: -2222, position: 'absolute', top: 0, left: 0, width: '100vw', height: '100vh', backgroundColor: 'white', padding: 40 }}>
+                        <div className="printContent" style={{zIndex: -2222, position: 'absolute', top: 0, left: 0, width: '100vw', height: '100vh', backgroundColor: 'white', padding: 40}}>
                             <div key={'title'} className="flex-1 flex items-center mb-4">
                                 <Typography variant="h5" component="h5">Payment no. {selectedPaymentId?.toString()}</Typography>
                             </div>
@@ -1944,7 +1606,7 @@ BigInt.prototype.toJSON = function () { return parseInt(this.toString()) }
                             <div className="flex-1">
 
                                 {selectedPaymentItems
-                                    .map(({ key, count, orderItem }) => (
+                                    .map(({key, count, orderItem}) => (
                                         <div key={orderItem.ID} className="flex-1 flex items-center">
                                             <Typography className="w-12">{count}x</Typography>
                                             <Typography>{`${meals.find((meal) => meal.ID == orderItem.ID_Meal)?.Meal} ${variants.find((variant) => variant.ID == orderItem.ID_Variant)?.MealVariant ?? ''}`}</Typography>
@@ -1962,7 +1624,7 @@ BigInt.prototype.toJSON = function () { return parseInt(this.toString()) }
                                 </div>
                             }
 
-                            <div id="horizontal-line" style={{ borderTop: '1px solid black', width: '100%', margin: '10px 0' }}></div>
+                            <div id="horizontal-line" style={{borderTop: '1px solid black', width: '100%', margin: '10px 0'}}></div>
                             <div className="flex-1">
                                 {selectedPaymentTaxes.map((tax) => (
                                     <div key={tax.ID} className="flex-1 flex items-center">
@@ -1978,7 +1640,7 @@ BigInt.prototype.toJSON = function () { return parseInt(this.toString()) }
                                 <Typography>OMR {parseFloat(selectedPayment?.Taxes).toFixed(3)}</Typography>
                             </div>
 
-                            <div id="horizontal-line" style={{ borderTop: '1px solid black', width: '100%', margin: '10px 0' }}></div>
+                            <div id="horizontal-line" style={{borderTop: '1px solid black', width: '100%', margin: '10px 0'}}></div>
 
                             <div key={'Payment_type'} className="flex-1 flex items-center">
                                 <Typography>Payment type</Typography>
@@ -1996,7 +1658,7 @@ BigInt.prototype.toJSON = function () { return parseInt(this.toString()) }
                                 <div className="flex-1"></div>
                                 <Typography>{users.find((user) => user.ID == selectedPayment?.ID_User)?.Name}</Typography>
                             </div>
-                            <div id="horizontal-line" style={{ borderTop: '1px solid black', width: '100%', margin: '10px 0' }}></div>
+                            <div id="horizontal-line" style={{borderTop: '1px solid black', width: '100%', margin: '10px 0'}}></div>
 
 
                             <div key={'final'} className="flex-1 flex items-center">
@@ -2046,10 +1708,8 @@ BigInt.prototype.toJSON = function () { return parseInt(this.toString()) }
     }
 
 
-
     const [selectedPayments, setSelectedPayments] = useState([]);
     const [openNewCumulatedPaymentModal, setOpenNewCumulatedPaymentModal] = useState(false);
-
 
 
     const createNewCumulatedPayment = async () => {
@@ -2088,7 +1748,6 @@ BigInt.prototype.toJSON = function () { return parseInt(this.toString()) }
         }
 
 
-
         console.log('createNewCumulatedPayment', paymentIDsToMarkAsPaid, realAmount);
     }
 
@@ -2096,17 +1755,13 @@ BigInt.prototype.toJSON = function () { return parseInt(this.toString()) }
     const [cumulatedBillsRealPaymentSum, setCumulatedBillsRealPaymentSum] = useState(0);
 
 
-
     const cumulatedBillInitialState = {
         sorting: {
             sortModel: [
-                { field: 'TimeOfPay', sort: 'desc' },
+                {field: 'TimeOfPay', sort: 'desc'},
             ],
         },
-        columns: {
-
-
-        }
+        columns: {}
     };
 
     const renderCumulatedBills = () => {
@@ -2125,9 +1780,9 @@ BigInt.prototype.toJSON = function () { return parseInt(this.toString()) }
 
 
         const cols = [
-            { field: 'id', headerName: 'ID' },
-            { field: 'TimeOfPay', headerName: 'Time', type: 'date', valueFormatter: convertDate, filterOperators: todayFilterOperator },
-            { field: 'TotalAmount', headerName: 'Total', type: 'number' },
+            {field: 'id', headerName: 'ID'},
+            {field: 'TimeOfPay', headerName: 'Time', type: 'date', valueFormatter: convertDate, filterOperators: todayFilterOperator},
+            {field: 'TotalAmount', headerName: 'Total', type: 'number'},
             {
                 field: 'isPaid', headerName: 'Paid', type: 'boolean',
                 renderCell: (params) => (
@@ -2150,10 +1805,8 @@ BigInt.prototype.toJSON = function () { return parseInt(this.toString()) }
         }))
 
 
-
-
         return (
-            <div style={{ display: 'flex', flexDirection: 'column', height: '100vh' }}>
+            <div style={{display: 'flex', flexDirection: 'column', height: '100vh'}}>
 
                 <div className="flex items-center me-4 ms-4">
 
@@ -2163,7 +1816,7 @@ BigInt.prototype.toJSON = function () { return parseInt(this.toString()) }
                         setSelectedOrderId(null)
                         setSelectedPayment(null)
                     }}>Back</Button>
-                    <CardHeader title={"Cumulated bills"} className="flex-1" />
+                    <CardHeader title={"Cumulated bills"} className="flex-1"/>
 
 
                     <FormControl className="flex-1">
@@ -2194,18 +1847,18 @@ BigInt.prototype.toJSON = function () { return parseInt(this.toString()) }
                 </div>
 
 
-                {isRefreshing && <LinearProgress />}
+                {isRefreshing && <LinearProgress/>}
                 <LayoutDataGrid
                     key={'cumulatedbills'}
                     viewName={'cumulatedbills'}
                     isRowSelectable={() => false}
                     getRowHeight={() => 'auto'} getEstimatedRowHeight={() => 72}
                     sx={{
-                        '&.MuiDataGrid-root--densityCompact .MuiDataGrid-cell': { py: '8px' },
-                        '&.MuiDataGrid-root--densityStandard .MuiDataGrid-cell': { py: '15px' },
-                        '&.MuiDataGrid-root--densityComfortable .MuiDataGrid-cell': { py: '22px' },
+                        '&.MuiDataGrid-root--densityCompact .MuiDataGrid-cell': {py: '8px'},
+                        '&.MuiDataGrid-root--densityStandard .MuiDataGrid-cell': {py: '15px'},
+                        '&.MuiDataGrid-root--densityComfortable .MuiDataGrid-cell': {py: '22px'},
                     }}
-                    style={{ flex: 1, overflow: 'scroll' }}
+                    style={{flex: 1, overflow: 'scroll'}}
                     initialState={cumulatedBillInitialState}
                     onStateChange={(state) => {
                         // using visible rows to calculate sum
@@ -2235,7 +1888,7 @@ BigInt.prototype.toJSON = function () { return parseInt(this.toString()) }
 
                     rows={rows}
                     columns={cols}
-                    onRowClick={({ id, row }) => {
+                    onRowClick={({id, row}) => {
                         const paymentID = row.id;
                         const paymentAnyOrderItem = orderItems.find((orderItem) => orderItem.ID_Payment == paymentID);
                         const paymentOrderID = paymentAnyOrderItem?.ID_Order;
@@ -2269,23 +1922,23 @@ BigInt.prototype.toJSON = function () { return parseInt(this.toString()) }
                             <FormGroup>
                                 {unpaidCustomerPayments.map((payment) => (
                                     <FormControlLabel key={payment.ID}
-                                        control={<Checkbox checked={selectedPayments.includes(payment.ID)}
-                                            onChange={(e) => {
-                                                if (e.target.checked) {
-                                                    setSelectedPayments([...selectedPayments, payment.ID])
-                                                } else {
-                                                    setSelectedPayments(selectedPayments.filter((selectedPayment) => selectedPayment != payment.ID))
-                                                }
-                                            }}
-                                            name={payment.ID.toString()}
-                                            disabled={payment.isPaid}
-                                        />}
-                                        label={`${convertDate(payment.TimeOfPay)} - ${payment.TotalAmount}`} />
+                                                      control={<Checkbox checked={selectedPayments.includes(payment.ID)}
+                                                                         onChange={(e) => {
+                                                                             if (e.target.checked) {
+                                                                                 setSelectedPayments([...selectedPayments, payment.ID])
+                                                                             } else {
+                                                                                 setSelectedPayments(selectedPayments.filter((selectedPayment) => selectedPayment != payment.ID))
+                                                                             }
+                                                                         }}
+                                                                         name={payment.ID.toString()}
+                                                                         disabled={payment.isPaid}
+                                                      />}
+                                                      label={`${convertDate(payment.TimeOfPay)} - ${payment.TotalAmount}`}/>
                                 ))}
                             </FormGroup>
                         </div>
 
-                        <div id="horizontal-line" style={{ borderTop: '1px solid black', width: '100%', margin: '10px 0' }}></div>
+                        <div id="horizontal-line" style={{borderTop: '1px solid black', width: '100%', margin: '10px 0'}}></div>
                         <div className="flex">
                             <div className="flex-1 flex flex-col">
 
@@ -2310,7 +1963,7 @@ BigInt.prototype.toJSON = function () { return parseInt(this.toString()) }
                             </div>
                         </div>
                         <div className="flex justify-items-center mt-4">
-                            <Box sx={{ m: 1, position: 'relative' }}>
+                            <Box sx={{m: 1, position: 'relative'}}>
                                 <Button
                                     className="p-4"
                                     variant="contained"
@@ -2339,13 +1992,12 @@ BigInt.prototype.toJSON = function () { return parseInt(this.toString()) }
                 </Modal>
 
 
-
                 <Modal
                     open={openBillModal}
                     onClose={() => setOpenBillModal(false)}
                     aria-labelledby="modal-modal-title"
                     aria-describedby="modal-modal-description"
-                    BackdropProps={{ style: { backgroundColor: 'rgba(0, 0, 0, 1)' } }}
+                    BackdropProps={{style: {backgroundColor: 'rgba(0, 0, 0, 1)'}}}
                 >
                     <>
 
@@ -2357,19 +2009,19 @@ BigInt.prototype.toJSON = function () { return parseInt(this.toString()) }
                             }`}
                         </style>
                         <Box className="contentToPrint"
-                            sx={{
-                                position: 'absolute' as 'absolute',
-                                top: '50%',
-                                left: '50%',
-                                transform: 'translate(-50%, -50%)',
-                                width: 600,
-                                bgcolor: 'white',
-                                p: 4,
-                                overflow: 'scroll',
-                                display: 'flex',
-                                flexDirection: 'column',
-                                maxHeight: '100%',
-                            }}>
+                             sx={{
+                                 position: 'absolute' as 'absolute',
+                                 top: '50%',
+                                 left: '50%',
+                                 transform: 'translate(-50%, -50%)',
+                                 width: 600,
+                                 bgcolor: 'white',
+                                 p: 4,
+                                 overflow: 'scroll',
+                                 display: 'flex',
+                                 flexDirection: 'column',
+                                 maxHeight: '100%',
+                             }}>
                             <>
                                 <div ref={contentToPrint}>
                                     <div key={'title'} className="flex-1 flex items-center mb-4">
@@ -2380,7 +2032,7 @@ BigInt.prototype.toJSON = function () { return parseInt(this.toString()) }
                                     <div className="flex-1">
 
                                         {selectedPaymentItems
-                                            .map(({ key, count, orderItem }) => (
+                                            .map(({key, count, orderItem}) => (
                                                 <div key={orderItem.ID} className="flex-1 flex items-center">
                                                     <Typography className="w-12">{count}x</Typography>
                                                     <Typography>{`${meals.find((meal) => meal.ID == orderItem.ID_Meal)?.Meal} ${variants.find((variant) => variant.ID == orderItem.ID_Variant)?.MealVariant ?? ''}`}</Typography>
@@ -2398,7 +2050,7 @@ BigInt.prototype.toJSON = function () { return parseInt(this.toString()) }
                                         </div>
                                     }
 
-                                    <div id="horizontal-line" style={{ borderTop: '1px solid black', width: '100%', margin: '10px 0' }}></div>
+                                    <div id="horizontal-line" style={{borderTop: '1px solid black', width: '100%', margin: '10px 0'}}></div>
                                     <div className="flex-1">
                                         {selectedPaymentTaxes.map((tax) => (
                                             <div key={tax.ID} className="flex-1 flex items-center">
@@ -2414,7 +2066,7 @@ BigInt.prototype.toJSON = function () { return parseInt(this.toString()) }
                                         <Typography>OMR {parseFloat(selectedPayment?.Taxes).toFixed(3)}</Typography>
                                     </div>
 
-                                    <div id="horizontal-line" style={{ borderTop: '1px solid black', width: '100%', margin: '10px 0' }}></div>
+                                    <div id="horizontal-line" style={{borderTop: '1px solid black', width: '100%', margin: '10px 0'}}></div>
 
                                     <div key={'Payment_type'} className="flex-1 flex items-center">
                                         <Typography>Payment type</Typography>
@@ -2432,7 +2084,7 @@ BigInt.prototype.toJSON = function () { return parseInt(this.toString()) }
                                         <div className="flex-1"></div>
                                         <Typography>{users.find((user) => user.ID == selectedPayment?.ID_User)?.Name}</Typography>
                                     </div>
-                                    <div id="horizontal-line" style={{ borderTop: '1px solid black', width: '100%', margin: '10px 0' }}></div>
+                                    <div id="horizontal-line" style={{borderTop: '1px solid black', width: '100%', margin: '10px 0'}}></div>
 
 
                                     <div key={'final'} className="flex-1 flex items-center">
@@ -2448,7 +2100,7 @@ BigInt.prototype.toJSON = function () { return parseInt(this.toString()) }
                         </Box>
 
 
-                        <div className="printContent" style={{ zIndex: -2222, position: 'absolute', top: 0, left: 0, width: '100vw', height: '100vh', backgroundColor: 'white', padding: 40 }}>
+                        <div className="printContent" style={{zIndex: -2222, position: 'absolute', top: 0, left: 0, width: '100vw', height: '100vh', backgroundColor: 'white', padding: 40}}>
                             <div key={'title'} className="flex-1 flex items-center mb-4">
                                 <Typography variant="h5" component="h5">Payment no. {selectedPaymentId?.toString()}</Typography>
                             </div>
@@ -2457,7 +2109,7 @@ BigInt.prototype.toJSON = function () { return parseInt(this.toString()) }
                             <div className="flex-1">
 
                                 {selectedPaymentItems
-                                    .map(({ key, count, orderItem }) => (
+                                    .map(({key, count, orderItem}) => (
                                         <div key={orderItem.ID} className="flex-1 flex items-center">
                                             <Typography className="w-12">{count}x</Typography>
                                             <Typography>{`${meals.find((meal) => meal.ID == orderItem.ID_Meal)?.Meal} ${variants.find((variant) => variant.ID == orderItem.ID_Variant)?.MealVariant ?? ''}`}</Typography>
@@ -2475,7 +2127,7 @@ BigInt.prototype.toJSON = function () { return parseInt(this.toString()) }
                                 </div>
                             }
 
-                            <div id="horizontal-line" style={{ borderTop: '1px solid black', width: '100%', margin: '10px 0' }}></div>
+                            <div id="horizontal-line" style={{borderTop: '1px solid black', width: '100%', margin: '10px 0'}}></div>
                             <div className="flex-1">
                                 {selectedPaymentTaxes.map((tax) => (
                                     <div key={tax.ID} className="flex-1 flex items-center">
@@ -2491,7 +2143,7 @@ BigInt.prototype.toJSON = function () { return parseInt(this.toString()) }
                                 <Typography>OMR {parseFloat(selectedPayment?.Taxes).toFixed(3)}</Typography>
                             </div>
 
-                            <div id="horizontal-line" style={{ borderTop: '1px solid black', width: '100%', margin: '10px 0' }}></div>
+                            <div id="horizontal-line" style={{borderTop: '1px solid black', width: '100%', margin: '10px 0'}}></div>
 
                             <div key={'Payment_type'} className="flex-1 flex items-center">
                                 <Typography>Payment type</Typography>
@@ -2509,7 +2161,7 @@ BigInt.prototype.toJSON = function () { return parseInt(this.toString()) }
                                 <div className="flex-1"></div>
                                 <Typography>{users.find((user) => user.ID == selectedPayment?.ID_User)?.Name}</Typography>
                             </div>
-                            <div id="horizontal-line" style={{ borderTop: '1px solid black', width: '100%', margin: '10px 0' }}></div>
+                            <div id="horizontal-line" style={{borderTop: '1px solid black', width: '100%', margin: '10px 0'}}></div>
 
 
                             <div key={'final'} className="flex-1 flex items-center">
@@ -2526,13 +2178,12 @@ BigInt.prototype.toJSON = function () { return parseInt(this.toString()) }
     }
 
 
-
     if (!currentUser)
         return (
             <>
-                <div style={{ width: "6vh", backgroundColor: 'black', paddingLeft: "10px", paddingRight: "10px" }}>
+                <div style={{width: "6vh", backgroundColor: 'black', paddingLeft: "10px", paddingRight: "10px"}}>
                 </div>
-                <div style={{ flex: 1, backgroundColor: 'white' }}>
+                <div style={{flex: 1, backgroundColor: 'white'}}>
                     {/*Show login form */}
                     <div className="flex items-center justify-center h-full">
                         <div className="flex flex-col">
@@ -2563,25 +2214,26 @@ BigInt.prototype.toJSON = function () { return parseInt(this.toString()) }
         )
 
 
-
-
     return [
-        <div key={currentMealGroupID + '_addbar'} style={{ width: "12vh", backgroundColor: 'black', paddingLeft: "10px", paddingRight: "10px" }}>
-            {renderAddStrip(jsonObj.Head?.Workspace)}
+        <div style={{width: "12vh", backgroundColor: 'white', paddingLeft: "10px", paddingRight: "10px"}}>
 
         </div>,
-        <div key="orderlistdetail" style={{ backgroundColor: 'white', width: "calc(100vw - 62.5vh - 6vh" }}>
-            <div style={{ width: '100%' }}>
-                {showKitchenView && <KitchenView {...{ canUserPrepareFood, canUserDeliverFood, isOrderClosedOrCanceled, orderItems, setOrderItems, meals, variants, orders, isRefreshing, setShowKitchenView }}/>}
-                <div style={{ display: showCumulatedBills ? 'block' : 'none' }}>{renderCumulatedBills()}</div>
-                <div style={{ display: selectedOrderId ? 'block' : 'none'  }} >{renderOrderDetail()}</div>
-                <div style={{ display: (!showCumulatedBills && !selectedOrderId) ? 'block' : 'none' }} >{renderOrdersList()}</div>
+        <div key="orderlistdetail" style={{backgroundColor: 'white', width: "calc(100vw - 62.5vh - 12vh"}}>
+            <div style={{width: '100%'}}>
+                {showKitchenView && <KitchenView {...{canUserPrepareFood, canUserDeliverFood, isOrderClosedOrCanceled, orderItems, setOrderItems, meals, variants, orders, isRefreshing, setShowKitchenView}}/>}
+                <div style={{display: showCumulatedBills ? 'block' : 'none'}}>{renderCumulatedBills()}</div>
+
+
+                {(!showCumulatedBills) && <div style={{display: "block"}}><OrdersList {...props} /></div>}
+
+
+
             </div>
         </div>,
 
         isFullscreen && (
-            <div key='full' style={{ flex: 0, backgroundColor: 'white', position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, zIndex: 1000 }}>
-                {showCumulatedBills ? renderCumulatedBills() : selectedOrderId ? renderOrderDetail() : renderOrdersList()}
+            <div key='full' style={{flex: 0, backgroundColor: 'white', position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, zIndex: 1000}}>
+                {showCumulatedBills ? renderCumulatedBills() : <OrdersList {...props} />}
             </div>
         )
 
@@ -2590,7 +2242,7 @@ BigInt.prototype.toJSON = function () { return parseInt(this.toString()) }
 
 
 // export NOSSR
-export default dynamic(() => Promise.resolve(WaiterView), { ssr: false })
+export default dynamic(() => Promise.resolve(WaiterView), {ssr: false})
 
 const styles = {
     boxContainer: {

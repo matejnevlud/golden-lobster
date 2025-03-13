@@ -281,9 +281,37 @@ export type WAITER_DATA = {
 
     payments: DBT_Payments[]
     paymentTaxes: DBT_PaymentTaxes[]
+    customerPayments: DBT_CustomerPayments[]
+    customerPaymentPayments: DBT_CustomerPaymentPayments[]
+    ordersCalculated: {
+        OrderID: number
+        ItemsCost: number
+        Taxes: number
+        Cost: number
+        RealPayment: number
+    }[]
+
+
+    languages: DBT_Languages[]
+    layouts: DBT_Layouts[]
+    meals: DBT_Meals[]
+    mealGroups: DBT_MealGroups[]
+    mealsInGroups: DBT_MealsInGroups[]
+    variants: DBT_Variants[]
+    menuSetUp: DBT_MenuSetUp
+
+    translatedData: {
+        [key: number]: {
+            mealGroups: DBT_MealGroups[]
+            meals: DBT_Meals[]
+            variants: DBT_Variants[]
+            menuSetUp: DBT_MenuSetUp
+            layouts: DBT_Layouts[]
+        }
+    }
 
 }
-export async function getWaiterData(): Promise<any> {
+export async function getWaiterData(): Promise<WAITER_DATA> {
     let start_time = new Date().getTime();
 
     const [
@@ -297,7 +325,9 @@ export async function getWaiterData(): Promise<any> {
         payments,
         paymentTaxes,
         customerPayments,
-        customerPaymentPayments
+        customerPaymentPayments,
+
+        languages, layouts, mealGroups, meals, mealsInGroups, variants, menuSetUp
     ] = await Promise.all([
         prisma.dBT_Customer.findMany(),
         prisma.dBT_Orders.findMany({ take: 10000, orderBy: { ID: 'desc' } }),
@@ -309,7 +339,15 @@ export async function getWaiterData(): Promise<any> {
         prisma.dBT_Payments.findMany({ where: { Deleted: false }, take: 10000, orderBy: { ID: 'desc' } }),
         prisma.dBT_PaymentTaxes.findMany({ take: 10000, orderBy: { ID: 'desc' } }),
         prisma.dBT_CustomerPayments.findMany({ take: 10000, orderBy: { ID: 'desc' } }),
-        prisma.dBT_CustomerPaymentPayments.findMany({ take: 10000, orderBy: { ID: 'desc' } })
+        prisma.dBT_CustomerPaymentPayments.findMany({ take: 10000, orderBy: { ID: 'desc' } }),
+
+        getLanguages(),
+        getLayouts(),
+        getMealGroups(),
+        getMeals(),
+        getMealsInGroups(),
+        getVariants(),
+        getMenuSetUp()
     ]);
 
     // get all orders with payments using raw query
@@ -330,10 +368,33 @@ export async function getWaiterData(): Promise<any> {
             `;
 
 
+    // download all data in different languages
+    const translatedData = {};
+    for (const language of languages) {
+        const langID = language.ID as unknown as number;
+        const [translatedMealGroups, translatedMeals, translatedVariants, translatedMenuSetUp, translatedLayouts] = await Promise.all([
+            getMealGroups(langID),
+            getMeals(langID),
+            getVariants(langID),
+            getMenuSetUp(langID),
+            getLayouts(langID)
+        ]);
+
+        translatedData[langID] = {
+            mealGroups: translatedMealGroups,
+            meals: translatedMeals,
+            variants: translatedVariants,
+            menuSetUp: translatedMenuSetUp,
+            layouts: translatedLayouts,
+        }
+    }
+
+
+
     console.log('getWaiterData took', new Date().getTime() - start_time, 'ms');
 
 
-    return convertDecimalToNumber({ customers, orders, orderItems, paymentMethods, tables, users, taxes, payments, paymentTaxes, customerPayments, customerPaymentPayments, ordersCalculated });
+    return convertDecimalToNumber({ customers, orders, orderItems, paymentMethods, tables, users, taxes, payments, paymentTaxes, customerPayments, customerPaymentPayments, ordersCalculated, languages, layouts, meals, mealGroups, mealsInGroups, variants, menuSetUp, translatedData });
 }
 
 
@@ -362,7 +423,7 @@ export type ALL_DATA = {
         }
     }
 }
-export async function getAllData(): Promise<any> {
+export async function getAllData(): Promise<ALL_DATA> {
     let start_time = new Date().getTime();
 
     const [languages, layouts, mealGroups, meals, mealsInGroups, variants, menuSetUp] = await Promise.all([
@@ -404,6 +465,21 @@ export async function getAllData(): Promise<any> {
 
 
 
+export async function DB_getOrderItems(): Promise<DBT_OrderItems[]> {
+    const result = await prisma.dBT_OrderItems.findMany({ take: 10000, orderBy: { ID: 'desc' } });
+    return convertDecimalToNumber(result);
+}
+
+export async function DB_getPayments(): Promise<DBT_Payments[]> {
+    const result = await prisma.dBT_Payments.findMany({ where: { Deleted: false }, take: 10000, orderBy: { ID: 'desc' } });
+    return convertDecimalToNumber(result);
+}
+
+export async function DB_getPaymentTaxes(): Promise<DBT_PaymentTaxes[]> {
+    const result = await prisma.dBT_PaymentTaxes.findMany({ take: 10000, orderBy: { ID: 'desc' } });
+    return convertDecimalToNumber(result);
+}
+
 
 
 export async function createNewOrder(table: number, user_id: bigint | number, order_name?: string): Promise<DBT_Orders> {
@@ -419,7 +495,7 @@ export async function createNewOrder(table: number, user_id: bigint | number, or
     return order;
 }
 
-export async function createNewOrderItem(order_id: number, meal_id: number, user_id: bigint | number): Promise<DBT_OrderItems> {
+export async function createNewOrderItem(order_id: number | bigint, meal_id: number, user_id: bigint | number): Promise<DBT_OrderItems> {
     const meal = await prisma.dBT_Meals.findFirst({ where: { ID: meal_id } });
     // check if meal has any variants, if so, take the first one
     const firstVariant = await prisma.dBT_Variants.findFirst({ where: { ID_Meal: meal_id, Available: true } });
@@ -519,15 +595,18 @@ export async function DB_createPayment(total_amount: number, discount: number, d
     return payment;
 }
 
-export async function DB_removePayment(payment_id: number) {
+export async function DB_removePayment(payment_id: number): Promise<DBT_Payments[]> {
     // set deleted to true
-    const payment = await prisma.dBT_Payments.update({
+    const updatedPayment = await prisma.dBT_Payments.update({
         where: { ID: payment_id },
         data: {
             Deleted: true,
         }
     });
-    return payment;
+
+    const payments = await prisma.dBT_Payments.findMany({ where: { Deleted: false }, take: 10000, orderBy: { ID: 'desc' } });
+
+    return payments
 }
 
 
@@ -569,10 +648,10 @@ export async function DB_bindOrderItemToPayment(order_item_id: number | bigint, 
     return updatedOrderItem;
 }
 
-export async function DB_unbindOrderItemsFromPayment(payment_id: number | bigint): Promise<DBT_OrderItems> {
-    const orderItems = await prisma.dBT_OrderItems.updateMany({ where: { ID_Payment: payment_id }, data: { ID_Payment: null } });
-    return;
-
+export async function DB_unbindOrderItemsFromPayment(payment_id: number | bigint): Promise<DBT_OrderItems[]> {
+    const orderItemsChanged = await prisma.dBT_OrderItems.updateMany({ where: { ID_Payment: payment_id }, data: { ID_Payment: null } });
+    const orderItems = await prisma.dBT_OrderItems.findMany({ take: 10000, orderBy: { ID: 'desc' } });
+    return orderItems;
 }
 
 export async function DB_bindTaxToPayment(tax: DBT_Taxes, payment: DBT_Payments): Promise<DBT_PaymentTaxes> {
