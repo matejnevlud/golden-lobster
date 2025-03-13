@@ -1055,7 +1055,7 @@ export default function OrderDetail(props) {
         </div>,
 
 
-        <div style={{display: 'flex', flexDirection: 'column', height: '100vh', width: '100%', overflow: 'hidden'}}>
+        <div key={'orderdetaild'} style={{display: 'flex', flexDirection: 'column', height: '100vh', width: '100%', overflow: 'hidden'}}>
 
             <div className="flex items-center me-4 ms-4">
 

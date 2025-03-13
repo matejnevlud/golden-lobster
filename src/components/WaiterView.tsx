@@ -832,7 +832,7 @@ function WaiterView(props) {
 
 
     return [
-        <div style={{width: "12vh", backgroundColor: 'white', paddingLeft: "10px", paddingRight: "10px"}}>
+        <div key="stripmenu" style={{width: "12vh", backgroundColor: 'white', paddingLeft: "10px", paddingRight: "10px"}}>
             <div className="flex flex-1 flex-col  gap-8">
 
                 <IconButton className="p-4" size="large" aria-label="refresh" loading={isRefreshing} onClick={() => refreshData()}><RefreshIcon/></IconButton>
