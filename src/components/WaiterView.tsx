@@ -172,7 +172,7 @@ function WaiterView(props) {
 
         const interval = setInterval(() => {
             refreshData();
-        }, 60_000);
+        }, 180_000);
 
         return () => clearInterval(interval);
     }, []);

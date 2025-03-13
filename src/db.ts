@@ -18,7 +18,7 @@ import {
     DBT_Payments,
     DBT_PaymentTaxes,
     DBT_CustomerPayments, DBT_CustomerPaymentPayments,
-    Prisma, DBT_Expenses, DBT_ExpensePhoto
+    Prisma, DBT_Expenses, DBT_ExpensePhoto, DBT_Translations
 } from "@prisma/client";
 
 import { PrismaClient as PrismaClientVercel } from '../generated/prisma-client-vercel'
@@ -93,7 +93,8 @@ export async function getLanguages() {
     return result;
 }
 
-export async function translate(text: string | null, id_language: number) {
+export async function translateProcedure(text: string | null, id_language: number) {
+    console.log('translating', text, 'to', id_language);
     // if DEV, return text
     if (process.env.NODE_ENV === 'development') return text;
     try {
@@ -131,20 +132,45 @@ export async function translate(text: string | null, id_language: number) {
     }
 }
 
-export async function getLayouts(langID?: number) {
+export async function translate(text: string | null, id_language: number, translations: DBT_Translations[]) {
+    // if DEV, return text
+    //if (process.env.NODE_ENV === 'development') return text;
+
+    if (!text) return text;
+    if (text === '') return text;
+    if (text === ' ') return text;
+
+    const result = translations.find(translation => translation.ID_Language == id_language && translation.Text === text);
+    if (!result) {
+        // if not found, insert into DBT_ToBeTranslated but do not block the thread
+        //console.log('No translation found for', text, 'to', id_language, ', adding to DBT_ToBeTranslated');
+        // write to DBT_ToBeTranslated and do not wait for it, even if it fails
+        try {
+            await prisma.$queryRaw`INSERT INTO DBT_ToBeTranslated (Text, ID_Language) VALUES (${text}, ${id_language})`
+        } catch (e) {
+            console.log('VIOLATED')
+        }
+
+        return `{${text}}`;
+    }
+    return result.Translation;
+}
+
+
+export async function getLayouts(translations: DBT_Translations[], langID?: number) {
     var result = await prisma.dBT_Layouts.findMany({ where: { Active: true } });
     result = convertUint8ArraysToBase64(result);
 
     const { cookies } = require('next/headers');
     const language = langID ?? parseInt(cookies().get('language')?.value ?? '1');
     result = await Promise.all(result.map(async (layout: DBT_Layouts) => {
-        layout.TextBox = await translate(layout.TextBox, language);
+        layout.TextBox = await translate(layout.TextBox, language, translations);
         return layout;
     }));
     return result;
 }
 
-export async function getMealGroups(langID?: number) {
+export async function getMealGroups(translations: DBT_Translations[], langID?: number) {
 
 
     //var result = await prisma.dBT_MealGroups.findMany({ where: { Active: true }, orderBy: { Order: 'asc' } });
@@ -160,14 +186,14 @@ export async function getMealGroups(langID?: number) {
     const { cookies } = require('next/headers');
     const language = langID ?? parseInt(cookies().get('language')?.value ?? '1');
     result = await Promise.all(result.map(async (mg: DBT_MealGroups) => {
-        mg.MealGroup = await translate(mg.MealGroup, language);
+        mg.MealGroup = await translate(mg.MealGroup, language, translations);
         return mg;
     }));
 
     return result;
 }
 
-export async function getMeals(langID?: number) {
+export async function getMeals(translations: DBT_Translations[], langID?: number) {
     var result;
 
     if (process.env.NODE_ENV === 'development') {
@@ -196,9 +222,9 @@ export async function getMeals(langID?: number) {
     const { cookies } = require('next/headers');
     const language = langID ?? parseInt(cookies().get('language')?.value ?? '1');
     result = await Promise.all(result.map(async (meal: DBT_Meals) => {
-        meal.Meal = await translate(meal.Meal, language);
-        meal.MealDescription = await translate(meal.MealDescription, language);
-        meal.PictureDescription = await translate(meal.PictureDescription, language);
+        meal.Meal = await translate(meal.Meal, language, translations);
+        meal.MealDescription = await translate(meal.MealDescription, language, translations);
+        meal.PictureDescription = await translate(meal.PictureDescription, language, translations);
         return meal;
     }));
 
@@ -240,7 +266,7 @@ export async function saveUILayout(id: number, state: string) {
     return result;
 }
 
-export async function getVariants(langID?: number) {
+export async function getVariants(translations: DBT_Translations[], langID?: number) {
     var result = await prisma.dBT_Variants.findMany({ where: { Active: true } });
 
     result = convertUint8ArraysToBase64(result);
@@ -248,22 +274,22 @@ export async function getVariants(langID?: number) {
     const { cookies } = require('next/headers');
     const language = langID ?? parseInt(cookies().get('language')?.value ?? '1');
     result = await Promise.all(result.map(async (meal: DBT_Variants) => {
-        meal.MealVariant = await translate(meal.MealVariant, language);
+        meal.MealVariant = await translate(meal.MealVariant, language, translations);
         return meal;
     }));
 
     return result;
 }
 
-export async function getMenuSetUp(langID?: number) {
+export async function getMenuSetUp(translations: DBT_Translations[], langID?: number) {
     var result = await prisma.dBT_MenuSetUp.findFirst({ where: { Active: true } });
     result = convertUint8ArraysToBase64(result);
 
 
     const { cookies } = require('next/headers');
     const language = langID ?? parseInt(cookies().get('language')?.value ?? '1');
-    result.HeaderText = await translate(result?.HeaderText, language);
-    result.FooterText = await translate(result?.FooterText, language);
+    result.HeaderText = await translate(result?.HeaderText, language, translations);
+    result.FooterText = await translate(result?.FooterText, language, translations);
 
     return result;
 }
@@ -314,6 +340,8 @@ export type WAITER_DATA = {
 export async function getWaiterData(): Promise<WAITER_DATA> {
     let start_time = new Date().getTime();
 
+    const translations = await prisma.dBT_Translations.findMany();
+
     const [
         customers,
         orders,
@@ -342,12 +370,12 @@ export async function getWaiterData(): Promise<WAITER_DATA> {
         prisma.dBT_CustomerPaymentPayments.findMany({ take: 10000, orderBy: { ID: 'desc' } }),
 
         getLanguages(),
-        getLayouts(),
-        getMealGroups(),
-        getMeals(),
+        getLayouts(translations),
+        getMealGroups(translations),
+        getMeals(translations),
         getMealsInGroups(),
-        getVariants(),
-        getMenuSetUp()
+        getVariants(translations),
+        getMenuSetUp(translations)
     ]);
 
     // get all orders with payments using raw query
@@ -370,25 +398,6 @@ export async function getWaiterData(): Promise<WAITER_DATA> {
 
     // download all data in different languages
     const translatedData = {};
-    for (const language of languages) {
-        const langID = language.ID as unknown as number;
-        const [translatedMealGroups, translatedMeals, translatedVariants, translatedMenuSetUp, translatedLayouts] = await Promise.all([
-            getMealGroups(langID),
-            getMeals(langID),
-            getVariants(langID),
-            getMenuSetUp(langID),
-            getLayouts(langID)
-        ]);
-
-        translatedData[langID] = {
-            mealGroups: translatedMealGroups,
-            meals: translatedMeals,
-            variants: translatedVariants,
-            menuSetUp: translatedMenuSetUp,
-            layouts: translatedLayouts,
-        }
-    }
-
 
 
     console.log('getWaiterData took', new Date().getTime() - start_time, 'ms');
@@ -426,14 +435,16 @@ export type ALL_DATA = {
 export async function getAllData(): Promise<ALL_DATA> {
     let start_time = new Date().getTime();
 
+    const translations = await prisma.dBT_Translations.findMany();
+
     const [languages, layouts, mealGroups, meals, mealsInGroups, variants, menuSetUp] = await Promise.all([
         getLanguages(),
-        getLayouts(),
-        getMealGroups(),
-        getMeals(),
+        getLayouts(translations),
+        getMealGroups(translations),
+        getMeals(translations),
         getMealsInGroups(),
-        getVariants(),
-        getMenuSetUp()
+        getVariants(translations),
+        getMenuSetUp(translations)
     ]);
 
 
@@ -442,11 +453,11 @@ export async function getAllData(): Promise<ALL_DATA> {
     for (const language of languages) {
         const langID = language.ID as unknown as number;
         const [translatedMealGroups, translatedMeals, translatedVariants, translatedMenuSetUp, translatedLayouts] = await Promise.all([
-            getMealGroups(langID),
-            getMeals(langID),
-            getVariants(langID),
-            getMenuSetUp(langID),
-            getLayouts(langID)
+            getMealGroups(translations, langID),
+            getMeals(translations, langID),
+            getVariants(translations, langID),
+            getMenuSetUp(translations, langID),
+            getLayouts(translations, langID)
         ]);
 
         translatedData[langID] = {
