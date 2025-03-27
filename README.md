@@ -35,3 +35,10 @@ docker run --hostname=96c77158bca0 --mac-address=02:42:ac:11:00:02 --env=YARN_VE
 4. Table plus -> import SQL DUMP
 5. Vybrat encoding (unicode, utf8, utf16)
 6. LETS GO
+
+
+
+## UPRAVY SRC kodu
+1. upravit kod
+2. npm run build
+3. pm2 restart all
