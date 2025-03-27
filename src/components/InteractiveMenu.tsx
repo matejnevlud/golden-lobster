@@ -70,7 +70,7 @@ function InteractiveMenu() {
             setMealsInGroups(data.mealsInGroups);
             setTranslatedData(data.translatedData);
             setOgMealGroups(data.mealGroups.filter((mg) => mg.VisibleInMenu || _isWaiter));
-            setMealGroups(data.mealGroups.filter((mg) => mg.VisibleInMenu || _isWaiter));
+            setMealGroups(data.mealGroups.filter((mg) => (mg.VisibleInMenu || _isWaiter) && !hiddenMealGroups.includes(mg.ID)));
             setMeals(data.meals);
             setVariants(data.variants);
             setMenuSetUp(data.menuSetUp);
@@ -109,9 +109,9 @@ function InteractiveMenu() {
 
         const translated = translatedData[id];
         let _isWaiter = typeof localStorage.getItem('currentUser') === 'string';
-        setMealGroups(translated.mealGroups.filter((mg) => mg.VisibleInMenu || _isWaiter));
+        setMealGroups(translated.mealGroups.filter((mg) => (mg.VisibleInMenu || _isWaiter) && !hiddenMealGroups.includes(mg.ID)));
         setOgMealGroups(translated.mealGroups.filter((mg) => mg.VisibleInMenu || _isWaiter));
-        setHiddenMealGroups([]);
+        //setHiddenMealGroups([]);
         setMeals(translated.meals);
         setVariants(translated.variants);
         setMenuSetUp(translated.menuSetUp);
@@ -354,8 +354,7 @@ function InteractiveMenu() {
     }
 
     return (
-        <div className="min-w-full min-h-screen"
-             style={{backgroundColor: numberToRGBAString(menuSetUp.BackgroundColor)}}>
+        <div key="MAIN_B" className="min-w-full min-h-screen" style={{backgroundColor: numberToRGBAString(menuSetUp.BackgroundColor)}}>
             {renderBG()}
             {renderPopUpWindow(jsonObj.Head?.PopUpWindow)}
             {renderLogo(jsonObj.Head?.Logo)}
